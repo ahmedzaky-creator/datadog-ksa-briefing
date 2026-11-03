@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Peak moments</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .sub{max-width:900px}
+  #pk{position:absolute;left:72px;top:236px;width:1136px;height:300px}
+  .cards{position:absolute;left:72px;right:72px;top:546px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .cards div{font-size:13px;line-height:1.45;color:var(--char)}
+  .cards .tag{color:var(--purple);margin-bottom:4px}
+  html[data-density="1"] .cards{display:none}
+</style>
+</head>
+<body data-foot="Peak moments" data-who="exec,sre,digital,dev">
+<div class="z">
+  <div class="eyebrow in1">Business value · peak readiness</div>
+  <h1 class="in2">Your biggest days are <span class="b">your biggest risks.</span></h1>
+  <p class="sub in3">Hajj, Ramadan, Riyadh Season, White Friday, salary day, a national launch: the traffic is predictable; the failure modes aren't.</p>
+</div>
+<svg id="pk" viewBox="0 0 1136 300"></svg>
+<div class="cards">
+  <div data-d="7"><div class="tag">Before</div>Synthetic tests on every critical journey, from many locations, plus load-test dashboards.</div>
+  <div data-d="8"><div class="tag">During</div>SLO burn alerts, Watchdog anomaly detection and Kubernetes autoscaling on real demand.</div>
+  <div data-d="9"><div class="tag">When it breaks</div>Bits AI SRE investigates in parallel while On-Call pages the owning team.</div>
+  <div data-d="10"><div class="tag">After</div>Postmortems and capacity plans from the same data, ready for next season.</div>
+</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('pk');
+  const ev = [[.12, .55, 'Ramadan'], [.33, 1, 'Hajj · 1.7M pilgrims'], [.55, .5, 'National Day'], [.72, .8, 'Riyadh Season'], [.9, .7, 'White Friday']];
+  const base = 250, H = 180;
+  const y = x => { let v = .12 + .03 * Math.sin(x * 40); ev.forEach(([c, h]) => v += h * Math.exp(-Math.pow((x - c) / .025, 2))); return base - v * H; };
+  let d = 'M0,' + y(0), cap = 'M0,' + (base - .62 * H);
+  for (let i = 1; i <= 400; i++) { const x = i / 400; d += ` L${x * 1136},${y(x).toFixed(1)}`; }
+  DD.el('line', {x1: 0, y1: base, x2: 1136, y2: base, stroke: '#E2DCEC'}, svg);
+  const capL = DD.el('line', {x1: 0, y1: base - .62 * H, x2: 1136, y2: base - .62 * H, stroke: '#F2668B', 'stroke-dasharray': '5 5'}, svg);
+  DD.el('text', {x: 1136, y: base - .62 * H - 8, 'text-anchor': 'end', fill: '#F2668B', style: 'font:600 10.5px JetBrains Mono,monospace'}, svg).textContent = 'STATIC CAPACITY';
+  const area = DD.el('path', {d: d + ' L1136,250 L0,250 Z', fill: '#E9DEF8'}, svg);
+  const line = DD.el('path', {d, fill: 'none', stroke: '#632CA6', 'stroke-width': 2.5, class: 'draw'}, svg);
+  area.style.clipPath = 'inset(0 100% 0 0)'; area.style.transition = 'clip-path 2.4s cubic-bezier(.2,.7,.2,1)';
+  setTimeout(() => area.style.clipPath = 'inset(0 0 0 0)', 300);
+  line.style.animationDuration = '2.4s';
+  ev.forEach(([c, h, n], i) => {
+    const x = c * 1136, yy = y(c);
+    const g = DD.el('g', {}, svg); g.style.opacity = 0; g.style.animation = `pop .45s ${.9 + i * .3}s var(--ease) both`;
+    DD.el('circle', {cx: x, cy: yy, r: 6, fill: h > .62 ? '#F2668B' : '#632CA6', stroke: '#fff', 'stroke-width': 2}, g);
+    const w = n.length * 7 + 18;
+    DD.el('rect', {x: x - w / 2, y: yy - 38, width: w, height: 22, rx: 11, fill: '#170B2B'}, g);
+    DD.el('text', {x, y: yy - 23, 'text-anchor': 'middle', fill: '#fff', style: 'font:600 11px Inter,sans-serif'}, g).textContent = n;
+  });
+  DD.drawOn(svg);
+  DD.el('text', {x: 0, y: 290, fill: '#A39DB5', style: 'font:400 10.5px JetBrains Mono,monospace'}, svg).textContent = 'Illustrative demand curve; Hajj 2026 pilgrim count from GASTAT';
+})();
+</script>
+</body>
+</html>

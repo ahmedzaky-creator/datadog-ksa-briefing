@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Bits AI</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;text-align:center}
+  .c h1{font-size:120px;letter-spacing:-5px;line-height:.95}
+  .c .sub{text-align:center;margin-top:24px;max-width:640px}
+  canvas{position:absolute;inset:0;z-index:1}
+</style>
+</head>
+<body class="ink" data-foot="Bits AI" data-who="exec,cio,ciso,sre,dev,digital">
+<canvas id="cv" width="1280" height="720"></canvas>
+<div class="c">
+  <div class="eyebrow in1">Part two · Bits AI</div>
+  <h1 class="in2">Agents<br><span class="b">on shift.</span></h1>
+  <p class="sub in4">Everything so far is the foundation. This is what it unlocks.</p>
+</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const cv = document.getElementById('cv'), x = cv.getContext('2d'), rnd = DD.rand(5);
+  const P = Array.from({length: 140}, () => ({a: rnd() * Math.PI * 2, r: 120 + rnd() * 420, s: (.02 + rnd() * .06) * (rnd() > .5 ? 1 : -1), z: rnd()}));
+  DD.loop(t => {
+    x.clearRect(0, 0, 1280, 720);
+    const k = Math.min(1, t / 1.5);
+    P.forEach((p, i) => {
+      p.a += p.s * .05;
+      const r = p.r * (1.4 - .4 * DD.ease(k)), px = 640 + Math.cos(p.a) * r, py = 360 + Math.sin(p.a) * r * .55;
+      x.fillStyle = `rgba(201,178,242,${(.15 + p.z * .55) * k})`;
+      x.beginPath(); x.arc(px, py, 1 + p.z * 2, 0, 7); x.fill();
+      if (i % 9 === 0) { x.strokeStyle = `rgba(164,124,232,${.08 * k})`; x.beginPath(); x.moveTo(640, 360); x.lineTo(px, py); x.stroke(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

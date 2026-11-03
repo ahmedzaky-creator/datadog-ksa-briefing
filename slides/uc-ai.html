@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Use case: AI agents</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  body{padding:44px 64px}
+  h1{font-size:36px;letter-spacing:-1.1px;margin-top:10px}
+  .who{top:42px;right:64px}
+  .tr{position:absolute;left:64px;top:132px;width:690px;bottom:58px;border-radius:12px;background:#120725;border:1px solid rgba(255,255,255,.1);padding:14px 16px}
+  .tr .ph{font:600 10px var(--mono);letter-spacing:.08em;color:rgba(255,255,255,.45);display:flex;justify-content:space-between}
+  .q{margin:10px 0 8px;display:flex;gap:10px;align-items:center;font-size:13px;color:#fff}
+  .q .ar{font:500 15px 'Geeza Pro','Noto Naskh Arabic',sans-serif;direction:rtl;color:#fff}
+  .q .en{font:400 11.5px var(--mono);color:rgba(255,255,255,.5)}
+  .q .u{font:600 9.5px var(--mono);padding:3px 7px;border-radius:4px;background:rgba(164,124,232,.25);color:var(--lav)}
+  #wf{width:658px;height:290px;display:block}
+  .tot{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}
+  .tot div{border-radius:8px;padding:7px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+  .tot b{display:block;font:650 18px var(--sans);color:#fff;letter-spacing:-.4px;transition:color .4s}
+  .tot span{font:500 9.5px var(--mono);color:rgba(255,255,255,.45);letter-spacing:.05em}
+  .tot b.bad{color:var(--pink)}.tot b.ok{color:var(--teal)}
+  .right{position:absolute;left:772px;right:64px;top:132px;bottom:58px;display:flex;flex-direction:column;gap:8px}
+  .s{border-radius:9px;padding:8px 11px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);font-size:12.3px;line-height:1.4;color:rgba(255,255,255,.82)}
+  .s b{display:block;font:600 9.5px var(--mono);letter-spacing:.07em;color:var(--lav);margin-bottom:2px}
+  .s code{font:500 11px var(--mono);color:var(--amber)}
+  .s.ok{border-color:rgba(47,211,181,.45);background:rgba(47,211,181,.07)}
+  .s.ok b{color:var(--teal)}
+  .pf{margin-top:auto;border-radius:9px;padding:8px 11px;border:1px solid rgba(164,124,232,.35);background:rgba(164,124,232,.1);font-size:12px;line-height:1.4;color:rgba(255,255,255,.8)}
+  .pf b{display:block;font:600 9.5px var(--mono);letter-spacing:.07em;color:var(--lav);margin-bottom:2px}
+  html[data-density="1"] .pf,html[data-density="1"] .tot{display:none}
+</style>
+</head>
+<body class="ink" data-foot="Use case 06 · AI agents · illustrative trace, press → to advance" data-who="cio,ciso,dev,sre,exec">
+<div class="z">
+  <div class="eyebrow in1">Use case 06 · AI agents in production</div>
+  <h1 class="in2">The agent answered slowly, wrongly, expensively. <span class="b">Here's why.</span></h1>
+</div>
+<div class="tr in3">
+  <div class="ph"><span>LLM Observability · one agent run</span><span>citizen-assistant · env:prod · in-house ALLaM</span></div>
+  <div class="q"><span class="u">USER</span><span class="ar">ما حالة طلب التأشيرة الخاص بي؟</span><span class="en">"What's the status of my visa application?"</span></div>
+  <svg id="wf" viewBox="0 0 658 290"></svg>
+  <div class="tot">
+    <div><b id="t1">11.8 s</b><span>END-TO-END LATENCY</span></div>
+    <div><b id="t2">14,920</b><span>TOKENS</span></div>
+    <div><b id="t3">flagged</b><span>EVAL · HALLUCINATION</span></div>
+    <div><b id="t4">1 found</b><span>SENSITIVE DATA</span></div>
+  </div>
+</div>
+<div class="right">
+  <div class="s" data-step="1"><b>TRACE · EVERY STEP</b>The status tool <code>visa_status()</code> timed out three times, and the agent kept retrying. The answer took 11.8 s and three times the tokens it should.</div>
+  <div class="s" data-step="2"><b>QUALITY · EVALUATIONS</b>With no tool result, the model guessed a status. A hallucination evaluation flags the answer as unsupported before the citizen complains.</div>
+  <div class="s" data-step="3"><b>SAFETY · SENSITIVE DATA</b>The prompt contained a national ID number. Sensitive Data Scanner redacts it in prompts and completions before storage. AI Guard (limited availability) screens for prompt injection.</div>
+  <div class="s ok" data-step="4"><b>FIX · COST · GPUS</b>The trace points to the slow upstream API, not the model. Add a timeout and fallback, and the cost per answer, token spend and GPU utilisation sit on the same dashboard.</div>
+  <div class="pf in5"><b>WHY IT MATTERS IN THE KINGDOM</b>HUMAIN ONE launched as an enterprise agent platform, and HUMAIN Chat runs on ALLaM 34B. Agents are moving from pilot to citizen- and customer-facing services, where a wrong answer is a public one.</div>
+</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('wf'), T = 12, X = s => 196 + s * (450 / T);
+  const S = [
+    ['agent.run', 0, 11.8, 0, 'agent'],
+    ['retrieve · policy docs', .1, .5, 1, 'ok'],
+    ['llm · plan', .6, 1.3, 1, 'llm'],
+    ['tool · visa_status()', 1.9, 3, 1, 'bad'],
+    ['tool · visa_status() retry', 4.9, 3, 1, 'bad'],
+    ['tool · visa_status() retry', 7.9, 2.2, 1, 'bad'],
+    ['llm · answer (no tool data)', 10.1, 1.6, 1, 'llm'],
+    ['eval · hallucination', 11.7, .1, 1, 'eval']
+  ];
+  const C = {agent: '#A47CE8', ok: '#2FD3B5', llm: '#C9B2F2', bad: '#F2668B', eval: '#FFB52E'};
+  [0, 3, 6, 9, 12].forEach(s => { DD.el('line', {x1: X(s), x2: X(s), y1: 4, y2: 272, stroke: 'rgba(255,255,255,.06)'}, svg); const t = DD.el('text', {x: X(s), y: 286, 'text-anchor': 'middle', fill: 'rgba(255,255,255,.3)', style: 'font:500 9px "JetBrains Mono"'}, svg); t.textContent = s + 's'; });
+  const bars = S.map(([n, st, d, lvl, k], i) => {
+    const y = 6 + i * 33;
+    const t = DD.el('text', {x: 4 + lvl * 12, y: y + 14, fill: 'rgba(255,255,255,.8)', style: 'font:500 11px "JetBrains Mono"'}, svg); t.textContent = n;
+    const r = DD.el('rect', {x: X(st), y: y + 2, width: 0, height: 16, rx: 3, fill: C[k], opacity: k === 'agent' ? .45 : .9}, svg);
+    const late = X(st + d) > 580, tag = DD.el('text', {x: late ? X(st) - 6 : X(st + d) + 6, y: y + 14, 'text-anchor': late ? 'end' : 'start', fill: 'rgba(255,255,255,.5)', opacity: 0, style: 'font:500 9.5px "JetBrains Mono"'}, svg);
+    tag.textContent = k === 'bad' ? 'timeout' : k === 'llm' ? (i === 2 ? '2.1k tok' : '9.8k tok') : k === 'eval' ? 'unsupported' : '';
+    if (k === 'agent') tag.textContent = '';
+    return {r, w: d * (450 / T), tag, delay: .7 + st * .09 + i * .05, k};
+  });
+  DD.loop(t => bars.forEach(b => { const k = Math.min(1, Math.max(0, (t - b.delay) / .5)); b.r.setAttribute('width', (b.w * DD.ease(k)).toFixed(1)); b.tag.setAttribute('opacity', k >= 1 ? 1 : 0); }));
+  const sel = DD.el('rect', {x: 0, y: 0, width: 658, height: 0, rx: 5, fill: 'none', stroke: '#FFB52E', 'stroke-width': 1.5, opacity: 0, style: 'transition:all .4s'}, svg);
+  const box = (a, b) => { sel.setAttribute('y', 3 + a * 33); sel.setAttribute('height', (b - a + 1) * 33 - 2); sel.setAttribute('opacity', 1); };
+  const tot = ['t1', 't2', 't3', 't4'].map(id => document.getElementById(id));
+  DD.onStep = i => {
+    sel.setAttribute('opacity', 0);
+    if (i === 1) box(3, 5); if (i === 2) box(6, 7); if (i === 3) box(0, 0);
+    tot.forEach(e => e.className = '');
+    if (i === 1) { tot[0].className = 'bad'; tot[1].className = 'bad'; }
+    if (i === 2) tot[2].className = 'bad';
+    if (i === 3) tot[3].className = 'bad';
+    if (i >= 4) { tot[0].textContent = '2.9 s'; tot[1].textContent = '4,850'; tot[2].textContent = 'pass'; tot[3].textContent = 'redacted'; tot.forEach(e => e.className = 'ok'); }
+    else { tot[0].textContent = '11.8 s'; tot[1].textContent = '14,920'; tot[2].textContent = 'flagged'; tot[3].textContent = '1 found'; }
+  };
+})();
+</script>
+</body>
+</html>

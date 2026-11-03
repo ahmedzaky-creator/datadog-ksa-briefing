@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Land and expand</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .chart{position:absolute;left:72px;right:72px;top:226px;height:320px;display:flex;align-items:flex-end;gap:34px;border-bottom:1px solid var(--line)}
+  .c{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .c .v{font:650 44px var(--sans);letter-spacing:-1.5px;color:var(--ink);margin-bottom:10px}
+  .c .bar{width:100%;background:linear-gradient(180deg,var(--violet),var(--purple));border-radius:8px 8px 0 0;transform-origin:bottom;animation:growY 1s var(--ease) both}
+  .c .ghost{position:absolute;left:-6px;right:-6px;bottom:0;border-top:3px dashed var(--amber);z-index:2;opacity:0;animation:rise .5s 1.6s var(--ease) both}
+  .c .ghost span{position:absolute;right:0;top:-22px;font:600 10.5px var(--mono);color:#B07400;background:#fff;padding:1px 5px;border-radius:3px}
+  .c .bw{position:relative;width:100%;display:flex;align-items:flex-end}
+  .lab{position:absolute;left:72px;right:72px;top:554px;display:flex;gap:34px}
+  .lab span{flex:1;text-align:center;font:600 13px var(--mono);color:var(--grey)}
+  .call{position:absolute;right:72px;top:150px;text-align:right;font-size:14px;color:var(--char);line-height:1.5}
+  .call b{color:var(--purple)}
+</style>
+</head>
+<body data-foot="Land and expand · Q2 FY26" data-who="exec,cio">
+<div class="z">
+  <div class="eyebrow in1">Proof the platform works</div>
+  <h1 class="in2">Customers keep <span class="b">adding products.</span></h1>
+</div>
+<div class="call in4">8+ products: <b>22%</b> of customers<br>up from <b>14%</b> a year earlier</div>
+<div class="chart" id="ch"></div>
+<div class="lab" id="lb"></div>
+<div class="bv" data-d="9" style="bottom:50px"><b>Business value</b><span>Nobody buys eight products from a vendor whose products don't work together. <strong>Expansion is the customer's verdict.</strong></span></div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const ch = document.getElementById('ch'), lb = document.getElementById('lb');
+  DD.data.multi.forEach(([k, v], i) => {
+    const c = document.createElement('div'); c.className = 'c';
+    const ghost = k === '8+' ? `<div class="ghost" style="height:${DD.data.multi8YearAgo * 2.9}px"><span>${DD.data.multi8YearAgo}% a year ago</span></div>` : '';
+    c.innerHTML = `<div class="v"><span data-count="${v}" data-post="%" data-delay="${.5 + i * .15}"></span></div><div class="bw"><div class="bar" style="height:${v * 2.9}px;animation-delay:${.4 + i * .15}s"></div>${ghost}</div>`;
+    ch.appendChild(c);
+    const s = document.createElement('span'); s.textContent = k + ' products'; lb.appendChild(s);
+  });
+  DD.count(ch);
+})();
+</script>
+</body>
+</html>

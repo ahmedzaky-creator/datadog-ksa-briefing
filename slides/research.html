@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Research depth</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{position:absolute;left:72px;right:72px;top:236px;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:0}
+  .col{padding:0 28px;border-left:1px solid var(--line)}
+  .col:first-child{padding-left:0;border-left:0}
+  .col h3{font:650 24px var(--sans);letter-spacing:-.6px;margin:10px 0 8px}
+  .col p{font-size:14.5px;line-height:1.5;color:var(--char)}
+  .col .stat{font-size:76px;margin-top:20px}
+  #ts{width:100%;height:150px;margin-top:16px;display:block}
+  html[data-density="1"] .col p{display:none}
+</style>
+</head>
+<body data-foot="Research depth" data-who="cio,exec,sre">
+<div class="z">
+  <div class="eyebrow in1">AI research, not AI wrappers</div>
+  <h1 class="in2">Models trained on <span class="b">observability itself.</span></h1>
+</div>
+<div class="cols">
+  <div class="col" data-d="3"><span class="tag">Toto · open weights · Apache 2.0</span><h3>A time-series foundation model</h3><p>151M parameters, trained on observability data, released with the BOOM benchmark (350M observations). Datadog reports state-of-the-art results on BOOM and GIFT-Eval.</p>
+    <svg id="ts" viewBox="0 0 400 150"></svg></div>
+  <div class="col" data-d="4"><span class="tag">Adaptive ML · Jun 2026</span><h3>Reinforcement learning</h3><p>Acquired to post-train agents on real operational outcomes, so Bits gets better at your work, not just at chat.</p></div>
+  <div class="col" data-d="5"><span class="tag">Investment</span><h3>R&amp;D as a share of revenue</h3><div class="stat"><span data-count="43" data-post="%" data-delay=".6"></span></div><p>GAAP R&amp;D in Q2 FY26: about $478M in one quarter.</p></div>
+</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('ts'), f = x => 80 + 26 * Math.sin(x / 18) + 12 * Math.sin(x / 5.3) + (x > 230 && x < 245 ? -40 : 0);
+  let d = '', p = '';
+  for (let x = 0; x <= 260; x += 2) d += (x ? 'L' : 'M') + x + ',' + f(x).toFixed(1);
+  for (let x = 260; x <= 400; x += 2) p += (x > 260 ? 'L' : 'M') + x + ',' + (80 + 26 * Math.sin(x / 18) + 12 * Math.sin(x / 5.3)).toFixed(1);
+  let band = 'M260,' + (80 + 26 * Math.sin(260 / 18) + 12 * Math.sin(260 / 5.3) - 6);
+  for (let x = 262; x <= 400; x += 2) { const w = 6 + (x - 260) * .12; band += ` L${x},${(80 + 26 * Math.sin(x / 18) + 12 * Math.sin(x / 5.3) - w).toFixed(1)}`; }
+  for (let x = 400; x >= 260; x -= 2) { const w = 6 + (x - 260) * .12; band += ` L${x},${(80 + 26 * Math.sin(x / 18) + 12 * Math.sin(x / 5.3) + w).toFixed(1)}`; }
+  DD.el('line', {x1: 260, y1: 0, x2: 260, y2: 150, stroke: '#E2DCEC', 'stroke-dasharray': '3 3'}, svg);
+  DD.el('path', {d, fill: 'none', stroke: '#6E6784', 'stroke-width': 1.6, class: 'draw'}, svg);
+  const b = DD.el('path', {d: band + ' Z', fill: '#E9DEF8'}, svg); b.style.opacity = 0; b.style.animation = 'rise .8s 1.4s both';
+  const pp = DD.el('path', {d: p, fill: 'none', stroke: '#632CA6', 'stroke-width': 2.2, 'stroke-dasharray': '5 4'}, svg); pp.style.opacity = 0; pp.style.animation = 'rise .8s 1.6s both';
+  DD.el('text', {x: 266, y: 14, fill: '#632CA6', style: 'font:600 10px JetBrains Mono,monospace'}, svg).textContent = 'FORECAST';
+  DD.el('circle', {cx: 238, cy: f(238), r: 5, fill: 'none', stroke: '#F2668B', 'stroke-width': 2}, svg);
+  DD.drawOn(svg);
+})();
+</script>
+</body>
+</html>

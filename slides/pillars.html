@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Three pillars</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:40px;border-top:1px solid var(--line)}
+  .col{padding:24px 26px 0;border-left:1px solid var(--line);position:relative}
+  .col:first-child{padding-left:0;border-left:0}
+  .n{font:600 12px var(--mono);color:var(--purple);letter-spacing:.06em}
+  .col h3{font:650 28px/1.1 var(--sans);letter-spacing:-.8px;margin:10px 0 10px}
+  .col p{font-size:15px;line-height:1.5;color:var(--char)}
+  .col ul{list-style:none;margin-top:16px;display:flex;flex-wrap:wrap;gap:6px}
+  .val{margin-top:18px;padding-top:12px;border-top:1px dashed var(--line);font-size:13.5px;color:var(--grey);line-height:1.45}
+  .val b{color:var(--ink)}
+  svg.st{position:absolute;right:60px;top:92px;width:250px;height:142px}
+  html[data-density="1"] .col ul,html[data-density="1"] .val{display:none}
+</style>
+</head>
+<body data-foot="Three pillars" data-who="exec,cio,ciso,sre,dev,digital">
+<div class="z">
+  <div class="eyebrow in1">The answer</div>
+  <h1 class="in2">Three pillars.<br><span class="b">Each one builds on the last.</span></h1>
+  <div class="cols">
+    <div class="col" data-d="3"><div class="n">01 · DATA</div><h3>One Platform</h3><p>One agent, one backend and one tag model across metrics, traces, logs, user sessions, security and cost.</p>
+      <ul><li class="chip">1,000+ integrations</li><li class="chip">OpenTelemetry</li><li class="chip">Unified tags</li></ul>
+      <div class="val"><b>Value:</b> every new team and product plugs into context that already exists.</div></div>
+    <div class="col" data-d="5"><div class="n">02 · ACTION</div><h3>Bits AI</h3><p>Agents that investigate incidents, write monitors, open fix PRs and triage security signals, on that unified data.</p>
+      <ul><li class="chip on">Bits AI SRE</li><li class="chip on">Remediation</li><li class="chip on">MCP Server</li></ul>
+      <div class="val"><b>Value:</b> the first hour of every incident is done before a human logs in.</div></div>
+    <div class="col" data-d="7"><div class="n">03 · CONTROL</div><h3>Secure &amp; govern</h3><p>Security, cloud cost, software delivery and compliance controls on the same data and the same UI.</p>
+      <ul><li class="chip">Cloud SIEM</li><li class="chip">Cost Management</li><li class="chip">Sensitive Data Scanner</li></ul>
+      <div class="val"><b>Value:</b> one vendor, one audit trail, one contract to govern.</div></div>
+  </div>
+</div>
+<svg class="st" viewBox="0 0 300 170"></svg>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const sc = DD.iso(document.querySelector('.st'), {ox: 150, oy: 60, s: .55});
+  sc.box({x: 0, y: 0, w: 160, d: 160, h: 24, c: 'slate', delay: .3, drop: 50});
+  sc.box({x: 20, y: 20, w: 120, d: 120, h: 24, z: 24, c: 'purple', delay: .6, drop: 50});
+  sc.box({x: 45, y: 45, w: 70, d: 70, h: 50, z: 70, c: 'violet', delay: .9, drop: 50, float: 4});
+  sc.run();
+})();
+</script>
+</body>
+</html>

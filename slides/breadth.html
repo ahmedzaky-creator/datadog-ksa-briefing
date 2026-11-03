@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Breadth</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  h1{font-size:44px}
+  .grid{position:absolute;left:72px;right:72px;top:206px;bottom:80px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:12px}
+  .f{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;position:relative;overflow:hidden}
+  .f::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c,var(--purple))}
+  .f .tag{display:flex;justify-content:space-between;margin-bottom:8px}
+  .f .tag i{color:var(--grey);font-weight:500}
+  .f ul{list-style:none;display:flex;flex-wrap:wrap;gap:5px}
+  .f li{font:500 11px var(--mono);color:var(--char);background:var(--bg);border-radius:4px;padding:3px 7px;opacity:0;animation:pop .35s var(--ease) both}
+  .center{position:absolute;right:72px;top:88px;text-align:right}
+  .center .stat{font-size:72px}
+  .center .cap{font-size:13px;color:var(--grey)}
+  html[data-density="1"] .f ul{display:none}
+  html[data-density="1"] .f .tag{font-size:15px}
+</style>
+</head>
+<body class="soft" data-foot="Platform breadth" data-who="cio,sre,dev,ciso">
+<div class="z">
+  <div class="eyebrow in1">Platform breadth</div>
+  <h1 class="in2">Nine families. <span class="b">One agent, one UI.</span></h1>
+</div>
+<div class="center in3"><div class="stat"><span data-count="30" data-post="+"></span></div><div class="cap">integrated products</div></div>
+<div class="grid" id="g"></div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const F = [
+    ['Infrastructure','#632CA6',['Infra','Containers','Kubernetes','Serverless','Network','GPU Monitoring','Cloud Cost']],
+    ['Applications','#5AB8F2',['APM','Universal Service Mon.','Profiler','Dynamic Instrumentation']],
+    ['Logs','#2FD3B5',['Log Management','Flex Logs','Observability Pipelines','BYOC Logs','Error Tracking','Audit Trail']],
+    ['Security','#F2668B',['Cloud SIEM','CSPM / CIEM','Workload Protection','App & API Protection','Code Security','Sensitive Data Scanner']],
+    ['Digital experience','#FFB52E',['RUM','Session Replay','Synthetics','Mobile Testing','Product Analytics','Experiments']],
+    ['Data','#A47CE8',['Database Monitoring','Data Observability','Data Streams']],
+    ['Software delivery','#1F6FA8',['CI Visibility','Test Optimization','Developer Portal','DORA Metrics']],
+    ['Service management','#B0284F',['Incident Mgmt','On-Call','Workflow Automation','Apps','SLOs']],
+    ['AI','#4B1F82',['Bits AI SRE','Bits Code','LLM Observability','AI Guard','MCP Server']]
+  ];
+  const g = document.getElementById('g'); let d = .4;
+  F.forEach(([n, c, items], i) => {
+    const f = document.createElement('div'); f.className = 'f'; f.style.setProperty('--c', c);
+    f.style.opacity = 0; f.style.animation = `rise .6s ${.25 + i * .07}s var(--ease) both`;
+    f.innerHTML = `<div class="tag">${n}<i>${items.length}</i></div><ul>${items.map(x => `<li style="animation-delay:${(d += .03).toFixed(2)}s">${x}</li>`).join('')}</ul>`;
+    g.appendChild(f);
+  });
+})();
+</script>
+</body>
+</html>

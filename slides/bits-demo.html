@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Bits AI SRE walkthrough</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  body{padding:40px 56px}
+  .top{display:flex;justify-content:space-between;align-items:flex-end}
+  h1{font-size:34px;letter-spacing:-1px;margin-top:8px}
+  .app{position:absolute;left:56px;right:56px;top:128px;bottom:56px;border-radius:14px;background:#120725;border:1px solid rgba(255,255,255,.1);display:grid;grid-template-columns:1fr 1.15fr;overflow:hidden}
+  .pane{padding:18px 20px;position:relative}
+  .pane+.pane{border-left:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+  .ph{font:600 10px var(--mono);letter-spacing:.08em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between}
+  .alert{border:1px solid rgba(242,102,139,.5);background:rgba(242,102,139,.1);border-radius:10px;padding:12px 14px;color:#fff;font-size:14px}
+  .alert b{color:var(--pink);font:600 11px var(--mono);display:block;margin-bottom:4px}
+  .hyp{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+  .h{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 12px;font-size:13px;color:rgba(255,255,255,.85);transition:all .4s}
+  .h i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:var(--lav);animation:spin 1s linear infinite}
+  .h .s{font:600 10px var(--mono);color:rgba(255,255,255,.4)}
+  .h.no{opacity:.35;text-decoration:line-through}
+  .h.no i{animation:none;border-color:rgba(255,255,255,.2)}
+  .h.yes{border-color:var(--teal);background:rgba(47,211,181,.08)}
+  .h.yes i{animation:none;border-color:var(--teal);background:var(--teal)}
+  .h.yes .s{color:var(--teal)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .ev{display:flex;flex-direction:column;gap:9px}
+  .e{border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:10px 12px;font-size:13px;color:rgba(255,255,255,.85)}
+  .e .k{font:600 10px var(--mono);color:var(--lav);margin-bottom:4px;display:block}
+  .e code{font:500 12px var(--mono);color:var(--amber)}
+  .rc{border:1px solid var(--teal);background:rgba(47,211,181,.08)}
+  .rc .k{color:var(--teal)}
+  .fix{border:1px solid var(--violet);background:rgba(164,124,232,.12)}
+  .btns{display:flex;gap:8px;margin-top:8px}
+  .btns span{font:600 11px var(--mono);padding:5px 10px;border-radius:5px;background:var(--violet);color:var(--ink)}
+  .btns span+span{background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff}
+  .clock{font:600 12px var(--mono);color:var(--amber)}
+  .hint{font:500 11px var(--mono);color:var(--grey-l)}
+</style>
+</head>
+<body class="ink" data-foot="Illustrative walkthrough · press → to advance" data-who="sre,dev">
+<div class="top z">
+  <div><div class="eyebrow in1">Bits AI SRE · illustrative walkthrough</div><h1 class="in2">From page to root cause, <span class="b">before you open the laptop.</span></h1></div>
+</div>
+<div class="app in3">
+  <div class="pane">
+    <div class="ph"><span>Incident</span><span class="clock" id="clk">03:12:04</span></div>
+    <div class="alert"><b>P1 · MONITOR TRIGGERED</b>checkout-api p99 latency &gt; 2 s · env:prod · region:riyadh</div>
+    <div class="hyp">
+      <div class="h" id="h1" data-step="1"><i></i><span>Database saturation on orders-db</span><span class="s">testing</span></div>
+      <div class="h" id="h2" data-step="1"><i></i><span>Upstream payment-gateway slowness</span><span class="s">testing</span></div>
+      <div class="h" id="h3" data-step="1"><i></i><span>Recent deploy to checkout-api</span><span class="s">testing</span></div>
+      <div class="h" id="h4" data-step="1"><i></i><span>Node pressure on k8s pool b</span><span class="s">testing</span></div>
+    </div>
+  </div>
+  <div class="pane">
+    <div class="ph"><span>Evidence &amp; findings</span><span>same tags across every signal</span></div>
+    <div class="ev">
+      <div class="e" data-step="2"><span class="k">METRICS · TRACES</span>orders-db CPU normal; gateway latency normal. Latency starts <b>at 03:04</b>, two minutes after deploy <code>v4.12</code>.</div>
+      <div class="e" data-step="3"><span class="k">LOGS</span><code>HikariPool-1 - Connection is not available, request timed out after 30000ms</code></div>
+      <div class="e rc" data-step="4"><span class="k">ROOT CAUSE · HIGH CONFIDENCE</span>v4.12 lowered the DB connection pool from 50 to 5. Pool exhaustion under evening traffic.</div>
+      <div class="e fix" data-step="5"><span class="k">REMEDIATION PROPOSED</span>Roll back checkout-api to v4.11, then PR restoring <code>maxPoolSize: 50</code>.<div class="btns"><span>Approve rollback</span><span>Open PR</span></div></div>
+    </div>
+  </div>
+</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const clk = document.getElementById('clk'), t0 = 3 * 3600 + 12 * 60 + 4; let cur = 0;
+  setInterval(() => { const s = t0 + Math.floor(performance.now() / 1000); clk.textContent = [s / 3600 | 0, (s / 60 | 0) % 60, s % 60].map(v => String(v).padStart(2, '0')).join(':'); }, 500);
+  const set = (id, cls, txt) => { const e = document.getElementById(id); e.classList.remove('no', 'yes'); if (cls) e.classList.add(cls); e.querySelector('.s').textContent = txt; };
+  DD.onStep = i => {
+    cur = i;
+    set('h1', i >= 2 ? 'no' : '', i >= 2 ? 'ruled out' : 'testing');
+    set('h2', i >= 2 ? 'no' : '', i >= 2 ? 'ruled out' : 'testing');
+    set('h4', i >= 3 ? 'no' : '', i >= 3 ? 'ruled out' : 'testing');
+    set('h3', i >= 4 ? 'yes' : '', i >= 4 ? 'confirmed' : 'testing');
+  };
+})();
+</script>
+</body>
+</html>

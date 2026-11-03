@@ -1,0 +1,10 @@
+.DS_Store
+# retired slides, kept locally but not part of the deck
+slides/before.html
+slides/personas.html
+slides/ksa.html
+slides/scale.html
+slides/products-scale.html
+slides/industries.html
+slides/uc-government.html
+slides/uc-hajj.html

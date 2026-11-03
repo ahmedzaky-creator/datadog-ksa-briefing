@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --purple:#632CA6; --purple-d:#4B1F82; --purple-dd:#2A1250; --purple-l:#E9DEF8; --purple-ll:#F6F1FC;
+  --violet:#A47CE8; --lav:#C9B2F2;
+  --teal:#2FD3B5; --amber:#FFB52E; --pink:#F2668B; --sky:#5AB8F2;
+  --ink:#170B2B; --char:#3A3150; --grey:#6E6784; --grey-l:#A39DB5;
+  --line:#E2DCEC; --bg:#F7F5FB; --slate:#C9C2D8; --slate-l:#ECE8F3;
+  --sans:'Inter',-apple-system,system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:#fff;width:100%;height:100%;overflow:hidden}
+body{width:1280px;height:720px;overflow:hidden;position:absolute;background:#fff;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;padding:56px 72px}
+body.soft{background:var(--bg)}
+body.ink{background:radial-gradient(1200px 700px at 85% 10%,#3A1A6E 0%,#1E0D3A 45%,#120725 100%);color:#fff}
+
+/* type */
+.eyebrow{font:500 12px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--grey);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';width:8px;height:8px;background:var(--purple);border-radius:2px}
+.eyebrow b{color:var(--ink);font-weight:600}
+h1,.h1{font-weight:650;font-size:52px;line-height:1.04;letter-spacing:-1.8px;color:var(--ink);margin-top:14px}
+.b{color:var(--purple)}
+.sub{font-size:19px;line-height:1.5;color:var(--grey);max-width:860px;margin-top:14px}
+.mono{font-family:var(--mono)}
+.stat{font:600 84px/1 var(--sans);letter-spacing:-3.5px;color:var(--purple);font-variant-numeric:tabular-nums}
+.stat small{font-size:.45em;letter-spacing:-1px}
+.cap{font-size:15px;line-height:1.45;color:var(--char)}
+.tag{font:600 11px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink)}
+.tag i{font-style:normal;font-weight:400;color:var(--grey)}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 11px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--char);border:1px solid var(--line);background:#fff;padding:4px 9px;border-radius:4px}
+.chip.on{border-color:var(--purple);color:var(--purple);background:var(--purple-ll)}
+.chip.ga{border-color:var(--teal);color:#0E8C76;background:#E6FBF6}
+.card{background:#fff;border:1px solid var(--line);padding:20px 22px;border-radius:10px}
+.card.p{background:var(--purple-ll);border-color:var(--purple-l)}
+.rule{height:1px;background:var(--line)}
+.src{font:400 10.5px var(--mono);color:var(--grey-l);letter-spacing:.02em}
+
+/* ink variant */
+body.ink .eyebrow{color:rgba(255,255,255,.55)}
+body.ink .eyebrow::before{background:var(--violet)}
+body.ink .eyebrow b{color:#fff}
+body.ink h1,body.ink .h1{color:#fff}
+body.ink .b{color:var(--lav)}
+body.ink .sub,body.ink .cap{color:rgba(255,255,255,.66)}
+body.ink .stat{color:#fff}
+body.ink .tag{color:#fff}
+body.ink .card{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
+body.ink .chip{background:transparent;border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.8)}
+body.ink .src{color:rgba(255,255,255,.35)}
+body.ink .rule{background:rgba(255,255,255,.12)}
+
+/* layout */
+.z{position:relative;z-index:2}
+.abs{position:absolute}
+.foot{position:absolute;left:72px;right:72px;bottom:26px;display:flex;justify-content:space-between;align-items:center;font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--grey-l);z-index:3}
+.foot .wm{display:flex;align-items:center;gap:8px;color:var(--grey)}
+.foot .wm i{width:14px;height:14px;border-radius:3px;background:var(--purple);display:block}
+body.ink .foot,body.ink .foot .wm{color:rgba(255,255,255,.35)}
+body.ink .foot .wm i{background:var(--violet)}
+
+/* staged reveal: .in1..in6 or data-d="n" (n × 0.12s after base) */
+.in1,.in2,.in3,.in4,.in5,.in6,[data-d]{opacity:0;transform:translateY(14px);animation:rise .7s var(--ease) both}
+.in1{animation-delay:.05s}.in2{animation-delay:.15s}.in3{animation-delay:.28s}.in4{animation-delay:.42s}.in5{animation-delay:.56s}.in6{animation-delay:.7s}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+@keyframes growY{from{transform:scaleY(0)}to{transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes dash{to{stroke-dashoffset:0}}
+
+/* step-driven elements: hidden until the shell advances to their step */
+[data-step]{opacity:0;transform:translateY(10px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+[data-step].on{opacity:1;transform:none}
+
+/* density: 1 = stage, 5 = dense; slides add their own rules */
+h1,.sub,.stat{transition:font-size .6s var(--ease),margin .6s var(--ease)}
+html[data-density="1"] .dense,html[data-density="2"] .dense{display:none}
+html[data-density="4"] h1,html[data-density="5"] h1{font-size:42px;letter-spacing:-1.3px}
+html[data-density="5"] .sub{font-size:16px}
+
+/* persona chips (top-right): <body data-who="exec,cio,ciso,sre,dev,digital"> */
+.who{position:absolute;top:50px;right:72px;display:flex;gap:6px;z-index:4}
+.who span{font:600 9.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;padding:4px 8px;border-radius:20px;border:1px solid var(--line);color:var(--grey);background:#fff;opacity:0;animation:pop .4s var(--ease) both}
+.who span.exec{color:#8A5A00;border-color:#FFD27A;background:#FFF7E6}
+.who span.cio{color:var(--purple);border-color:var(--lav);background:var(--purple-ll)}
+.who span.ciso{color:#B0284F;border-color:#F7B3C5;background:#FFF0F4}
+.who span.sre{color:#0E8C76;border-color:#9BEBDB;background:#E6FBF6}
+.who span.dev{color:#1F6FA8;border-color:#AEDCF7;background:#EEF8FE}
+.who span.digital{color:#5B4A00;border-color:#E9D96B;background:#FFFBE0}
+body.ink .who span{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.75)}
+
+/* flowing particles along paths (DD.flow) */
+.flowpath{fill:none;stroke:var(--line);stroke-width:1.5}
+body.ink .flowpath{stroke:rgba(255,255,255,.14)}
+.draw{stroke-dasharray:var(--len,1000);stroke-dashoffset:var(--len,1000);animation:dash 1.4s var(--ease) both}
+
+/* business-value strip: <div class="bv"><b>Business value</b>text</div> */
+.bv{position:absolute;left:72px;right:72px;bottom:62px;display:flex;align-items:center;gap:16px;padding:12px 18px;border-radius:10px;background:linear-gradient(90deg,var(--purple-ll),#fff);border:1px solid var(--purple-l);z-index:3;font-size:14.5px;line-height:1.4;color:var(--char)}
+.bv b{flex:none;font:700 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--purple);padding:5px 9px;border-radius:5px}
+.bv strong{color:var(--ink)}
+body.ink .bv{background:rgba(164,124,232,.12);border-color:rgba(164,124,232,.35);color:rgba(255,255,255,.8)}
+body.ink .bv strong{color:#fff}
+body.ink .bv b{background:var(--violet);color:var(--ink)}
+html[data-density="1"] .bv{display:none}

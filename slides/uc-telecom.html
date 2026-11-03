@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Use case: telecom</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  body{padding:44px 64px}
+  h1{font-size:36px;letter-spacing:-1.1px;margin-top:10px}
+  .who{top:42px;right:64px}
+  #iso{position:absolute;left:30px;top:150px;width:720px;height:500px}
+  .right{position:absolute;left:770px;right:64px;top:150px;bottom:58px;display:flex;flex-direction:column;gap:8px}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .f{border:1px solid var(--line);border-radius:10px;padding:8px 11px;background:#fff}
+  .f .v{font:650 22px var(--sans);letter-spacing:-.7px;color:var(--purple)}
+  .f .l{font-size:11px;line-height:1.3;color:var(--grey)}
+  .s{border-radius:9px;padding:8px 11px;border:1px solid var(--line);background:#fff;font-size:12.3px;line-height:1.4;color:var(--char)}
+  .s b{display:block;font:600 9.5px var(--mono);letter-spacing:.07em;color:var(--purple);margin-bottom:2px}
+  .s code{font:500 11px var(--mono);color:#B0284F}
+  .s.ok{border-color:#9BEBDB;background:#F2FDFA}
+  .s.ok b{color:#0E8C76}
+  .pf{margin-top:auto;border-radius:9px;padding:8px 11px;background:var(--purple-ll);border:1px solid var(--purple-l);font-size:12px;line-height:1.4;color:var(--char)}
+  .pf b{display:block;font:600 9.5px var(--mono);letter-spacing:.07em;color:var(--purple);margin-bottom:2px}
+  html[data-density="1"] .facts,html[data-density="1"] .pf{display:none}
+</style>
+</head>
+<body class="soft" data-foot="Use case 05 · telecom · illustrative investigation, press → to advance" data-who="exec,cio,sre,dev">
+<div class="z">
+  <div class="eyebrow in1">Use case 05 · telecom</div>
+  <h1 class="in2">From 5G core to a working eSIM, <span class="b">one view across four teams.</span></h1>
+</div>
+<svg id="iso" viewBox="0 0 720 500"></svg>
+<div class="right">
+  <div class="facts in3">
+    <div class="f"><div class="v">122%</div><div class="l">Mobily data traffic growth, FY2025</div></div>
+    <div class="f"><div class="v">~30M</div><div class="l">stc KSA mobile subscribers, Q4 2025</div></div>
+  </div>
+  <div class="s" data-step="1"><b>RUM · THE SYMPTOM</b>A share of eSIM activations in the app stall at "pending" after a release. Customers retry, then call the contact centre.</div>
+  <div class="s" data-step="2"><b>APM · DATA STREAMS</b>The trace runs <code>order-mgmt → provisioning → core</code>. Data Streams shows consumer lag building on <code>order.events</code> at <code>provisioning v2.3</code>.</div>
+  <div class="s" data-step="3"><b>NDM · CLOUD NETWORK</b>Device health, BGP and data-centre links are clean, so the network team is cleared in seconds, not after a war room.</div>
+  <div class="s ok" data-step="4"><b>OUTCOME</b>Roll back provisioning. Activation time becomes an SLO per channel, and cost per active subscriber appears on the same dashboard.</div>
+  <div class="pf in5"><b>WHY IT FITS NOW</b>stc's 5G standalone core and BSS (with Ericsson) and Zain KSA's cloud-native BSS/OSS (with Netcracker) are microservices and event streams: exactly what tracing and Data Streams Monitoring are built for.</div>
+</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('iso'), sc = DD.iso(svg, {ox: 270, oy: 250, s: 1});
+  const L = [['Network & transport', 'NDM · SNMP · BGP', 'slate', 0], ['5G SA core', 'Kubernetes · OpenShift · CNM', 'violet', 64], ['BSS / OSS', 'APM · Data Streams · DBM', 'purple', 128], ['Digital app', 'RUM · Session Replay', 'teal', 192]];
+  const slabs = L.map(([t, s, c, z], i) => {
+    sc.box({x: 0, y: 0, z, w: 250, d: 150, h: 14, c, delay: .4 + i * .18, drop: 50});
+    sc.label({at: [250, 0, z + 7], side: 'r', len: 36, title: t, sub: s, delay: .9 + i * .18});
+    return z;
+  });
+  sc.run();
+  const pts = [192, 128, 64, 0].map(z => sc.P(125, 75, z + 14));
+  const down = DD.el('path', {d: 'M' + pts.map(p => p.join(',')).join(' L'), fill: 'none', stroke: 'rgba(99,44,166,.35)', 'stroke-width': 1.5, 'stroke-dasharray': '4 4'}, svg);
+  const up = DD.el('path', {d: 'M' + pts.slice().reverse().map(p => p.join(',')).join(' L'), fill: 'none', stroke: 'none'}, svg);
+  DD.flow(svg, [down], {n: 3, r: 4.5, color: '#632CA6', speed: .3, delay: 1.8});
+  DD.flow(svg, [up], {n: 3, r: 4.5, color: '#2FD3B5', speed: .3, delay: 2.4});
+  const badge = (z, txt, col) => { const [x, y] = sc.P(125, 75, z + 14); const g = DD.el('g', {opacity: 0, style: 'transition:opacity .4s'}, svg); DD.el('rect', {x: 4, y: y - 11, width: 124, height: 22, rx: 11, fill: col}, g); const t = DD.el('text', {x: 66, y: y + 4, 'text-anchor': 'middle', fill: '#fff', style: 'font:600 10px "JetBrains Mono"'}, g); t.textContent = txt; return g; };
+  const B = [badge(192, 'activations stuck', '#F2668B'), badge(128, 'lag on order.events', '#F2668B'), badge(0, 'network clean', '#1FA88F'), badge(192, 'activations flowing', '#1FA88F')];
+  const t0 = DD.el('text', {x: 20, y: 24, fill: '#A39DB5', style: 'font:500 10.5px "JetBrains Mono"'}, svg); t0.textContent = 'ONE eSIM ORDER, TRACED THROUGH EVERY LAYER';
+  DD.onStep = i => B.forEach((b, k) => b.setAttribute('opacity', (k === 0 && i >= 1 && i < 4) || (k === 1 && i >= 2 && i < 4) || (k === 2 && i >= 3) || (k === 3 && i >= 4) ? 1 : 0));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Logs economics</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  #pipe{position:absolute;left:72px;top:230px;width:1136px;height:330px}
+  .lane text{font-family:Inter,sans-serif}
+  html[data-density="1"] .sub{display:none}
+</style>
+</head>
+<body class="soft" data-foot="Logs economics" data-who="exec,cio,sre,ciso">
+<div class="z">
+  <div class="eyebrow in1">Logs · cost control</div>
+  <h1 class="in2">Pay for the logs you use.<br><span class="b">Keep the ones you must.</span></h1>
+  <p class="sub in3">Route each log to the tier its value justifies, before it costs you anything.</p>
+</div>
+<svg id="pipe" viewBox="0 0 1136 330"></svg>
+<div class="bv" data-d="9"><b>Business value</b><span>Log volume grows every year; the bill doesn't have to. <strong>Filter, redact and tier at the edge</strong>, keep years of data searchable for audit.</span></div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('pipe');
+  const src = DD.el('g', {}, svg);
+  DD.el('rect', {x: 0, y: 95, width: 170, height: 120, rx: 12, fill: '#fff', stroke: '#E2DCEC'}, src);
+  DD.el('text', {x: 18, y: 128, fill: '#6E6784', style: 'font:600 10.5px JetBrains Mono,monospace;letter-spacing:.06em'}, src).textContent = 'ALL LOGS';
+  DD.el('text', {x: 18, y: 156, fill: '#170B2B', style: 'font:650 17px Inter,sans-serif'}, src).textContent = 'Apps, infra,';
+  DD.el('text', {x: 18, y: 178, fill: '#170B2B', style: 'font:650 17px Inter,sans-serif'}, src).textContent = 'cloud, network';
+  const op = DD.el('g', {}, svg);
+  DD.el('rect', {x: 250, y: 70, width: 220, height: 170, rx: 14, fill: '#632CA6'}, op);
+  DD.el('text', {x: 270, y: 104, fill: '#C9B2F2', style: 'font:600 10.5px JetBrains Mono,monospace;letter-spacing:.06em'}, op).textContent = 'OBSERVABILITY PIPELINES';
+  ['Filter & sample', 'Redact PII', 'Enrich & route'].forEach((t, i) => DD.el('text', {x: 270, y: 140 + i * 28, fill: '#fff', style: 'font:600 15px Inter,sans-serif'}, op).textContent = '✓  ' + t);
+  DD.el('path', {d: 'M170,155 L250,155', class: 'flowpath'}, svg);
+  const tiers = [['Standard indexing', 'Hot troubleshooting, alerting', '#632CA6'], ['Flex Logs', 'High volume at storage-class cost', '#A47CE8'], ['Flex Frozen', 'Up to 7 years, searchable in place', '#2FD3B5'], ['BYOC Logs', 'Storage and indexing in your own cloud account', '#FFB52E']];
+  const paths = [DD.el('path', {d: 'M170,155 L250,155', fill: 'none'}, svg)];
+  tiers.forEach(([n, d, c], i) => {
+    const y = 20 + i * 82;
+    const p = DD.el('path', {d: `M470,155 C560,155 560,${y + 32} 650,${y + 32}`, class: 'flowpath'}, svg); paths.push(p);
+    const g = DD.el('g', {opacity: 0}, svg);
+    DD.el('rect', {x: 650, y, width: 486, height: 64, rx: 10, fill: '#fff', stroke: '#E2DCEC'}, g);
+    DD.el('rect', {x: 650, y, width: 5, height: 64, rx: 2, fill: c}, g);
+    DD.el('text', {x: 674, y: y + 28, fill: '#170B2B', style: 'font:650 16px Inter,sans-serif'}, g).textContent = n;
+    DD.el('text', {x: 674, y: y + 48, fill: '#6E6784', style: 'font:400 13px Inter,sans-serif'}, g).textContent = d;
+    g.style.animation = `rise .6s ${.6 + i * .15}s var(--ease) both`;
+    g.removeAttribute('opacity'); g.style.opacity = 0;
+  });
+  DD.flow(svg, paths, {n: 4, r: 3.5, color: ['#6E6784', '#632CA6', '#A47CE8', '#2FD3B5', '#FFB52E'], speed: .4, delay: 1.2});
+})();
+</script>
+</body>
+</html>

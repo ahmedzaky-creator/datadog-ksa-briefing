@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Security and compliance</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  h1{font-size:46px}
+  table{position:absolute;left:72px;right:72px;top:220px;width:1136px;border-collapse:collapse}
+  th{font:600 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.5);text-align:left;padding:0 14px 10px 0;border-bottom:1px solid rgba(255,255,255,.15)}
+  td{padding:13px 14px 13px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:14px;line-height:1.4;color:rgba(255,255,255,.75);vertical-align:top}
+  td:first-child{font:600 12px var(--mono);color:var(--lav);white-space:nowrap}
+  td b{color:#fff}
+  tr{opacity:0;animation:rise .5s var(--ease) both}
+  .ok{display:inline-block;width:18px;height:18px;border-radius:50%;background:rgba(47,211,181,.18);color:var(--teal);font:700 11px/18px var(--sans);text-align:center;margin-right:8px}
+  .disc{position:absolute;left:72px;right:72px;bottom:58px;font:400 11px var(--mono);color:rgba(255,255,255,.4)}
+  html[data-density="1"] td:nth-child(3),html[data-density="1"] th:nth-child(3){display:none}
+</style>
+</head>
+<body class="ink" data-foot="Security &amp; compliance" data-who="ciso,cio">
+<div class="z">
+  <div class="eyebrow in1">Security on the same data · NCA · SAMA</div>
+  <h1 class="in2">Dev, Ops and Security <span class="b">looking at the same facts.</span></h1>
+</div>
+<table>
+  <thead><tr style="opacity:1;animation:none"><th>Requirement</th><th>What it asks for</th><th>How Datadog helps</th></tr></thead>
+  <tbody id="tb"></tbody>
+</table>
+<div class="disc in6">Mapping is illustrative, for discussion with your compliance team; it is not a certification claim.</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const R = [
+    ['NCA ECC 2-12-3-1/2', 'Event logs enabled on critical assets, including privileged and remote access', '<b>Agent + 1,000+ integrations</b> collect OS, identity, network and cloud audit logs'],
+    ['NCA ECC 2-12-3-3/4', 'A SIEM and continuous monitoring', '<b>Cloud SIEM</b> with out-of-the-box detection rules; <b>Bits Security Analyst</b> triages signals'],
+    ['NCA ECC 2-12-3-5', 'Retain cybersecurity event logs at least 12 months', '<b>Flex Logs / Flex Frozen</b> and archives to in-Kingdom object storage keep retention affordable'],
+    ['SAMA CSF 3.3.14', 'Centralized, automated analysis and correlation of security logs', 'One tag model correlates <b>security signals with traces, hosts and deploys</b>'],
+    ['SAMA CSF 3.3.15', 'Report medium and high incidents to SAMA immediately', '<b>Incident Management + On-Call + Workflow Automation</b>: timelines, owners, evidence'],
+    ['PDPL', 'Protect personal data; rules on transfers outside the Kingdom', '<b>Sensitive Data Scanner</b> redacts PII in your network before data leaves']
+  ];
+  const tb = document.getElementById('tb');
+  R.forEach(([a, b, c], i) => { const tr = document.createElement('tr'); tr.style.animationDelay = (.4 + i * .14) + 's'; tr.innerHTML = `<td>${a}</td><td>${b}</td><td><span class="ok">✓</span>${c}</td>`; tb.appendChild(tr); });
+})();
+</script>
+</body>
+</html>

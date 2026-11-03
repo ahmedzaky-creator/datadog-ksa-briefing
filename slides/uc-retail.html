@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Use case: retail checkout</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  body{padding:44px 64px}
+  h1{font-size:36px;letter-spacing:-1.1px;margin-top:10px}
+  .who{top:42px;right:64px}
+  .chart{position:absolute;left:64px;top:132px;width:560px;height:196px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px}
+  .chart .k{display:flex;justify-content:space-between;font:600 10px var(--mono);letter-spacing:.07em;color:var(--grey)}
+  .chart .k b{font:650 13px var(--sans);letter-spacing:0;color:var(--ink)}
+  .chart .k b.bad{color:#B0284F}.chart .k b.ok{color:#0E8C76}
+  .chart svg{width:532px;height:150px;display:block;margin-top:6px}
+  #dep{position:absolute;left:640px;top:132px;width:576px;height:196px}
+  .low{position:absolute;left:64px;right:64px;top:342px;bottom:58px;display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+  .inv{border-radius:12px;background:#120725;padding:14px 16px;display:flex;flex-direction:column;gap:7px}
+  .inv .ph{font:600 10px var(--mono);letter-spacing:.08em;color:rgba(255,255,255,.45);display:flex;justify-content:space-between}
+  .s{display:grid;grid-template-columns:104px 1fr;gap:12px;align-items:start;border-radius:8px;padding:8px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:12.5px;line-height:1.42}
+  .s b{font:600 9.5px var(--mono);letter-spacing:.06em;color:var(--lav);padding-top:2px}
+  .s code{font:500 11.5px var(--mono);color:var(--amber)}
+  .s.act{border-color:var(--teal);background:rgba(47,211,181,.08)}
+  .s.act b{color:var(--teal)}
+  .side{display:flex;flex-direction:column;gap:8px}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .f{border:1px solid var(--line);border-radius:10px;padding:8px 11px;background:#fff}
+  .f .v{font:650 22px var(--sans);letter-spacing:-.7px;color:var(--purple)}
+  .f .l{font-size:11px;line-height:1.3;color:var(--grey)}
+  .box{border:1px solid var(--line);border-radius:10px;padding:8px 13px;background:#fff}
+  .box .k{font:600 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--grey);margin-bottom:4px}
+  .box p,.box li{font-size:12px;line-height:1.38;color:var(--char)}
+  .box ul{list-style:none;display:flex;flex-direction:column;gap:3px}
+  .box strong{color:var(--purple)}
+  html[data-density="1"] .side{display:none}
+  html[data-density="1"] .low{grid-template-columns:1fr}
+</style>
+</head>
+<body class="soft" data-foot="Use case 04 · retail checkout · illustrative investigation, press → to advance" data-who="exec,digital,dev,sre">
+<div class="z">
+  <div class="eyebrow in1">Use case 04 · retail, e-commerce &amp; delivery</div>
+  <h1 class="in2">Ramadan night, 9:40 pm. Checkout conversion drops. <span class="b">Whose fault?</span></h1>
+</div>
+<div class="chart in3">
+  <div class="k"><span>CHECKOUT CONVERSION · MOBILE WEB · LAST 60 MIN</span><b id="cv">68.2%</b></div>
+  <svg id="ch" viewBox="0 0 532 150"></svg>
+</div>
+<svg id="dep" viewBox="0 0 576 196"></svg>
+<div class="low">
+  <div class="inv in4">
+    <div class="ph"><span>Investigation · RUM, APM and Product Analytics on one session</span><span>press →</span></div>
+    <div class="s" data-step="1"><b>PRODUCT ANALYTICS</b><span>The funnel drop is at the <code>payment</code> step, on mobile web only; the iOS and Android apps are flat. Revenue at risk is shown live against the same hour last week.</span></div>
+    <div class="s" data-step="2"><b>SESSION REPLAY · RUM</b><span>Replays show the 3-D Secure challenge spinning. RUM resource timing puts the card gateway's 3DS call at <code>9.4 s</code>; text and inputs are masked by default.</span></div>
+    <div class="s" data-step="3"><b>APM · SYNTHETICS</b><span>Traces show timeouts only on the <code>card-gateway</code> route; the mada, Apple Pay and BNPL routes are healthy. A synthetic checkout from a Riyadh private location reproduces it every minute.</span></div>
+    <div class="s act" data-step="4"><b>ACT · FLAGS</b><span>A feature flag makes mada and Apple Pay the default and parks the slow route. Conversion recovers on the same chart, with cost per order from Cloud Cost Management next to it.</span></div>
+  </div>
+  <div class="side in5">
+    <div class="facts">
+      <div class="f"><div class="v">SAR 325B</div><div class="l">mada e-commerce spend, 2025</div></div>
+      <div class="f"><div class="v">+34.7%</div><div class="l">POS spend the week before Ramadan 2025</div></div>
+    </div>
+    <div class="box"><div class="k">The real failure mode</div><p>Public status pages of payment providers in KSA record <strong>card-gateway timeouts</strong> (Sep 2025, Jan 2026) and <strong>issuer declines</strong>, which is someone else's outage showing up as your lost sale.</p></div>
+    <div class="box"><div class="k">Done elsewhere · Datadog case studies</div><ul>
+      <li><strong>Mercado Libre:</strong> 100% uptime on Black Friday at 20–40% more traffic.</li>
+      <li><strong>Glovo</strong> (delivery): database downtime from 3 hours to zero, about $750K saved.</li></ul></div>
+  </div>
+</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  /* conversion line: normal → dip → recovery, drawn up to the current step */
+  const ch = document.getElementById('ch'), N = 60, rnd = DD.rand(11);
+  const v = Array.from({length: N}, (_, i) => 68 + (rnd() - .5) * 1.6 - (i >= 34 && i < 50 ? 8.5 * Math.min(1, (i - 33) / 3) : 0) - (i >= 50 ? Math.max(0, 8.5 - (i - 49) * 3) : 0));
+  const X = i => 30 + i * (500 / (N - 1)), Y = c => 140 - (c - 54) * 7.5;
+  [56, 62, 68].forEach(c => { DD.el('line', {x1: 30, x2: 530, y1: Y(c), y2: Y(c), stroke: '#ECE8F3'}, ch); const t = DD.el('text', {x: 0, y: Y(c) + 4, fill: '#A39DB5', style: 'font:500 9.5px "JetBrains Mono"'}, ch); t.textContent = c + '%'; });
+  const band = DD.el('rect', {x: X(34), y: 4, width: X(50) - X(34), height: 140, fill: '#FFF0F4', opacity: 0, style: 'transition:opacity .4s'}, ch);
+  const line = DD.el('path', {fill: 'none', stroke: '#632CA6', 'stroke-width': 2.2, 'stroke-linejoin': 'round'}, ch);
+  const dot = DD.el('circle', {r: 4.5, fill: '#632CA6'}, ch);
+  const flag = DD.el('g', {opacity: 0, style: 'transition:opacity .4s'}, ch);
+  DD.el('line', {x1: X(50), x2: X(50), y1: 6, y2: 144, stroke: '#2FD3B5', 'stroke-dasharray': '4 3', 'stroke-width': 1.5}, flag);
+  const ft = DD.el('text', {x: X(50) + 6, y: 16, fill: '#0E8C76', style: 'font:600 9.5px "JetBrains Mono"'}, flag); ft.textContent = 'flag: default → mada';
+  let upto = 34, shown = 0;
+  const cv = document.getElementById('cv');
+  DD.loop(() => {
+    shown += (upto - shown) * .06; const n = Math.max(2, Math.floor(shown));
+    line.setAttribute('d', 'M' + v.slice(0, n).map((c, i) => X(i).toFixed(1) + ',' + Y(c).toFixed(1)).join(' L'));
+    dot.setAttribute('cx', X(n - 1)); dot.setAttribute('cy', Y(v[n - 1]));
+    const bad = n > 35 && n <= 51; dot.setAttribute('fill', bad ? '#F2668B' : n > 51 ? '#2FD3B5' : '#632CA6');
+    cv.textContent = v[n - 1].toFixed(1) + '%'; cv.className = bad ? 'bad' : n > 51 ? 'ok' : '';
+  });
+
+  /* checkout dependency fan */
+  const dep = document.getElementById('dep');
+  const box = (x, y, w, t, s) => { const g = DD.el('g', {}, dep); const r = DD.el('rect', {x, y, width: w, height: 40, rx: 9, fill: '#fff', stroke: '#E2DCEC', 'stroke-width': 1.5}, g); const a = DD.el('text', {x: x + 11, y: y + 18, fill: '#170B2B', style: 'font:650 12.5px Inter'}, g); a.textContent = t; const b = DD.el('text', {x: x + 11, y: y + 32, fill: '#632CA6', style: 'font:500 9.5px "JetBrains Mono"'}, g); b.textContent = s; return r; };
+  const t0 = DD.el('text', {x: 0, y: 12, fill: '#A39DB5', style: 'font:500 10.5px "JetBrains Mono"'}, dep); t0.textContent = 'ONE CHECKOUT, FIVE OTHER COMPANIES';
+  const cart = box(0, 78, 112, 'Cart & basket', 'RUM · APM'), co = box(150, 78, 118, 'Checkout API', 'APM · SLO');
+  const R = [['mada', 'APM route'], ['Apple Pay', 'APM route'], ['BNPL', 'APM route'], ['Card gateway · 3DS', 'APM · RUM'], ['Delivery slots', 'APM · DBM']];
+  const routes = [], rp = [];
+  rp.push(DD.el('path', {d: 'M112,98 L150,98', class: 'flowpath'}, dep));
+  R.forEach(([t, s], i) => { const y = 22 + i * 35; const p = DD.el('path', {d: `M268,98 C320,98 320,${y + 16} 372,${y + 16}`, class: 'flowpath'}, dep); rp.push(p); routes.push([box(372, y, 200, t, s), p]); });
+  routes.forEach(([r]) => r.setAttribute('height', 32));
+  dep.querySelectorAll('g').forEach((g, i) => { if (i > 1) g.querySelectorAll('text').forEach((t, k) => t.setAttribute('y', +t.getAttribute('y') - (k ? 4 : 2))); });
+  const dots = DD.el('g', {}, dep); DD.flow(dots, rp, {n: 2, r: 3, color: '#632CA6', speed: .5, delay: 1});
+  const hot = (r, c, f) => { r.setAttribute('stroke', c); r.setAttribute('fill', f); };
+  DD.onStep = i => {
+    upto = i === 0 ? 34 : i < 4 ? 50 : 60;
+    band.setAttribute('opacity', i >= 1 && i < 4 ? 1 : 0); flag.setAttribute('opacity', i >= 4 ? 1 : 0);
+    [cart, co, ...routes.map(x => x[0])].forEach(r => hot(r, '#E2DCEC', '#fff')); routes.forEach(([, p]) => p.style.stroke = '');
+    if (i >= 1 && i < 4) hot(co, '#F2668B', '#FFF0F4');
+    if (i >= 2 && i < 4) { hot(routes[3][0], '#F2668B', '#FFF0F4'); routes[3][1].style.stroke = '#F2668B'; }
+    if (i === 3) [0, 1, 2, 4].forEach(k => hot(routes[k][0], '#2FD3B5', '#E6FBF6'));
+    if (i >= 4) { hot(routes[0][0], '#2FD3B5', '#E6FBF6'); hot(routes[1][0], '#2FD3B5', '#E6FBF6'); hot(routes[3][0], '#FFB52E', '#FFF7E6'); hot(co, '#2FD3B5', '#E6FBF6'); }
+  };
+})();
+</script>
+</body>
+</html>

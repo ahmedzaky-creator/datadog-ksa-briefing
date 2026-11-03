@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>MCP Server</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .sub{max-width:480px}
+  .big{margin-top:30px;display:flex;align-items:flex-end;gap:14px}
+  .big .stat{font-size:110px}
+  .big .cap{padding-bottom:14px;max-width:220px}
+  .chips{margin-top:22px;display:flex;gap:8px;flex-wrap:wrap;max-width:480px}
+  .term{position:absolute;left:690px;top:140px;width:520px;height:460px;border-radius:14px;background:#120725;border:1px solid var(--line);box-shadow:0 30px 60px rgba(23,11,43,.25);overflow:hidden;font:500 13px/1.6 var(--mono);color:rgba(255,255,255,.85)}
+  .term .bar{height:34px;background:#1E0D3A;display:flex;align-items:center;gap:7px;padding:0 14px}
+  .term .bar i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2)}
+  .term .bar span{margin-left:10px;font-size:11px;color:rgba(255,255,255,.45)}
+  .term .body{padding:16px 18px;white-space:pre-wrap}
+  .u{color:var(--lav)} .tl{color:var(--amber)} .ok{color:var(--teal)} .dim{color:rgba(255,255,255,.4)}
+  .cur{display:inline-block;width:8px;height:15px;background:var(--lav);vertical-align:-2px;animation:pulse 1s infinite}
+  html[data-density="1"] .chips{display:none}
+</style>
+</head>
+<body data-foot="MCP Server" data-who="dev,sre">
+<div class="z">
+  <div class="eyebrow in1">Meet engineers in their agent</div>
+  <h1 class="in2">Production context,<br><span class="b">inside the coding agent.</span></h1>
+  <p class="sub in3">The Datadog MCP Server (GA March 2026) gives Claude Code, Cursor and Codex live metrics, traces, logs and incidents.</p>
+  <div class="big" data-d="4"><div class="stat"><span data-count="4" data-post="×" data-delay=".5"></span></div><div class="cap">quarter-over-quarter growth in MCP tool calls, in both Q1 and Q2 FY26</div></div>
+  <div class="chips" data-d="6"><span class="chip on">Claude Code</span><span class="chip on">Cursor</span><span class="chip on">Codex</span><span class="chip">Pup CLI</span></div>
+</div>
+<div class="term in3"><div class="bar"><i></i><i></i><i></i><span>coding agent · datadog-mcp connected</span></div><div class="body" id="tb"></div></div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const S = [
+    ['u', '› Why did checkout errors jump after my last merge?\n\n'],
+    ['tl', '⏺ datadog.search_logs'], ['dim', '(service:checkout status:error last 1h)\n'],
+    ['tl', '⏺ datadog.get_trace'], ['dim', '(trace_id: 7f3a…e21)\n'],
+    ['tl', '⏺ datadog.list_deployments'], ['dim', '(service:checkout)\n\n'],
+    ['', 'Errors rose 3 min after deploy '], ['ok', 'v4.12'], ['', '. 94% are\nNullPointerException in '], ['ok', 'CartService.applyVoucher'], ['', '\nwhen the voucher code is empty.\n\n'],
+    ['u', '› Fix it and add a test.\n\n'],
+    ['tl', '⏺ edit'], ['dim', ' src/cart/CartService.java  '], ['ok', '+4 −1\n'],
+    ['tl', '⏺ edit'], ['dim', ' test/cart/VoucherTest.java '], ['ok', '+18\n'],
+    ['ok', '✓ tests pass · PR #482 opened']
+  ];
+  const tb = document.getElementById('tb'); let i = 0, j = 0, span = null;
+  const tick = () => {
+    if (i >= S.length) { tb.insertAdjacentHTML('beforeend', '<span class="cur"></span>'); return; }
+    const [c, txt] = S[i];
+    if (!span) { span = document.createElement('span'); span.className = c; tb.appendChild(span); }
+    span.textContent += txt[j++];
+    if (j >= txt.length) { i++; j = 0; span = null; setTimeout(tick, c === 'u' ? 500 : 60); } else setTimeout(tick, c === 'u' ? 22 : 9);
+  };
+  setTimeout(tick, 900);
+})();
+</script>
+</body>
+</html>

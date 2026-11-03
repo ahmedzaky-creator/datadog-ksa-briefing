@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datadog competitive briefing · KSA</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bar:48px;--p:#632CA6;--pl:#A47CE8;--bg:#140A24;--panel:#1D1233;--line:rgba(255,255,255,.1);--txt:rgba(255,255,255,.85);--dim:rgba(255,255,255,.45)}
+  html,body{width:100%;height:100vh;overflow:hidden;background:var(--bg);color:var(--txt);font-family:Inter,-apple-system,sans-serif}
+  body.presenting{--bar:0px}
+
+  #stage{position:absolute;left:0;top:0;right:0;bottom:var(--bar)}
+  #wrap{position:absolute;width:1280px;height:720px;transform-origin:top left;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  #frame{position:absolute;inset:0;width:1280px;height:720px;border:0;display:block;background:#fff}
+  #fade{position:absolute;inset:0;background:var(--bg);opacity:0;transition:opacity .16s ease;pointer-events:none;z-index:6}
+  #overlay{position:absolute;inset:0;z-index:8;pointer-events:none}
+  #overlay.active{pointer-events:auto;cursor:crosshair}
+  #canvas{position:absolute;inset:0;width:1280px;height:720px;z-index:9;pointer-events:none}
+  #laser{position:absolute;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,rgba(255,60,90,.95) 0%,rgba(255,60,90,.4) 55%,transparent 75%);box-shadow:0 0 24px rgba(255,60,90,.55);display:none;transform:translate(-50%,-50%);z-index:10;pointer-events:none}
+
+  /* bottom bar */
+  #bar{position:fixed;left:0;right:0;bottom:0;height:var(--bar);display:flex;white-space:nowrap;overflow:hidden;align-items:center;gap:6px;padding:0 14px;background:#100820;border-top:1px solid var(--line);z-index:20;font:500 12px 'JetBrains Mono',monospace;transition:opacity .25s}
+  body.presenting #bar{opacity:0;pointer-events:none}
+  #bar .brand{display:flex;align-items:center;gap:8px;font:700 13px Inter,sans-serif;color:#fff;margin-right:10px}
+  #bar .brand i{width:16px;height:16px;border-radius:4px;background:var(--p);display:block}
+  #bar button{background:none;border:1px solid transparent;color:var(--dim);font:inherit;padding:6px 9px;border-radius:6px;cursor:pointer}
+  #bar button:hover{color:#fff;border-color:var(--line)}
+  #bar button.on{color:#fff;background:rgba(164,124,232,.18);border-color:rgba(164,124,232,.5)}
+  #count{color:var(--dim);min-width:64px;text-align:center}
+  #timer{color:var(--dim);min-width:52px;text-align:center;cursor:pointer}
+  #timer.run{color:#2FD3B5}
+  #bar .sp{flex:1}
+  @media (max-width:1000px){#bar .brand span,#den,#bar .sp+button~button:not(#bNext):not(#bPrev){font-size:11px}#bar .brand b{display:none}#bar button{padding:6px 6px}}
+  @media (max-width:820px){#den,#bDenM,#bDenP,#bLaser,#bDraw{display:none}}
+  #prog{position:fixed;left:0;bottom:var(--bar);height:2px;background:var(--pl);transition:width .3s ease;z-index:21}
+  body.presenting #prog{opacity:.6}
+
+  /* notes drawer */
+  #notes{position:fixed;left:0;right:0;bottom:var(--bar);height:0;background:var(--panel);border-top:1px solid var(--line);overflow:auto;z-index:15;transition:height .25s ease;padding:0 28px}
+  body.notes #notes{height:34vh;padding:18px 28px}
+  body.notes #stage{bottom:calc(var(--bar) + 34vh)}
+  .ntxt{font-size:15px;line-height:1.6;color:var(--txt);max-width:1100px}
+  .ntxt li{margin:0 0 6px 18px}
+  .ntxt .src{display:block;margin-top:10px;font:400 11.5px 'JetBrains Mono',monospace;color:var(--dim)}
+
+  /* presenter view */
+  #pv{display:none;position:fixed;inset:0;z-index:30;background:var(--bg);grid-template-columns:1.55fr 1fr;grid-template-rows:auto 1fr;gap:18px;padding:18px}
+  body.pv #pv{display:grid}
+  #pv .cur,#pv .side{position:relative}
+  #pv .cur{grid-row:1/3}
+  #pv .lbl{font:600 11px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:8px;display:flex;justify-content:space-between}
+  .mini{position:relative;overflow:hidden;background:#fff;border-radius:6px}
+  .mini iframe{position:absolute;left:0;top:0;width:1280px;height:720px;border:0;transform-origin:top left;pointer-events:none}
+  #pvClock{font:600 44px 'JetBrains Mono',monospace;color:#fff;letter-spacing:-1px}
+  #pvNotes{overflow:auto;background:var(--panel);border-radius:8px;padding:18px 20px;max-height:calc(100vh - 380px)}
+  #pvNotes .ntxt{font-size:17px}
+
+  /* overview */
+  #grid{display:none;position:fixed;inset:0;z-index:40;background:rgba(14,6,26,.97);overflow:auto;padding:28px}
+  body.grid #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(256px,1fr));gap:18px;align-content:start}
+  #grid .cell{cursor:pointer}
+  #grid .cell .mini{border:2px solid transparent}
+  #grid .cell.cur .mini{border-color:var(--pl)}
+  #grid .cell span{display:block;margin-top:6px;font:500 11px 'JetBrains Mono',monospace;color:var(--dim)}
+
+  /* help + toast */
+  #help{display:none;position:fixed;inset:0;z-index:50;background:rgba(14,6,26,.85);align-items:center;justify-content:center}
+  body.help #help{display:flex}
+  #help .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 32px;display:grid;grid-template-columns:auto 1fr;gap:9px 22px;font-size:14px}
+  #help kbd{font:600 12px 'JetBrains Mono',monospace;color:#fff;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:5px;padding:3px 8px;justify-self:start}
+  #help h3{grid-column:1/3;font-size:15px;color:#fff;margin-bottom:6px}
+  #toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:rgba(29,18,51,.95);border:1px solid var(--line);border-radius:8px;padding:7px 16px;font:600 11px 'JetBrains Mono',monospace;letter-spacing:.06em;color:var(--txt);opacity:0;transition:opacity .2s;z-index:60;pointer-events:none}
+  #toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="wrap">
+    <iframe id="frame" title="slide"></iframe>
+    <div id="fade"></div>
+    <canvas id="canvas" width="2560" height="1440"></canvas>
+    <div id="overlay"></div>
+    <div id="laser"></div>
+  </div>
+</div>
+<div id="prog"></div>
+<div id="notes"><div class="ntxt" id="notesTxt"></div></div>
+
+<div id="bar">
+  <span class="brand"><i></i><b>Competitive briefing</b></span>
+  <button id="bPrev" title="Previous (←)">←</button>
+  <span id="count">1 / 1</span>
+  <button id="bNext" title="Next (→)">→</button>
+  <span class="sp"></span>
+  <button id="bDenM" title="Less detail (−)">−</button>
+  <span id="den" style="color:var(--dim)">density 3</span>
+  <button id="bDenP" title="More detail (+)">+</button>
+  <button id="bGrid" title="Overview (G)">grid</button>
+  <button id="bNotes" title="Notes (N)">notes</button>
+  <button id="bPv" title="Presenter view (P)">presenter</button>
+  <button id="bLaser" title="Laser (L)">laser</button>
+  <button id="bDraw" title="Draw (D)">draw</button>
+  <span id="timer" title="Timer (T, R to reset)">00:00</span>
+  <button id="bFs" title="Fullscreen (F)">⤢</button>
+  <button id="bHelp" title="Shortcuts (?)">?</button>
+</div>
+
+<div id="pv">
+  <div class="cur"><div class="lbl"><span id="pvCount"></span><span>current</span></div><div class="mini" id="pvCurBox"></div></div>
+  <div class="side">
+    <div class="lbl"><span>next</span><span id="pvClock">00:00</span></div>
+    <div class="mini" id="pvNextBox"><iframe id="pvNext" title="next slide" tabindex="-1"></iframe></div>
+  </div>
+  <div class="side"><div class="lbl"><span>notes</span><span>P / Esc to exit</span></div><div id="pvNotes"><div class="ntxt" id="pvNotesTxt"></div></div></div>
+</div>
+
+<div id="grid"></div>
+<div id="help"><div class="box">
+  <h3>Shortcuts</h3>
+  <kbd>→ / Space / PgDn</kbd><span>Next step or slide</span>
+  <kbd>← / PgUp</kbd><span>Previous</span>
+  <kbd>Home / End</kbd><span>First / last slide</span>
+  <kbd>G</kbd><span>Overview grid</span>
+  <kbd>N</kbd><span>Speaker notes drawer</span>
+  <kbd>P</kbd><span>Presenter view (current, next, notes, clock)</span>
+  <kbd>L</kbd><span>Laser pointer</span>
+  <kbd>D</kbd><span>Draw · C clears</span>
+  <kbd>T / R</kbd><span>Start-pause timer / reset</span>
+  <kbd>+ / −</kbd><span>Slide density (1 = stage … 5 = detail)</span>
+  <kbd>F</kbd><span>Fullscreen</span>
+  <kbd>H</kbd><span>Hide bar (clean presenting)</span>
+  <kbd>Esc</kbd><span>Close panels and tools</span>
+</div></div>
+<div id="toast"></div>
+
+<script>
+const SLIDES = [
+  'title.html','why.html','usecases.html','downtime.html','problem.html','pillars.html','integrations.html','tagging.html','uc-payments.html','breadth.html','consolidation.html','logs.html','metrics.html','sovereignty.html','peaks.html','uc-retail.html','finops.html','digital.html','expand.html','economics.html','analysts.html','bits-section.html','bits-roster.html','bits-demo.html','mcp.html','ai-observability.html','uc-ai.html','research.html','security.html','uc-telecom.html','field.html','roadmap.html','close.html','sources.html'
+];
+const TITLES = ['Title','Why Datadog','Saudi use cases','Cost of downtime','The problem','Three pillars','One agent','Unified tagging','Use case: payments','Breadth','Consolidation','Logs economics','Metrics','Data residency','Peak moments','Use case: retail checkout','Cloud cost','Digital experience','Land & expand','Economics of trust','Analysts','Bits AI','The Bits roster','Bits AI SRE demo','MCP','Observability for AI','Use case: AI agents','Research depth','Security & compliance','Use case: telecom','Versus the field','Path to value','Close','Sources'];
+
+/* Speaker notes. Bullets are the talk track; a "Sources:" line lists where the numbers come from. */
+const NOTES = {
+'title.html': `- Welcome. One idea to hold onto: in the Kingdom, digital services are now national infrastructure, and the organizations running them need one platform for observability, security and AI operations.
+- The path today: the short answer on why Datadog, six real Saudi use cases (payments, government, Hajj, retail, telecom, AI) with deep dives on payments, retail, telecom and AI agents, then the platform, Bits AI, data residency and a 30/60/90-day plan.
+- The hero: one agent at the bottom, one unified platform in the middle, Bits AI on top. The deck follows that picture.`,
+'downtime.html': `- Put a number on it for the executives in the room.
+- New Relic's 2025 Observability Forecast: median high-impact outage costs $2M an hour, and teams with full-stack observability reported about half that.
+- Splunk and Cisco's 2026 research: downtime costs the Global 2000 about $600B a year, roughly $300M per company. Uptime Institute: 57% say their last significant outage cost over $100K.
+- The live counter at the bottom is the cost of the time we have spent on this slide at $2M an hour. MTTR is a financial metric.
+Sources: New Relic Observability Forecast 2025; Splunk/Cisco 2026; Uptime Institute 2026; Splunk/Oxford Economics 2024.`,
+'problem.html': `- The problem isn't missing data. It's that the data lives in eight tools, with eight tag schemes and eight contracts.
+- At 3 AM the engineer becomes the integration layer, copying IDs between tabs.
+- AI makes it worse: more services, more agents, more cardinality, more attack surface. Sprawl scales; context doesn't.`,
+'pillars.html': `- Datadog's answer in three pillars, each building on the last.
+- One Platform: one agent, one backend, one tag model. Bits AI: agents that act on that data. Secure & govern: security, cost and delivery on the same data.
+- Each pillar ends in a business value line: context for every new team, the first hour of every incident done automatically, one vendor and one audit trail.`,
+'integrations.html': `- Time to value starts with one agent.
+- 1,000+ integrations (October 2025), including AWS, Azure, Google Cloud, Oracle, Kubernetes, NVIDIA, OpenAI and Anthropic, each with prebuilt dashboards, monitors and detection rules.
+- OpenTelemetry and Prometheus land natively. Value on day one, no dashboard sprint.
+Sources: Datadog 1,000 integrations milestone blog and press release.`,
+'tagging.html': `- The slide that explains the moat.
+- The agent applies service, env and version everywhere. A metric spike, its traces, the logs, the affected user sessions, a security signal on the same host and the service's cloud cost are one click apart.
+- Correlation is a property of the platform, not an integration project.`,
+'breadth.html': `- 30+ integrated products across nine families, all on one agent and one UI.
+- The count matters less than the fact that every product shares the same tags, so the second, fourth and eighth product deploy in days.
+Sources: datadoghq.com/product; Datadog Gartner MQ 2026 blog.`,
+'consolidation.html': `- The CFO slide. Every retired tool removes a contract, an integration, a skill set and a console.
+- Public examples: TriZetto (Cognizant) replaced four tools; a global travel group consolidated six; a large media company signed $30M+ TCV replacing four tools; a Fortune 500 bank replaced its legacy log vendor.
+Sources: Datadog TriZetto testimonial; Q1 and Q2 FY26 earnings calls.`,
+'logs.html': `- Logs is where cost conversations happen, so route each log to the tier its value justifies.
+- Observability Pipelines filters, samples and redacts before you pay to index. Standard indexing for hot troubleshooting, Flex Logs for volume, Flex Frozen for up to seven years searchable in place, and BYOC Logs to index in your own cloud account.
+- KSA tie-in: NCA ECC asks for at least 12 months of security log retention. Tiering makes that affordable.
+Sources: DASH 2025 and 2026 announcements; Datadog BYOC Logs blog and docs; NCA ECC-2:2024.`,
+'metrics.html': `- Cardinality is how modern systems describe themselves. It shouldn't be a pricing risk.
+- Infinite Cardinality Metrics (GA at DASH 2026) prices custom metrics per metric name, not per tag combination. Metrics without Limits lets you choose queryable tags after ingest.
+Sources: DASH 2026 keynote roundup; Techzine and Heise coverage.`,
+'sovereignty.html': `- Be precise here; it builds trust with the CISO.
+- Datadog has no SaaS site inside the Kingdom today; the UI and control plane run on a Datadog site such as EU1.
+- What you can do: Observability Pipelines with Sensitive Data Scanner redacts or hashes PII inside your network before anything leaves. Full-fidelity logs can be archived to in-Kingdom object storage, which also meets the ECC 12-month retention minimum. BYOC Logs indexes logs in your own cloud account; query results are displayed in the Datadog UI.
+- Watch item: SDAIA's draft PDPL amendments (consultation to 5 Nov 2026) propose an explicit in-Kingdom storage requirement. Not law yet.
+Sources: Datadog sites docs; Datadog Observability Pipelines and BYOC Logs docs; NCA ECC-2:2024; Clyde & Co on PDPL draft amendments.`,
+'peaks.html': `- Your biggest days are your biggest risks: Hajj, Ramadan, National Day, Riyadh Season, White Friday, salary day.
+- Before: synthetic tests on critical journeys. During: SLO burn alerts, anomaly detection and autoscaling. When it breaks: Bits AI SRE investigates while On-Call pages the owner. After: postmortems and capacity plans from the same data.
+- The curve is illustrative; the Hajj figure (1.71M pilgrims in 2026) is from GASTAT.
+Sources: GASTAT Hajj 2026.`,
+'finops.html': `- Cloud cost on the same tags as performance, so engineers see the bill where they make decisions.
+- The example: a deploy quadruples replicas, cost jumps, the owning team sees it next to the deploy marker and fixes autoscaling. Illustrative, but this is the everyday workflow.
+- With AWS and Azure regions landing in the Kingdom, many organizations are about to run multi-cloud and in-Kingdom estates at once. Allocation by tag keeps that spend explainable.`,
+'digital.html': `- For digital and product owners: tie every slow screen and failed tap to the backend trace and to revenue.
+- RUM and Session Replay, Synthetics, Product Analytics and Experiments (Eppo) on the same data. RUM alone is a $200M+ ARR product.
+- The funnel is illustrative: a payment step on Android waiting on an API, found in one click from the funnel to the trace.`,
+'expand.html': `- The best evidence the platform works: customers keep adding products.
+- 85% use two or more, 58% four or more, 37% six or more, 22% eight or more (up from 14% a year earlier), 13% ten or more.
+Sources: Q2 FY26 10-Q; Q2 FY26 earnings call.`,
+'economics.html': `- For the executive sponsor: customers expand, stay and sign for longer.
+- Net revenue retention in the low 120s, gross retention mid-to-high 90s, RPO $3.47B up 43%, non-GAAP gross margin about 80% while R&D runs at about 43% of revenue.
+- The cohort graphic at the bottom is stylized.
+Sources: Q2 FY26 8-K, 10-Q and earnings call.`,
+'analysts.html': `- Independent validation.
+- Gartner MQ for Observability Platforms, July 2026: Leader for the sixth consecutive year; Datadog states it was highest for Ability to Execute.
+- Forrester Wave AIOps Q4 2026: Leader, top score for innovation and roadmap. Gartner MQ for Digital Experience Monitoring 2025: Leader.
+Sources: Datadog Gartner blog and IR release; Datadog Forrester release; IT Brief.`,
+'bits-section.html': `- Beat. Let it land.
+- Everything so far is the foundation. Now: agents on shift.`,
+'bits-roster.html': `- Bits AI is a team of agents with a shared memory of your environment.
+- Bits AI SRE went GA in December 2025; within a month 2,000+ trial and paying customers ran investigations.
+- DASH 2026 added Detection, Remediation, Release, Testing and Memories; Bits Code, Bits Chat and Agent Builder are GA.
+Sources: DASH 2025 PR; Q4 FY25 call; DASH 2026 roundup; Q2 FY26 8-K.`,
+'bits-demo.html': `- Illustrative walkthrough; press → to advance each step.
+- Step 1: the alert fires and Bits forms four hypotheses in parallel. Step 2: metrics and traces rule out the database and the gateway. Step 3: logs show connection-pool timeouts. Step 4: root cause confirmed, a deploy cut the pool size. Step 5: rollback and a fix PR proposed for human approval.
+- The engineer reviews a finished investigation instead of starting one. Scripted illustration, not a recording.`,
+'mcp.html': `- Developers increasingly work inside an AI coding agent. Datadog meets them there.
+- The MCP Server went GA in March 2026, for Claude Code, Cursor and Codex. MCP tool calls grew 4× quarter over quarter in both Q1 and Q2 FY26.
+- The terminal plays a typical loop: ask why errors rose, the agent queries Datadog, finds the cause, writes the fix and a test.
+Sources: Datadog IR release (MCP Server GA); Q2 FY26 earnings call.`,
+'ai-observability.html': `- The AI economy runs on Datadog: 750+ AI-native customers, 8 spending over $10M a year, and management says all of the top ten AI leaders.
+- The stack: GPU Monitoring, Agent Console, LLM Observability, Agent Observability and AI Guard.
+- KSA tie-in: the Kingdom is building sovereign AI capacity and new GPU data centers, and every enterprise copilot needs cost, quality and safety visibility.
+Sources: Q1 and Q2 FY26 earnings calls; DASH 2026 roundup.`,
+'research.html': `- AI research, not AI wrappers.
+- Toto: an open-weights, 151M-parameter time-series foundation model, Apache 2.0, with the BOOM benchmark. Adaptive ML (June 2026) brings reinforcement learning for agents. R&D about 43% of revenue.
+Sources: Datadog Toto/BOOM blog; Adaptive ML press release; Q2 FY26 10-Q.`,
+'security.html': `- For the CISO: dev, ops and security on the same facts, mapped to the controls they're audited against.
+- NCA ECC-2:2024 domain 2-12 asks for event logging on critical assets, a SIEM, continuous monitoring and at least 12 months of retention. SAMA CSF 3.3.14 asks for centralized, automated correlation; 3.3.15 for immediate reporting of medium and high incidents. PDPL governs personal data.
+- The mapping is illustrative for a compliance conversation, not a certification claim.
+Sources: NCA ECC-2:2024 2-12-3; SAMA CSF 3.3.14 and 3.3.15; PDPL.`,
+'field.html': `- Datadog's framing of the market. Keep it about why a platform beats a patchwork.
+- Legacy APM: breadth and speed. Legacy log and SIEM: cloud-native economics, with Splunk archive conversion. Self-run search engines: turnkey SaaS, with a supported path for historical Elasticsearch logs. Open source: people cost more than licenses. Hyperscaler tools: one view across clouds. Point AI-SRE tools: agents need first-party data.
+Sources: Datadog migration blogs and docs; Q1 and Q2 FY26 calls.`,
+'roadmap.html': `- Close the business case with a plan.
+- 30 days: agent on tier-1 services and Kubernetes, prebuilt content live. 60 days: unified tags, SLOs on critical journeys, On-Call and Bits AI SRE in the incident flow. 90 days: log tiers, Cloud SIEM, cost allocation, retire overlapping tools.
+- Every phase ends with a KPI the business can see. Datadog has an Advanced Tier partner with a Riyadh office (Zero&One) for delivery.
+Sources: Consultancy-me (Zero&One partnership, Oct 2025).`,
+'why.html': `- Give the answer first. Three reasons, and each one makes the next one possible.
+- One data model: env, service and version are set once on the agent. Every metric, trace, log, user session, security signal and cost line joins on them. That is why Watchdog root-cause analysis can name a cause (a version change, a traffic surge, a failed instance, a full disk) instead of just flagging an anomaly.
+- Every product on that model: adding Database Monitoring, Data Streams or Cloud SIEM is configuration, not an integration project. That is why customers keep adding products: 22% now use eight or more, up from 14% a year ago.
+- Agents that act on it: Bits AI SRE (GA 2 Dec 2025) forms hypotheses and tests them across metrics, traces, logs, change events and code, then marks each one validated or ruled out. It only works because reasons 1 and 2 are true.
+- Proof points are Datadog-published case studies. Itaú Unibanco: 13 tools retired, 35% faster resolution. Bullla: MTTR from 11 hours to under 1 hour.
+- The bottom strip answers the executive question "will they be around?": $4B+ ARR, 36% growth, about 43% of revenue reinvested in R&D, six years a Gartner MQ Leader.
+Sources: Datadog unified service tagging and Watchdog RCA docs; Bits AI SRE GA press release (Dec 2025); MCP Server GA (Mar 2026); Itaú Unibanco and Bullla case studies; Q2 FY26 8-K and earnings call.`,
+'usecases.html': `- Map the conversation to the customer's own world. Ask which of the six they recognise, then click that card: payments, retail, telecom and AI jump to their deep dives; government jumps to the security and NCA slide, Hajj to peak moments.
+- Payments: SAMA reports 14.6B electronic payments in 2025, 85% of retail payments. The real failure mode is intermittent declines from one issuer, not a total outage.
+- Government: Nafath is integrated with 530+ platforms. A slow shared login looks like an outage everywhere at once.
+- Hajj & Umrah: 1,707,301 pilgrims at Hajj 2026 (GASTAT); over 90% of Nusuk users are outside the Kingdom.
+- Retail: mada e-commerce SAR 325B in 2025, with October a record month at about +68% year on year. Checkout depends on mada, Apple Pay, BNPL and 3DS.
+- Telecom: cloud-native BSS/OSS at stc (Ericsson) and Zain KSA (Netcracker); Mobily data traffic +122% in FY2025.
+- AI: HUMAIN ONE is an enterprise agent platform; Aramco Digital runs a Groq inference cluster in Dammam.
+Sources: SAMA; Nafath (via Wikipedia, Nov 2024 figures); GASTAT Hajj 2026; Ministry of Hajj; Okaz and Gulfbase on mada e-commerce; Ericsson, Netcracker and Mobily FY2025 results; HUMAIN and Groq announcements.`,
+'uc-payments.html': `- Press right arrow four times; each step adds one signal.
+- The setup: overall payment success looks healthy. That is the trap. Public status pages of payment providers operating in KSA show the real pattern: intermittent declines from specific issuing banks, for example a two-hour window on 14 May 2024 across five issuers.
+- Step 1, RUM: split success rate by a custom issuer tag and the problem is obvious for one bank.
+- Step 2, APM and SLOs: traces for that issuer show timeouts in the switch adapter. A per-issuer SLO burns fast and On-Call pages the owning team.
+- Step 3, Data Streams and Database Monitoring: retries build lag on the Kafka retry topic. DBM shows Oracle core-banking queries normal (it supports RAC and Exadata), so the core team is cleared quickly.
+- Step 4, act: Workflow Automation caps retries and shows a "try another card" prompt for that issuer only. The incident timeline feeds the regulator report and the Status Page.
+- Regulation: SAMA CSF 3.3.14 asks for centralised, automated log correlation; the SAMA BCM framework asks for RTO and RPO per critical service. SLOs turn those into a daily number.
+- Proof (Datadog case studies): TymeX found failed card transactions in 1 minute instead of 1 hour; Itaú Unibanco resolved 35% faster with 40% fewer incidents; PayMongo, regulated by its central bank, cut audit prep from weeks to under a day.
+- The scenario numbers on the slide are illustrative.
+Sources: SAMA payments 2025; public status pages of KSA payment providers (2024–2026); SAMA CSF rulebook 3.3.14; SAMA BCM framework; Datadog DSM, DBM and Workflow docs; TymeX, Itaú, PayMongo case studies.`,
+'uc-telecom.html': `- Press right arrow four times.
+- Why now: operators in the Kingdom are moving to microservice and event-driven stacks. stc took a 5G standalone core and BSS with Ericsson; Zain KSA moved to cloud-native BSS/OSS with Netcracker. Mobily's data traffic grew 122% in FY2025, and stc had about 30M KSA mobile subscribers at Q4 2025.
+- Step 1: RUM shows eSIM activations stalling at "pending" after a release.
+- Step 2: the trace runs through order management, provisioning and the core. Data Streams Monitoring shows consumer lag on the order-events topic at the new provisioning version.
+- Step 3: Network Device Monitoring (SNMP, BGP view, device maps) and Cloud Network Monitoring show the network clean, so the network team is cleared in seconds instead of joining a war room.
+- Step 4: roll back. Activation time becomes an SLO per channel, next to cost per active subscriber.
+- Infrastructure coverage: Kubernetes and OpenShift integrations, VMware vSphere, and Oracle Cloud Infrastructure. The scenario is illustrative.
+- Telco proof: KT runs 1,700+ GPUs and 60+ AI projects on Datadog (case study).
+Sources: Ericsson and stc (2022); Netcracker and Zain KSA; Mobily FY2025 results; stc Q4 2025 results; Datadog NDM, CNM, DSM and OpenShift docs; KT case study.`,
+'uc-retail.html': `- Press right arrow four times. Set the scene: a Ramadan night, peak basket size, and conversion on mobile web starts to slide.
+- Why this is real: mada e-commerce spend reached SAR 325B in 2025, and point-of-sale spend jumped 34.7% in the week before Ramadan 2025. Public status pages of payment providers in KSA record card-gateway timeouts (September 2025, January 2026) and issuer declines. Checkout depends on mada, Apple Pay, BNPL, 3-D Secure and delivery-slot services, so someone else's outage becomes your lost sale.
+- Step 1, Product Analytics: the funnel shows the drop is at the payment step, on mobile web only.
+- Step 2, Session Replay and RUM: replays show the 3DS challenge spinning; resource timing puts the gateway call at over 9 seconds. Session Replay masks text and inputs by default.
+- Step 3, APM and Synthetics: only the card-gateway route is timing out; mada, Apple Pay and BNPL are healthy. A synthetic checkout from a private location in Riyadh reproduces it every minute.
+- Step 4, act: a feature flag (Feature Flags went GA at DASH 2026) makes mada and Apple Pay the default and parks the slow route. Conversion recovers on the same chart; Cloud Cost Management adds cost per order.
+- Proof (Datadog case studies): Mercado Libre held 100% uptime on Black Friday at 20–40% more traffic; Glovo took database downtime from 3 hours to zero and saved about $750K.
+- The chart and timings are illustrative.
+Sources: Okaz (mada e-commerce 2025); Argaam (Ramadan 2025 POS); public status pages of KSA payment providers; Datadog Product Analytics, Session Replay privacy, Synthetics private locations and Feature Flags docs; Mercado Libre and Glovo case studies.`,
+'uc-ai.html': `- Press right arrow four times. This is the slide for anyone putting agents in front of citizens or customers.
+- Why now: HUMAIN ONE launched in October 2025 as an enterprise agent platform; HUMAIN Chat runs on ALLaM 34B; Aramco Digital runs a Groq inference cluster in Dammam. Agents are moving from pilot to production.
+- The trace: LLM Observability records every step of one agent run: retrieval, each LLM call with its tokens, each tool call, and the evaluation.
+- Step 1: the visa_status tool timed out three times and the agent kept retrying. That explains the latency and the token bill.
+- Step 2: with no tool result, the model guessed. A hallucination evaluation flags the answer as unsupported before the citizen complains.
+- Step 3: the prompt contained a national ID number. Sensitive Data Scanner redacts it in prompts and completions before storage. AI Guard, in limited availability as of DASH 2026, screens for prompt injection.
+- Step 4: the fix is an API timeout and fallback, not a new model. Cost per answer, token spend (Cloud Cost Management covers OpenAI and Anthropic bills) and GPU utilisation sit on the same dashboard.
+- Proof: 750+ AI-native companies use Datadog; KT runs 1,700+ GPUs and 60+ AI projects on it.
+- The trace, timings and numbers are illustrative.
+Sources: HUMAIN ONE (Campaign ME, Oct 2025); HUMAIN Chat on ALLaM (Middle East AI News); Groq and Aramco Digital; Datadog LLM Observability, Sensitive Data Scanner and Cloud Cost Management docs; DASH 2026 AI roundup; KT case study.`,
+'close.html': `- Wake up to an answer, not a page.
+- Three takeaways: one platform, fewer tools and one bill; agents on shift; built for the Kingdom's scale, with PII redacted and raw data kept local.
+- Thank you. Questions welcome.`,
+'sources.html': `- Full source list. Every link opens in a new tab.`
+};
+
+const $ = s => document.querySelector(s);
+const frame = $('#frame'), wrap = $('#wrap'), stage = $('#stage');
+let idx = 0, step = 0, steps = 0, density = 3, tool = null;
+
+const url = i => 'slides/' + SLIDES[i];
+const fit = (box, el) => { const r = box.getBoundingClientRect(); const s = Math.min(r.width / 1280, r.height / 720); el.style.transform = `scale(${s})`; return s; };
+function layout(){
+  if (document.body.classList.contains('pv')) {
+    const box = $('#pvCurBox'), w = box.clientWidth; box.style.height = (w * 720 / 1280) + 'px';
+    const r = box.getBoundingClientRect(), s = w / 1280;
+    wrap.style.position = 'fixed'; wrap.style.left = r.left + 'px'; wrap.style.top = r.top + 'px'; wrap.style.transform = `scale(${s})`; wrap.style.zIndex = 31;
+    const nb = $('#pvNextBox'), nw = nb.clientWidth; nb.style.height = (nw * 720 / 1280) + 'px'; $('#pvNext').style.transform = `scale(${nw / 1280})`;
+    return;
+  }
+  wrap.style.position = 'absolute'; wrap.style.zIndex = '';
+  const W = stage.clientWidth, H = stage.clientHeight, pad = document.body.classList.contains('presenting') ? 0 : 24;
+  const s = Math.min((W - pad * 2) / 1280, (H - pad * 2) / 720);
+  wrap.style.transform = `scale(${s})`; wrap.style.left = ((W - 1280 * s) / 2) + 'px'; wrap.style.top = ((H - 720 * s) / 2) + 'px';
+}
+window.addEventListener('resize', layout);
+
+function notesHTML(i){
+  const raw = NOTES[SLIDES[i]] || '';
+  const lines = raw.split('\n'), items = lines.filter(l => l.startsWith('- ')).map(l => `<li>${l.slice(2)}</li>`).join('');
+  const src = lines.filter(l => l.startsWith('Sources:')).map(l => `<span class="src">${l}</span>`).join('');
+  return `<ul>${items}</ul>${src}`;
+}
+function go(i, atEnd){
+  i = Math.max(0, Math.min(SLIDES.length - 1, i));
+  const changed = i !== idx || !frame.src;
+  idx = i; step = 0; steps = 0; pendingEnd = !!atEnd;
+  if (changed) {
+    $('#fade').style.opacity = 1;
+    setTimeout(() => { frame.src = url(i); }, 150);
+  }
+  if (!changed) post({type: 'step', i: 0});
+  clearDraw();
+  history.replaceState(null, '', '#' + (i + 1));
+  $('#count').textContent = `${i + 1} / ${SLIDES.length}`;
+  $('#pvCount').textContent = `${i + 1} / ${SLIDES.length} · ${TITLES[i]}`;
+  $('#prog').style.width = ((i + 1) / SLIDES.length * 100) + '%';
+  $('#notesTxt').innerHTML = $('#pvNotesTxt').innerHTML = notesHTML(i);
+  if (document.body.classList.contains('pv')) { const n = $('#pvNext'), nu = i + 1 < SLIDES.length ? url(i + 1) : 'about:blank'; if (!n.src.endsWith(nu)) n.src = nu; }
+  document.querySelectorAll('#grid .cell').forEach((c, k) => c.classList.toggle('cur', k === i));
+}
+let pendingEnd = false;
+frame.addEventListener('load', () => { $('#fade').style.opacity = 0; post({type: 'density', v: density}); });
+function post(m){ try { frame.contentWindow.postMessage(m, '*'); } catch(e){} }
+window.addEventListener('message', e => {
+  const m = e.data || {};
+  if (e.source !== frame.contentWindow) return;
+  if (m.type === 'ready') { steps = m.steps || 0; step = pendingEnd ? steps : 0; post({type: 'density', v: density}); post({type: 'step', i: step}); }
+  if (m.type === 'goto') { const j = SLIDES.indexOf(m.file); if (j >= 0) go(j); }
+  if (m.type === 'key') onKey({key: m.key, shiftKey: m.shift, metaKey: m.meta, preventDefault(){}});
+});
+const next = () => { if (step < steps) { step++; post({type: 'step', i: step}); } else if (idx < SLIDES.length - 1) go(idx + 1); };
+const prev = () => { if (step > 0) { step--; post({type: 'step', i: step}); } else if (idx > 0) go(idx - 1, true); };
+
+/* density */
+function setDensity(v){ density = Math.max(1, Math.min(5, v)); $('#den').textContent = 'density ' + density; post({type: 'density', v: density}); toast('density ' + density); }
+
+/* toast */
+let tt; function toast(t){ const e = $('#toast'); e.textContent = t; e.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('show'), 1100); }
+
+/* panels */
+const toggle = (cls, on) => { document.body.classList.toggle(cls, on); setTimeout(layout, 260); layout(); };
+function buildGrid(){
+  const g = $('#grid'); if (g.childElementCount) return;
+  SLIDES.forEach((s, i) => {
+    const c = document.createElement('div'); c.className = 'cell';
+    c.innerHTML = `<div class="mini" style="aspect-ratio:16/9"><iframe tabindex="-1" loading="lazy" src="${url(i)}"></iframe></div><span>${i + 1} · ${TITLES[i]}</span>`;
+    c.onclick = () => { toggle('grid', false); go(i); };
+    g.appendChild(c);
+  });
+  requestAnimationFrame(() => g.querySelectorAll('.mini').forEach(m => m.firstChild.style.transform = `scale(${m.clientWidth / 1280})`));
+}
+function togglePV(){
+  const on = !document.body.classList.contains('pv');
+  document.body.classList.toggle('pv', on);
+  if (on) { const n = $('#pvNext'); n.src = idx + 1 < SLIDES.length ? url(idx + 1) : 'about:blank'; }
+  $('#bPv').classList.toggle('on', on);
+  layout();
+}
+
+/* timer */
+let tStart = 0, tAcc = 0, tRun = false;
+const fmtT = ms => { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+setInterval(() => { const ms = tAcc + (tRun ? Date.now() - tStart : 0); $('#timer').textContent = $('#pvClock').textContent = fmtT(ms); }, 250);
+function timerToggle(){ if (tRun) { tAcc += Date.now() - tStart; tRun = false; } else { tStart = Date.now(); tRun = true; } $('#timer').classList.toggle('run', tRun); toast(tRun ? 'timer running' : 'timer paused'); }
+function timerReset(){ tAcc = 0; tStart = Date.now(); toast('timer reset'); }
+
+/* laser + draw */
+const ov = $('#overlay'), laser = $('#laser'), cv = $('#canvas'), ctx = cv.getContext('2d');
+ctx.scale(2, 2); ctx.lineCap = ctx.lineJoin = 'round';
+function setTool(t){
+  tool = tool === t ? null : t;
+  ov.classList.toggle('active', !!tool); laser.style.display = 'none';
+  $('#bLaser').classList.toggle('on', tool === 'laser'); $('#bDraw').classList.toggle('on', tool === 'draw');
+  toast(tool ? tool + ' on' : 'pointer');
+}
+const local = e => { const r = wrap.getBoundingClientRect(), s = r.width / 1280; return [(e.clientX - r.left) / s, (e.clientY - r.top) / s]; };
+let drawing = false;
+ov.addEventListener('pointermove', e => {
+  const [x, y] = local(e);
+  if (tool === 'laser') { laser.style.display = 'block'; laser.style.left = x + 'px'; laser.style.top = y + 'px'; }
+  if (tool === 'draw' && drawing) { ctx.lineTo(x, y); ctx.stroke(); }
+});
+ov.addEventListener('pointerleave', () => laser.style.display = 'none');
+ov.addEventListener('pointerdown', e => { if (tool !== 'draw') return; drawing = true; const [x, y] = local(e); ctx.strokeStyle = '#F2668B'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, y); });
+window.addEventListener('pointerup', () => drawing = false);
+function clearDraw(){ ctx.clearRect(0, 0, 1280, 720); }
+
+/* keys */
+function onKey(e){
+  const k = e.key;
+  if (e.metaKey) return;
+  if (document.body.classList.contains('help') && k !== '?') { toggle('help', false); return; }
+  if (['ArrowRight', ' ', 'PageDown', 'ArrowDown', 'Enter'].includes(k)) { e.preventDefault(); next(); }
+  else if (['ArrowLeft', 'PageUp', 'ArrowUp', 'Backspace'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k === 'Home') go(0);
+  else if (k === 'End') go(SLIDES.length - 1);
+  else if (k === 'g' || k === 'G') { buildGrid(); toggle('grid'); }
+  else if (k === 'n' || k === 'N') { toggle('notes'); $('#bNotes').classList.toggle('on', document.body.classList.contains('notes')); }
+  else if (k === 'p' || k === 'P') togglePV();
+  else if (k === 'l' || k === 'L') setTool('laser');
+  else if (k === 'd' || k === 'D') setTool('draw');
+  else if (k === 'c' || k === 'C') clearDraw();
+  else if (k === 't' || k === 'T') timerToggle();
+  else if (k === 'r' || k === 'R') timerReset();
+  else if (k === '+' || k === '=') setDensity(density + 1);
+  else if (k === '-' || k === '_') setDensity(density - 1);
+  else if (k === 'f' || k === 'F') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
+  else if (k === 'h' || k === 'H') toggle('presenting');
+  else if (k === '?') toggle('help');
+  else if (k === 'Escape') { ['grid', 'help', 'notes'].forEach(c => document.body.classList.remove(c)); if (document.body.classList.contains('pv')) togglePV(); if (tool) setTool(tool); document.body.classList.remove('presenting'); layout(); }
+  else if (/^[1-9]$/.test(k) && e.shiftKey) go(+k - 1);
+}
+document.addEventListener('keydown', onKey);
+document.addEventListener('fullscreenchange', () => { document.body.classList.toggle('presenting', !!document.fullscreenElement); setTimeout(layout, 50); });
+
+/* buttons */
+$('#bPrev').onclick = prev; $('#bNext').onclick = next;
+$('#bDenM').onclick = () => setDensity(density - 1); $('#bDenP').onclick = () => setDensity(density + 1);
+$('#bGrid').onclick = () => { buildGrid(); toggle('grid'); };
+$('#bNotes').onclick = () => onKey({key: 'n', preventDefault(){}});
+$('#bPv').onclick = togglePV;
+$('#bLaser').onclick = () => setTool('laser'); $('#bDraw').onclick = () => setTool('draw');
+$('#timer').onclick = timerToggle;
+$('#bFs').onclick = () => onKey({key: 'f', preventDefault(){}});
+$('#bHelp').onclick = () => toggle('help');
+document.querySelectorAll('#bar button').forEach(b => b.addEventListener('mouseup', () => b.blur()));
+
+layout();
+go(Math.max(0, (parseInt(location.hash.slice(1)) || 1) - 1));
+</script>
+</body>
+</html>

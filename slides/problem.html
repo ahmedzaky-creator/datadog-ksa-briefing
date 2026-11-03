@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>The problem</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .sub{max-width:480px}
+  .pts{margin-top:40px;display:flex;flex-direction:column;gap:18px;max-width:470px}
+  .pt{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start}
+  .pt i{font:600 12px var(--mono);color:var(--purple);padding-top:3px;font-style:normal}
+  .pt p{font-size:15.5px;line-height:1.5;color:var(--char)}
+  .pt p b{color:var(--ink)}
+  #mess{position:absolute;left:640px;top:70px;width:580px;height:560px;z-index:1}
+  .tool{position:absolute;width:150px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;box-shadow:0 6px 18px rgba(23,11,43,.06);font:500 11px var(--mono);color:var(--grey);animation:pop .5s var(--ease) both}
+  .tool b{display:block;font:600 13px var(--sans);color:var(--ink);margin-bottom:4px}
+  .tool em{font-style:normal;color:var(--pink)}
+  .eng{position:absolute;left:225px;top:235px;width:130px;height:90px;border-radius:12px;background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font:600 13px var(--sans);gap:4px;animation:pop .5s .9s var(--ease) both;z-index:2}
+  .eng span{font:500 11px var(--mono);color:var(--amber);animation:pulse 1.4s infinite}
+  svg.l{position:absolute;inset:0;width:580px;height:560px}
+  svg.l line{stroke:var(--pink);stroke-width:1.2;stroke-dasharray:4 4;opacity:.55}
+  html[data-density="1"] .pts{display:none}
+</style>
+</head>
+<body class="soft" data-foot="The problem" data-who="exec,cio,sre">
+<div class="z">
+  <div class="eyebrow in1">The problem</div>
+  <h1 class="in2">The data isn't missing.<br><span class="b">It's scattered.</span></h1>
+  <p class="sub in3">Eight tools, eight tag schemes, eight bills. At 3 AM the engineer becomes the integration layer.</p>
+  <div class="pts">
+    <div class="pt" data-d="4"><i>01</i><p><b>Context lives in tabs.</b> Copy a trace ID here, paste it into a log tool there, guess the time window in a third.</p></div>
+    <div class="pt" data-d="5"><i>02</i><p><b>Every tool tags differently.</b> "checkout", "checkout-svc", "app=co": joins break exactly when you need them.</p></div>
+    <div class="pt" data-d="6"><i>03</i><p><b>AI multiplies it.</b> More services, more agents, more cardinality, more attack surface. Sprawl scales; context doesn't.</p></div>
+  </div>
+</div>
+<div id="mess">
+  <svg class="l" viewBox="0 0 580 560"></svg>
+  <div class="eng">On-call engineer<span>03:12 · paged</span></div>
+</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const tools = [['Metrics', 'svc=checkout', 20, 20], ['APM', 'service.name=co', 380, 10], ['Logs', 'app:checkout-svc', 10, 200], ['RUM', 'view=/pay', 410, 190],
+    ['Security', 'host=ip-10-2-4', 30, 400], ['On-call', 'team=payments', 400, 400], ['CI', 'repo=checkout', 215, 0], ['Cost', 'cc-4471', 215, 470]];
+  const box = document.getElementById('mess'), svg = box.querySelector('svg');
+  tools.forEach(([n, t, x, y], i) => {
+    const d = document.createElement('div'); d.className = 'tool'; d.style.left = x + 'px'; d.style.top = y + 'px'; d.style.animationDelay = (.2 + i * .08) + 's';
+    d.innerHTML = `<b>${n}</b><em>${t}</em>`; box.appendChild(d);
+    const l = DD.el('line', {x1: x + 75, y1: y + 28, x2: 290, y2: 280}, svg); l.style.opacity = 0; setTimeout(() => l.style.opacity = '', 1000 + i * 90);
+  });
+})();
+</script>
+</body>
+</html>

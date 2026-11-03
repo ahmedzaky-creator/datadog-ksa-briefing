@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Competitive briefing</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  h1{font-size:86px;line-height:.96;letter-spacing:-3.6px;margin-top:132px}
+  .sub{font-size:20px;max-width:500px;margin-top:26px}
+  .row{display:flex;gap:10px;margin-top:30px}
+  .disc{position:absolute;left:72px;bottom:58px;font:400 11px var(--mono);color:rgba(255,255,255,.35);letter-spacing:.03em;z-index:3}
+  #hero{position:absolute;left:600px;top:0;width:680px;height:720px;z-index:1;transform-origin:70% 45%;transition:transform .7s var(--ease)}
+  html[data-density="1"] h1{margin-top:220px}
+  html[data-density="1"] .sub,html[data-density="1"] .row{display:none}
+  html[data-density="1"] #hero{transform:scale(1.08)}
+  html[data-density="5"] h1{font-size:64px;margin-top:96px}
+</style>
+</head>
+<body class="ink" data-foot="Platform overview · Kingdom of Saudi Arabia · 2026">
+<div class="z">
+  <div class="eyebrow in1">Observability · Security · AI agents · <b>KSA</b></div>
+  <h1 class="in2">One platform.<br><span class="b">Every signal.</span><br>Agents on shift.</h1>
+  <p class="sub in3">How organizations in the Kingdom protect revenue, cut tool sprawl and keep sensitive data local, on one platform.</p>
+  <div class="row in4"><span class="chip">Vision 2030 scale</span><span class="chip">1,000+ integrations</span><span class="chip">Bits AI</span></div>
+</div>
+<div class="disc in5">Internal competitive training · not affiliated with or endorsed by Datadog, Inc. · public sources only</div>
+<svg id="hero" viewBox="0 0 680 720"></svg>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  DD.dots({x: 600, y: 20, w: 680, h: 680, seed: 7, color: '#A47CE8', max: .5});
+  const sc = DD.iso(document.getElementById('hero'), {ox: 330, oy: 300, s: .82});
+  // agent layer: row of small blocks
+  for (let i = 0; i < 6; i++) sc.box({x: i * 46, y: 300, w: 34, d: 34, h: 18, c: 'ink', delay: .15 + i * .05, drop: 60});
+  // unified platform slab
+  sc.box({x: 0, y: 0, w: 280, d: 280, h: 40, c: 'purple', delay: .5, drop: 120});
+  // product columns on the slab
+  const cols = [['slate', 120], ['slate', 96], ['violet', 140], ['slate', 80], ['teal', 104]];
+  cols.forEach(([c, h], i) => sc.box({x: 24 + i * 48, y: 196, w: 32, d: 60, h: h * .55, z: 40, c, delay: .9 + i * .07, drop: 70}));
+  // Bits AI cube floating on top
+  sc.box({x: 70, y: 40, w: 110, d: 110, h: 110, z: 170, c: 'glass', wire: true, stroke: 'rgba(201,178,242,.6)', delay: 1.3, drop: 60, float: 7});
+  sc.box({x: 92, y: 62, w: 66, d: 66, h: 66, z: 192, c: 'violet', delay: 1.4, drop: 80, float: 7});
+  sc.label({at: [125, 95, 290], side: 'r', len: 70, title: 'Bits AI', sub: 'Agents that act', delay: 1.7, dark: true});
+  sc.label({at: [280, 140, 20], side: 'r', len: 46, title: 'Unified platform', sub: ['One tag model', '30+ products'], delay: 1.85, dark: true});
+  sc.label({at: [264, 334, 9], side: 'r', len: 40, title: 'One agent', sub: '1,000+ integrations', delay: 2, dark: true});
+  sc.run();
+})();
+</script>
+</body>
+</html>

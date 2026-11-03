@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>One agent</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .sub{max-width:470px}
+  .big{margin-top:36px;display:flex;align-items:flex-end;gap:14px}
+  .big .stat{font-size:92px}
+  .big .cap{padding-bottom:10px;max-width:170px}
+  .list{margin-top:26px;display:flex;flex-direction:column;gap:10px;max-width:480px}
+  .list div{display:grid;grid-template-columns:20px 1fr;gap:10px;font-size:14.5px;line-height:1.45;color:rgba(255,255,255,.72)}
+  .list i{font-style:normal;color:var(--lav);font-weight:700}
+  #orb{position:absolute;left:630px;top:40px;width:640px;height:620px}
+  html[data-density="1"] .list{display:none}
+  html[data-density="1"] .big .stat{font-size:130px}
+</style>
+</head>
+<body class="ink" data-foot="One agent · 1,000+ integrations" data-who="cio,sre,dev">
+<div class="z">
+  <div class="eyebrow in1">Time to value</div>
+  <h1 class="in2">Install one agent.<br><span class="b">Light up everything.</span></h1>
+  <p class="sub in3">Every integration ships with dashboards, monitors and detection rules already built.</p>
+  <div class="big" data-d="4"><div class="stat"><span data-count="1000" data-delay=".5" data-post="+"></span></div><div class="cap">integrations, from mainframes to GPUs and LLM APIs</div></div>
+  <div class="list">
+    <div data-d="6"><i>→</i><span>OpenTelemetry and Prometheus land natively, with the same tags.</span></div>
+    <div data-d="7"><i>→</i><span>AWS, Azure, Google Cloud, Oracle, Kubernetes, serverless and on-prem in one view.</span></div>
+    <div data-d="8"><i>→</i><span>Value on day one: prebuilt content means no dashboard-building sprint.</span></div>
+  </div>
+</div>
+<svg id="orb" viewBox="0 0 660 640"></svg>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('orb'), cx = 340, cy = 320;
+  const names = ['AWS','Azure','Google Cloud','Oracle Cloud','Kubernetes','Docker','OpenTelemetry','Prometheus','PostgreSQL','Oracle DB','SQL Server','MongoDB','Redis','Kafka','NGINX','Java','.NET','Python','Node.js','Go','NVIDIA','OpenAI','Anthropic','Vertex AI','Bedrock','Snowflake','Databricks','Terraform','GitHub','GitLab','Jenkins','ServiceNow','Jira','Slack','Teams','PagerDuty','Okta','Cloudflare','Akamai','VMware','SAP','IBM MQ','Istio','Envoy','Lambda'];
+  const rings = [[130, 10], [205, 15], [280, 20]];
+  let k = 0; const lines = [], labels = [];
+  rings.forEach(([r, n], ri) => {
+    DD.el('circle', {cx, cy, r, fill: 'none', stroke: 'rgba(255,255,255,.08)', 'stroke-dasharray': '2 6'}, svg);
+    for (let i = 0; i < n && k < names.length; i++, k++) {
+      const a = (i / n) * Math.PI * 2 + ri * .4;
+      const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a) * .92;
+      const l = DD.el('path', {d: `M${x},${y} L${cx},${cy}`, stroke: 'rgba(201,178,242,.12)', 'stroke-width': 1, fill: 'none'}, svg); lines.push(l);
+      const g = DD.el('g', {opacity: 0}, svg);
+      const w = names[k].length * 6.6 + 16;
+      DD.el('rect', {x: x - w / 2, y: y - 11, width: w, height: 22, rx: 11, fill: 'rgba(30,14,58,.95)', stroke: 'rgba(201,178,242,.35)'}, g);
+      const t = DD.el('text', {x, y: y + 4, 'text-anchor': 'middle', fill: 'rgba(255,255,255,.85)', style: 'font:500 10.5px JetBrains Mono,monospace'}, g); t.textContent = names[k];
+      labels.push([g, .3 + k * .035, a, r, ri]);
+    }
+  });
+  const hub = DD.el('g', {opacity: 0}, svg);
+  DD.el('circle', {cx, cy, r: 62, fill: '#632CA6', stroke: '#C9B2F2', 'stroke-width': 1.5}, hub);
+  const pulse = DD.el('circle', {cx, cy, r: 62, fill: 'none', stroke: '#C9B2F2', 'stroke-width': 1.5}, svg);
+  const t1 = DD.el('text', {x: cx, y: cy - 2, 'text-anchor': 'middle', fill: '#fff', style: 'font:700 16px Inter,sans-serif'}, hub); t1.textContent = 'Datadog';
+  const t2 = DD.el('text', {x: cx, y: cy + 16, 'text-anchor': 'middle', fill: '#C9B2F2', style: 'font:500 10px JetBrains Mono,monospace'}, hub); t2.textContent = 'ONE AGENT';
+  svg.appendChild(hub);
+  DD.flow(svg, lines.filter((_, i) => i % 3 === 0), {n: 1, r: 2.4, color: ['#2FD3B5', '#C9B2F2', '#FFB52E'], speed: .45, delay: 2});
+  DD.loop(t => {
+    labels.forEach(([g, d]) => g.setAttribute('opacity', DD.ease(Math.min(1, Math.max(0, (t - d) / .4)))));
+    hub.setAttribute('opacity', Math.min(1, t * 2));
+    const p = (t % 2.2) / 2.2; pulse.setAttribute('r', 62 + p * 90); pulse.setAttribute('opacity', (1 - p) * .6);
+  });
+})();
+</script>
+</body>
+</html>

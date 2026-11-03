@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Observability for AI</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .stats{position:absolute;left:72px;top:236px;width:470px;display:flex;flex-direction:column;gap:20px}
+  .s{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center;border-top:1px solid rgba(255,255,255,.12);padding-top:14px}
+  .s .stat{font-size:52px;letter-spacing:-2px}
+  .s p{font-size:14px;line-height:1.45;color:rgba(255,255,255,.7)}
+  #stack{position:absolute;left:650px;top:206px;width:560px;height:431px}
+  .ksa{position:absolute;left:72px;bottom:76px;width:470px;font-size:13px;line-height:1.5;color:rgba(255,255,255,.65);border-left:3px solid var(--teal);padding-left:12px}
+  .ksa b{color:#fff}
+  html[data-density="1"] .ksa{display:none}
+</style>
+</head>
+<body class="ink" data-foot="Observability for AI" data-who="exec,cio,dev,ciso">
+<div class="z">
+  <div class="eyebrow in1">The AI economy runs here</div>
+  <h1 class="in2">Building AI? <span class="b">See every token,<br>GPU and agent step.</span></h1>
+</div>
+<div class="stats">
+  <div class="s" data-d="3"><div class="stat"><span data-count="750" data-post="+" data-delay=".5"></span></div><p>AI-native companies are customers; 8 spend over $10M a year.</p></div>
+  <div class="s" data-d="4"><div class="stat">10/10</div><p>of the top AI leaders are customers, per Datadog management.</p></div>
+</div>
+<div class="ksa" data-d="6"><b>For the Kingdom's AI build-out</b>: sovereign AI programs, new GPU data centers and every enterprise copilot need the same thing: cost, quality and safety visibility from GPU to prompt.</div>
+<svg id="stack" viewBox="0 0 610 470"></svg>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('stack');
+  const L = [['AI Guard', 'Blocks prompt injection, tool misuse, data exfiltration', '#F2668B'], ['Agent Observability', 'Every agent step, tool call and handoff, traced', '#A47CE8'], ['LLM Observability', 'Prompts, tokens, cost, latency, evals, quality', '#632CA6'], ['Agent Console', 'Adoption and spend across Claude Code, Cursor, Copilot', '#5AB8F2'], ['GPU Monitoring', 'Utilization and waste across training and inference fleets', '#2FD3B5']];
+  L.forEach(([n, d, c], i) => {
+    const y = 20 + i * 88, g = DD.el('g', {}, svg);
+    g.style.opacity = 0; g.style.animation = `rise .6s ${.4 + (4 - i) * .14}s var(--ease) both`;
+    DD.el('rect', {x: 40 - i * 8, y, width: 530 + i * 16, height: 72, rx: 12, fill: 'rgba(255,255,255,.05)', stroke: c, 'stroke-opacity': .55}, g);
+    DD.el('rect', {x: 40 - i * 8, y, width: 6, height: 72, rx: 3, fill: c}, g);
+    DD.el('text', {x: 64 - i * 8, y: y + 31, fill: '#fff', style: 'font:650 17px Inter,sans-serif'}, g).textContent = n;
+    DD.el('text', {x: 64 - i * 8, y: y + 52, fill: 'rgba(255,255,255,.6)', style: 'font:400 12.5px Inter,sans-serif'}, g).textContent = d;
+  });
+  const sc = DD.el('rect', {x: 20, y: 0, width: 570, height: 3, fill: '#C9B2F2', opacity: .6}, svg);
+  DD.loop(t => { if (t < 1.4) return; const k = ((t - 1.4) % 3) / 3; sc.setAttribute('y', 14 + k * 440); sc.setAttribute('opacity', Math.sin(k * Math.PI) * .7); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Cloud cost</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .sub{max-width:500px}
+  .grid{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px}
+  .grid .card{padding:14px 16px}
+  .grid .tag{margin-bottom:6px;color:var(--purple)}
+  .grid p{font-size:13.5px;line-height:1.45;color:var(--char)}
+  #bill{position:absolute;left:690px;top:198px;width:520px;height:426px}
+  html[data-density="1"] .grid{display:none}
+</style>
+</head>
+<body class="soft" data-foot="Cloud cost management" data-who="exec,cio,sre">
+<div class="z">
+  <div class="eyebrow in1">Business value · FinOps</div>
+  <h1 class="in2">Every riyal of cloud spend,<br><span class="b">next to the service that spent it.</span></h1>
+  <p class="sub in3">Cloud Cost Management puts cost on the same tags as performance, so engineers see the bill where they make the decisions.</p>
+  <div class="grid">
+    <div class="card" data-d="4"><div class="tag">Allocate</div><p>Cost by service, team, environment and Kubernetes workload, using the tags you already have.</p></div>
+    <div class="card" data-d="5"><div class="tag">Explain</div><p>See a cost jump next to the deploy and traffic change that caused it.</p></div>
+    <div class="card" data-d="6"><div class="tag">Act</div><p>Kubernetes autoscaling and right-sizing recommendations from real utilization.</p></div>
+    <div class="card" data-d="7"><div class="tag">Govern</div><p>Cost monitors alert owners before month-end, not after.</p></div>
+  </div>
+</div>
+<svg id="bill" viewBox="0 0 560 460"></svg>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('bill');
+  DD.el('rect', {x: 0, y: 0, width: 560, height: 460, rx: 14, fill: '#fff', stroke: '#E2DCEC'}, svg);
+  DD.el('text', {x: 24, y: 36, fill: '#6E6784', style: 'font:600 10.5px JetBrains Mono,monospace;letter-spacing:.06em'}, svg).textContent = 'DAILY CLOUD COST · service:checkout';
+  const vals = [40, 42, 41, 44, 43, 45, 44, 46, 45, 47, 46, 92, 94, 93, 95, 60, 48, 47, 46, 47];
+  const bw = 20, gx = 26, base = 330;
+  vals.forEach((v, i) => {
+    const b = DD.el('rect', {x: 24 + i * gx, y: base - v * 2, width: bw, height: v * 2, rx: 3, fill: i >= 11 && i <= 15 ? '#F2668B' : '#C9B2F2'}, svg);
+    b.style.transformOrigin = `${24 + i * gx + bw / 2}px ${base}px`; b.style.animation = `growY .6s ${.3 + i * .05}s var(--ease) both`;
+  });
+  DD.el('line', {x1: 24, y1: base, x2: 536, y2: base, stroke: '#E2DCEC'}, svg);
+  const mk = (x, y, bx, by, t1, t2, c, d) => { const g = DD.el('g', {}, svg); g.style.opacity = 0; g.style.animation = `rise .5s ${d}s var(--ease) both`;
+    DD.el('path', {d: `M${x},${y - 4} L${x},${by + 23} L${bx + 168},${by + 23}`, fill: 'none', stroke: c, 'stroke-dasharray': '3 3'}, g);
+    DD.el('rect', {x: bx, y: by, width: 168, height: 46, rx: 8, fill: c}, g);
+    DD.el('text', {x: bx + 12, y: by + 19, fill: '#fff', style: 'font:600 12px Inter,sans-serif'}, g).textContent = t1;
+    DD.el('text', {x: bx + 12, y: by + 36, fill: 'rgba(255,255,255,.85)', style: 'font:500 10px JetBrains Mono,monospace'}, g).textContent = t2; };
+  mk(24 + 11 * gx + 10, base - 92 * 2, 24, 56, 'Deploy v4.12', 'replicas 6 → 24', '#F2668B', 1.6);
+  mk(24 + 15 * gx + 10, base - 60 * 2, 370, 118, 'Autoscaling fix', 'back to baseline', '#632CA6', 2.2);
+  const s = DD.el('g', {}, svg); s.style.opacity = 0; s.style.animation = 'rise .5s 2.6s var(--ease) both';
+  DD.el('text', {x: 24, y: 380, fill: '#6E6784', style: 'font:400 13px Inter,sans-serif'}, s).textContent = 'Same tag as the latency spike and the deploy event.';
+  DD.el('text', {x: 24, y: 410, fill: '#170B2B', style: 'font:650 15px Inter,sans-serif'}, s).textContent = 'Found in one view. Fixed by the owning team.';
+  DD.el('text', {x: 24, y: 440, fill: '#A39DB5', style: 'font:400 10.5px JetBrains Mono,monospace'}, s).textContent = 'Illustrative example';
+})();
+</script>
+</body>
+</html>

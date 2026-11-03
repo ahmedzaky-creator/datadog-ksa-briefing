@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>The Bits roster</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .lead{position:absolute;left:72px;top:232px;width:400px;background:var(--purple);color:#fff;border-radius:14px;padding:24px 26px;height:330px;display:flex;flex-direction:column}
+  .lead .tag{color:var(--lav)}
+  .lead h3{font:650 30px var(--sans);letter-spacing:-.8px;margin:10px 0}
+  .lead p{font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.8)}
+  .lead .stat{color:#fff;font-size:64px;margin-top:auto}
+  .lead .cap{color:rgba(255,255,255,.7);font-size:13px;margin-top:6px}
+  .g{position:absolute;left:500px;right:72px;top:232px;height:330px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:10px}
+  .a{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;opacity:0;animation:pop .45s var(--ease) both;position:relative}
+  .a h4{font:650 14.5px var(--sans);margin-bottom:4px}
+  .a p{font-size:12px;line-height:1.4;color:var(--grey)}
+  .a .chip{position:absolute;right:10px;top:10px;font-size:9px;padding:2px 6px}
+  html[data-density="1"] .a p{display:none}
+</style>
+</head>
+<body class="soft" data-foot="Bits AI agents" data-who="sre,dev,ciso,cio">
+<div class="z">
+  <div class="eyebrow in1">Bits AI · the roster</div>
+  <h1 class="in2">A team of agents, <span class="b">one shared memory.</span></h1>
+</div>
+<div class="lead" data-d="3"><div class="tag">Flagship</div><h3>Bits AI SRE</h3><p>Investigates alerts the moment they fire: forms hypotheses, tests them against every signal, and hands the on-call engineer a finished root cause.</p>
+  <div class="stat"><span data-count="2000" data-post="+" data-delay=".6"></span></div><div class="cap">customers ran investigations within a month of GA (Dec 2025)</div></div>
+<div class="g" id="g"></div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const A = [['Bits Code', 'Writes and reviews fixes in your repo', 'GA'], ['Bits Remediation', 'Runs kubectl / API actions, opens fix PRs', ''], ['Bits Detection', 'Creates the monitors you forgot', ''],
+    ['Bits Security Analyst', 'Triages Cloud SIEM signals', ''], ['Bits Release', 'Watches rollouts, flags regressions', ''], ['Bits Testing', 'Finds and fixes flaky tests', ''],
+    ['Bits Chat', 'Ask anything about your systems', 'GA'], ['Agent Builder', 'Build your own agents on Datadog data', 'GA'], ['Bits Memories', 'Learns your environment over time', '']];
+  const g = document.getElementById('g');
+  A.forEach(([h, p, ga], i) => { const e = document.createElement('div'); e.className = 'a'; e.style.animationDelay = (.5 + i * .08) + 's';
+    e.innerHTML = `${ga ? '<span class="chip ga">GA</span>' : ''}<h4>${h}</h4><p>${p}</p>`; g.appendChild(e); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Path to value</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .track{position:absolute;left:72px;right:72px;top:268px;height:4px;background:var(--slate-l);border-radius:2px}
+  .track i{position:absolute;left:0;top:0;bottom:0;width:100%;background:linear-gradient(90deg,var(--purple),var(--teal));border-radius:2px;transform-origin:left;animation:grow 2.4s .4s var(--ease) both}
+  .ph{position:absolute;top:240px;width:340px}
+  .ph .dot{width:60px;height:60px;border-radius:50%;background:#fff;border:3px solid var(--purple);display:flex;align-items:center;justify-content:center;font:700 14px var(--mono);color:var(--purple);animation:pop .5s var(--ease) both}
+  .ph h3{font:650 21px var(--sans);letter-spacing:-.4px;margin:16px 0 8px}
+  .ph ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .ph li{font-size:14px;line-height:1.4;color:var(--char);padding-left:16px;position:relative}
+  .ph li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:2px;background:var(--violet)}
+  .ph .kpi{margin-top:12px;font:600 11px var(--mono);color:#0E8C76;background:#E6FBF6;border-radius:4px;padding:4px 8px;display:inline-block}
+  html[data-density="1"] .ph ul{display:none}
+</style>
+</head>
+<body data-foot="Path to value" data-who="exec,cio,sre,dev">
+<div class="z">
+  <div class="eyebrow in1">Adoption plan</div>
+  <h1 class="in2">Value in weeks, <span class="b">not a multi-year program.</span></h1>
+</div>
+<div class="track"><i></i></div>
+<div id="phs"></div>
+<div class="bv" data-d="10"><b>Business value</b><span>Every phase ends with a measurable outcome the business can see, <strong>not just a deployment milestone.</strong></span></div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const P = [
+    ['30', 'Land: see everything', ['Agent on priority services and Kubernetes', 'Cloud and core integrations on', 'Prebuilt dashboards and monitors live'], 'KPI: coverage of tier-1 services'],
+    ['60', 'Correlate: fix faster', ['Unified tags across APM, logs, RUM', 'SLOs on critical customer journeys', 'On-Call and Bits AI SRE in the incident flow'], 'KPI: MTTR and pages per week'],
+    ['90', 'Consolidate: retire & govern', ['Observability Pipelines and log tiers', 'Cloud SIEM and cost allocation', 'Retire overlapping tools and contracts'], 'KPI: tools retired, cost per service']
+  ];
+  const box = document.getElementById('phs');
+  P.forEach(([d, h, li, k], i) => {
+    const e = document.createElement('div'); e.className = 'ph'; e.style.left = (72 + i * 398) + 'px';
+    e.innerHTML = `<div class="dot" style="animation-delay:${.5 + i * .7}s">${d}d</div><h3 data-d="${4 + i * 5}">${h}</h3><ul>${li.map((x, j) => `<li data-d="${5 + i * 5 + j}">${x}</li>`).join('')}</ul><span class="kpi" data-d="${8 + i * 5}">${k}</span>`;
+    box.appendChild(e);
+  });
+  DD.stagger();
+})();
+</script>
+</body>
+</html>

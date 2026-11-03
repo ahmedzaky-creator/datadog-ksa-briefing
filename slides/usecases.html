@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Saudi use cases</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  h1{font-size:44px;letter-spacing:-1.5px}
+  .g{position:absolute;left:72px;right:72px;top:214px;bottom:62px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:14px}
+  .c{border:1px solid var(--line);border-radius:12px;padding:14px 18px 12px;background:#fff;display:flex;flex-direction:column;position:relative;cursor:pointer;transition:transform .25s var(--ease),box-shadow .25s,border-color .25s}
+  .c:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(99,44,166,.16);border-color:var(--lav)}
+  .c .top{display:flex;justify-content:space-between;align-items:center}
+  .c .sec{font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--grey)}
+  .c .go{font:600 10px var(--mono);color:var(--purple);opacity:.75}
+  .c h3{font:650 18px var(--sans);letter-spacing:-.4px;margin:6px 0 6px;color:var(--ink)}
+  .c .fact{font-size:12.5px;line-height:1.42;color:var(--char)}
+  .c .fact strong{color:var(--purple);font-weight:650}
+  .c .fail{margin-top:7px;font-size:12px;line-height:1.4;color:var(--char);padding-left:10px;border-left:2px solid var(--pink)}
+  .c .fail i{font-style:normal;font:600 9.5px var(--mono);color:#B0284F;letter-spacing:.06em;margin-right:5px}
+  .c .ps{margin-top:auto;padding-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+  .c .ps span{font:500 9.5px var(--mono);color:var(--purple);background:var(--purple-ll);border:1px solid var(--purple-l);padding:2px 6px;border-radius:4px}
+  .c .pulse{position:relative;display:inline-block;margin-left:8px;width:8px;height:8px;vertical-align:middle;border-radius:50%;background:var(--teal)}
+  .c .pulse::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--teal);animation:ring 2.2s var(--ease) infinite;animation-delay:inherit}
+  @keyframes ring{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.6);opacity:0}}
+  html[data-density="1"] .c .fail,html[data-density="1"] .c .fact{display:none}
+  html[data-density="5"] .c .fact{font-size:11.5px}
+</style>
+</head>
+<body class="soft" data-foot="Saudi use cases · click a card to jump" data-who="exec,cio,ciso,sre,dev,digital">
+<div class="z">
+  <div class="eyebrow in1">Use cases in the Kingdom</div>
+  <h1 class="in2">Six real Saudi problems. <span class="b">How Datadog solves each.</span></h1>
+</div>
+<div class="g" id="g"></div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const U = [
+    ['Payments & banking', 'A mada or sarie payment that fails for one bank', '<strong>14.6B</strong> electronic payments in 2025, <strong>85%</strong> of retail payments (SAMA).', 'Intermittent declines from one issuer while every dashboard looks green.', ['APM', 'Data Streams', 'DBM', 'SLOs', 'Workflows'], 'uc-payments.html'],
+    ['Government services', 'Every service behind Nafath', 'Nafath sits in front of <strong>530+</strong> platforms; Absher ran <strong>42M+</strong> transactions in a single month.', 'A slow shared login looks like an outage in hundreds of services at once.', ['Service Map', 'Synthetics', 'SLOs', 'Status Pages'], 'security.html'],
+    ['Hajj & Umrah', 'Nusuk on Arafah day', '<strong>1.71M</strong> pilgrims at Hajj 2026; <strong>90%+</strong> of Nusuk users are outside the Kingdom.', 'Global mobile users, overseas cards and a peak date fixed years ahead.', ['RUM', 'Session Replay', 'Synthetics', 'Flags'], 'peaks.html'],
+    ['Retail & delivery', 'Checkout on White Friday and Ramadan nights', 'mada e-commerce reached <strong>SAR 325B</strong> in 2025; October set a record at <strong>+68%</strong> YoY.', 'Checkout leans on mada, Apple Pay, BNPL and 3DS: other people\'s outages become your lost sales.', ['RUM', 'Product Analytics', 'APM', 'Synthetics'], 'uc-retail.html'],
+    ['Telecom', 'From 5G core to a working eSIM', 'stc and Zain KSA moved to cloud-native BSS/OSS; Mobily data traffic grew <strong>122%</strong> in 2025.', 'An order crosses network, core, billing and the app: four teams, four tools.', ['NDM', 'Network', 'APM', 'Data Streams'], 'uc-telecom.html'],
+    ['AI & agents', 'Agents built on ALLaM, HUMAIN and in-house models', 'HUMAIN ONE launched as an enterprise agent platform; Aramco runs a Groq inference cluster in Dammam.', 'Agents fail quietly: wrong tool call, runaway token bill, slow GPU.', ['LLM Obs', 'GPU', 'AI Guard', 'Cost'], 'uc-ai.html']
+  ];
+  const g = document.getElementById('g');
+  U.forEach(([sec, h, fact, fail, ps, file], i) => {
+    const c = document.createElement('div'); c.className = 'c'; c.style.opacity = 0; c.style.animation = `rise .6s ${.3 + i * .09}s var(--ease) both`;
+    c.innerHTML = `<div class="top"><span class="sec">${String(i + 1).padStart(2, '0')} · ${sec}</span><span class="go">${/^uc-/.test(file) ? 'deep dive' : 'related slide'} →<span class="pulse" style="animation-delay:${i * .35}s"></span></span></div><h3>${h}</h3><div class="fact">${fact}</div><div class="fail"><i>FAILURE MODE</i>${fail}</div><div class="ps">${ps.map(p => `<span>${p}</span>`).join('')}</div>`;
+    c.onclick = () => DD.go(file);
+    g.appendChild(c);
+  });
+})();
+</script>
+</body>
+</html>

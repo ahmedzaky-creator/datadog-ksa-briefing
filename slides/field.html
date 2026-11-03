@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Versus the field</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  h1{font-size:46px}
+  .g{position:absolute;left:72px;right:72px;top:218px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .c{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff;min-height:150px;opacity:0;animation:rise .55s var(--ease) both}
+  .c .tag{color:var(--grey);font-size:10px}
+  .c h3{font:650 17px var(--sans);margin:6px 0 8px;letter-spacing:-.3px}
+  .c p{font-size:13px;line-height:1.45;color:var(--char)}
+  .c p b{color:var(--purple)}
+  .note{position:absolute;left:72px;right:72px;bottom:62px;font:400 11px var(--mono);color:var(--grey-l)}
+  html[data-density="1"] .c p{display:none}
+  html[data-density="1"] .c{min-height:0}
+</style>
+</head>
+<body class="soft" data-foot="Versus the field" data-who="exec,cio">
+<div class="z">
+  <div class="eyebrow in1">Competitive landscape · Datadog's positioning</div>
+  <h1 class="in2">Why teams choose a platform <span class="b">over a patchwork.</span></h1>
+</div>
+<div class="g" id="g"></div>
+<div class="note in6">Datadog's own framing of the market, summarized from public positioning and migration tooling. Not a feature-by-feature benchmark.</div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const C = [
+    ['Legacy APM suites', 'Breadth and speed', 'Developer-first, bottom-up adoption, with <b>security, delivery and product analytics</b> on the same platform.'],
+    ['Legacy log & SIEM', 'Cloud-native economics', 'Tiered log pricing and a unified platform; tooling converts <b>Splunk archives</b> into a rehydratable format.'],
+    ['Self-run search engines', 'Turnkey SaaS', 'No clusters to size and tune; a supported path to migrate <b>historical Elasticsearch logs</b>.'],
+    ['Open-source stacks', 'People, not licenses', 'DIY costs engineering time; <b>OpenTelemetry and Prometheus</b> still land natively.'],
+    ['Hyperscaler-native tools', 'Every cloud, one view', 'One pane across AWS, Azure, Google Cloud and Oracle, plus <b>1,000+ integrations</b>.'],
+    ['Point AI-SRE tools', 'Agents need data', 'Bits AI works on <b>unified, first-party telemetry</b>, so it doesn\'t have to stitch context from other tools.']
+  ];
+  const g = document.getElementById('g');
+  C.forEach(([t, h, p], i) => { const c = document.createElement('div'); c.className = 'c'; c.style.animationDelay = (.3 + i * .1) + 's'; c.innerHTML = `<span class="tag">vs ${t}</span><h3>${h}</h3><p>${p}</p>`; g.appendChild(c); });
+})();
+</script>
+</body>
+</html>

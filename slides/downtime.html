@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>The cost of downtime</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .hero{position:absolute;left:72px;top:250px;width:560px}
+  .hero .stat{font-size:150px;color:var(--pink);letter-spacing:-6px}
+  .hero .cap{font-size:17px;max-width:460px;margin-top:8px}
+  .side{position:absolute;right:72px;top:236px;width:500px;display:flex;flex-direction:column;gap:16px}
+  .r{display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:center;border-top:1px solid var(--line);padding-top:14px}
+  .r .v{font:650 34px var(--sans);white-space:nowrap;letter-spacing:-1.4px;color:var(--ink)}
+  .r p{font-size:14px;line-height:1.45;color:var(--char)}
+  .r .src{display:block;margin-top:4px}
+  .meter{position:absolute;left:72px;top:510px;width:500px;height:10px;background:var(--slate-l);border-radius:5px;overflow:hidden}
+  .meter i{position:absolute;left:0;top:0;bottom:0;width:100%;background:linear-gradient(90deg,var(--amber),var(--pink));transform-origin:left;animation:grow 60s linear both}
+  .mlab{position:absolute;left:72px;top:528px;font:500 11px var(--mono);color:var(--grey)}
+  html[data-density="1"] .side{display:none}
+  html[data-density="1"] .hero{left:72px;top:230px;width:900px}
+  html[data-density="1"] .hero .stat{font-size:200px}
+</style>
+</head>
+<body data-foot="The cost of downtime" data-who="exec,cio,sre">
+<div class="z">
+  <div class="eyebrow in1">Business value · risk</div>
+  <h1 class="in2">Downtime is a <span class="b">board-level number.</span></h1>
+</div>
+<div class="hero" data-d="3"><div class="stat"><span data-count="2" data-pre="$" data-post="M" data-delay=".5"></span></div><div class="cap">Median cost <b>per hour</b> of a high-impact outage. Teams with full-stack observability reported about half that.</div><div class="src" style="margin-top:8px">New Relic Observability Forecast 2025</div></div>
+<div class="meter" data-d="5"><i></i></div>
+<div class="mlab" data-d="5" id="ml">Cost of this outage so far: $0</div>
+<div class="side">
+  <div class="r" data-d="4"><div class="v">$600B</div><p>a year lost to downtime by the Global 2000, about $300M per company.<span class="src">Splunk / Cisco research, 2026</span></p></div>
+  <div class="r" data-d="5"><div class="v">57%</div><p>of operators said their last significant outage cost over $100K.<span class="src">Uptime Institute, 2026</span></p></div>
+  <div class="r" data-d="6"><div class="v">up to 9%</div><p>stock-price drop after a single major incident, 79 days to recover.<span class="src">Splunk / Oxford Economics, 2024</span></p></div>
+</div>
+<div class="bv" data-d="8"><b>Business value</b><span>Every minute cut from detection and resolution is money kept. <strong>MTTR is a financial metric.</strong></span></div>
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const ml = document.getElementById('ml'), t0 = performance.now();
+  // $2M per hour = ~$556 per second, counted from when the slide opened
+  setInterval(() => { ml.textContent = 'At $2M an hour, the time on this slide has cost: $' + Math.round((performance.now() - t0) / 1000 * 2e6 / 3600).toLocaleString('en-US'); }, 100);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Close</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  h1{font-size:80px;letter-spacing:-3.5px;line-height:.98;margin-top:60px}
+  .card{position:absolute;right:72px;top:112px;width:470px;background:rgba(255,255,255,.06)!important;border:1px solid rgba(47,211,181,.4)!important;border-radius:14px;padding:22px 24px;font-size:14px;color:rgba(255,255,255,.85);line-height:1.5}
+  .card .k{font:600 10.5px var(--mono);color:var(--teal);letter-spacing:.07em;display:flex;justify-content:space-between}
+  .card h4{font:650 19px var(--sans);color:#fff;margin:10px 0 12px}
+  .tl{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+  .tl div{display:grid;grid-template-columns:62px 1fr;gap:10px;font-size:13px}
+  .tl span{font:500 12px var(--mono);color:var(--lav)}
+  .take{position:absolute;left:72px;right:72px;bottom:96px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .take div{border-top:2px solid var(--violet);padding-top:12px}
+  .take .tag{color:var(--lav);margin-bottom:6px}
+  .take p{font-size:14px;line-height:1.45;color:rgba(255,255,255,.72)}
+  .disc{position:absolute;left:72px;bottom:58px;font:400 10.5px var(--mono);color:rgba(255,255,255,.3)}
+  html[data-density="1"] .take{display:none}
+</style>
+</head>
+<body class="ink" data-foot="Thank you" data-who="exec,cio,ciso,sre,dev,digital">
+<div class="z">
+  <div class="eyebrow in1">شكراً · Thank you</div>
+  <h1 class="in2">Wake up to<br>an answer,<br><span class="b">not a page.</span></h1>
+</div>
+<div class="card" data-d="4"><div class="k"><span>BITS AI SRE · RESOLVED</span><span>03:19</span></div><h4>checkout-api latency: rolled back, pool restored</h4>
+  <div class="tl">
+    <div data-d="5"><span>03:12</span>Monitor fires, investigation starts</div>
+    <div data-d="6"><span>03:14</span>3 of 4 hypotheses ruled out</div>
+    <div data-d="7"><span>03:16</span>Root cause: pool size cut in v4.12</div>
+    <div data-d="8"><span>03:19</span>Rollback approved by on-call, healthy</div>
+  </div></div>
+<div class="take">
+  <div data-d="9"><div class="tag">One platform</div><p>One agent, one tag model, 30+ products and 1,000+ integrations: fewer tools, one bill.</p></div>
+  <div data-d="10"><div class="tag">Agents on shift</div><p>Bits AI investigates, remediates and ships, inside your workflow and your coding agent.</p></div>
+  <div data-d="11"><div class="tag">Built for the Kingdom's scale</div><p>Peak-ready for national moments, with PII redacted and raw data kept in-Kingdom.</p></div>
+</div>
+<div class="disc">Internal competitive training · not affiliated with or endorsed by Datadog, Inc. · illustrative scenario</div>
+<script src="../js/dd.js"></script>
+</body>
+</html>
