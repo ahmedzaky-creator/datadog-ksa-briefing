@@ -5,75 +5,211 @@
 <title>Amazon EKS & Container Observability</title>
 <link rel="stylesheet" href="../css/dd.css">
 <style>
-  .cols{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;margin-top:20px}
-  .card-left{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
-  .eks-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
-  .pod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-  .pod-box{border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:10px;background:rgba(255,255,255,.03)}
-  .pod-box .name{font:600 11px var(--mono);color:var(--lav)}
-  .pod-box .stat-line{font:400 10px var(--mono);color:rgba(255,255,255,.6);margin-top:4px}
-  .pod-box.warn{border-color:var(--amber);background:rgba(255,181,46,.1)}
-  .pod-box.warn .stat-line{color:var(--amber)}
-  .meter-pill{font:600 11px var(--mono);color:var(--purple);background:var(--purple-ll);padding:6px 10px;border-radius:6px;margin-top:12px;display:inline-block}
-  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
-  .dot.green{background:var(--teal);box-shadow:0 0 8px var(--teal)}
-  .dot.amber{background:var(--amber);box-shadow:0 0 8px var(--amber);animation:pulse 1s infinite}
-  .hpa-btn{background:var(--purple);color:#fff;border:none;border-radius:4px;padding:4px 8px;font:600 10px var(--mono);cursor:pointer;margin-top:8px}
-  .hpa-btn:hover{background:var(--violet)}
+  body {
+    padding: 28px 48px;
+    height: 720px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header-left .eyebrow {
+    font: 700 11px var(--mono);
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 4px 0 2px;
+    line-height: 1.2;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--char);
+    margin: 0;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 20px;
+    margin: 14px 0;
+  }
+  .card-left {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.03);
+  }
+  .eks-vis {
+    background: #0f172a;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px;
+    color: #fff;
+  }
+  .pod-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .pod-box {
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 6px;
+    padding: 10px;
+    background: rgba(255,255,255,.04);
+    transition: transform .2s ease;
+  }
+  .pod-box:hover {
+    transform: translateY(-2px);
+  }
+  .pod-box .name {
+    font: 700 11.5px var(--mono);
+    color: #cbd5e1;
+  }
+  .pod-box .stat-line {
+    font: 500 10px var(--mono);
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  .pod-box.warn {
+    border-color: #f59e0b;
+    background: rgba(245,158,11,.15);
+  }
+  .pod-box.warn .stat-line {
+    color: #f59e0b;
+    font-weight: 700;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .dot.green {
+    background: #2dd4bf;
+    box-shadow: 0 0 8px #2dd4bf;
+  }
+  .dot.amber {
+    background: #f59e0b;
+    box-shadow: 0 0 8px #f59e0b;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .hpa-btn {
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font: 700 10.5px var(--mono);
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .hpa-btn:hover {
+    background: #4b1f82;
+  }
+  .value-callout {
+    background: #f8fafc;
+    border-left: 4px solid var(--purple);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--char);
+  }
+  .footer-banner {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 </style>
 </head>
-<body class="soft" data-foot="Domain 1 · Amazon EKS & Container Observability" data-who="sre,dev,cio">
-<div class="z">
-  <div class="eyebrow in1">Domain 1 · Container &amp; Kubernetes Fabric</div>
-  <h1 class="in2">Amazon EKS in Riyadh: <span class="b">Taming ephemeral container sprawl.</span></h1>
-  <p class="sub in3">Plain Language: When migrating to Kubernetes in AWS Riyadh, containers spin up and die in seconds. Datadog captures every pod lifecycle event, CPU throttle, and out-of-memory crash without missing a beat.</p>
+<body class="soft" data-foot="Domain 1 · Amazon EKS & Containers" data-who="sre,dev,cio">
+
+<div class="header-left in1">
+  <div class="eyebrow">Domain 1 · Container &amp; Kubernetes Fabric</div>
+  <h1>Amazon EKS in Riyadh: <span class="b" style="color:var(--purple)">Smart autoscaling that never fails.</span></h1>
+  <p>In modern cloud environments, containers start and stop in seconds. Datadog watches every container in real time so your apps never crash under sudden traffic surges.</p>
 </div>
 
-<div class="cols">
-  <div class="card-left in3">
+<div class="cols in2">
+  <!-- Left Side: Plain Value -->
+  <div class="card-left">
     <div>
-      <div class="tag">Kubernetes Native Mechanics</div>
-      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Datadog Cluster Agent &amp; HPA</h3>
-      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
-        Instead of running heavyweight agents in every container, the Datadog Agent runs as a DaemonSet, scraping kernel cgroups. The Cluster Agent aggregates cluster-level metrics and serves as an external metrics provider for Horizontal Pod Autoscaling (HPA).
+      <div style="font:700 11px var(--mono);color:var(--purple);text-transform:uppercase;margin-bottom:4px">Zero-Crash Operations</div>
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">Built for Ramadan &amp; Peak Events</h3>
+      <p style="font-size:12.5px;color:var(--char);line-height:1.5;margin-bottom:12px">
+        When traffic spikes during salary week or evening shopping, basic cloud alarms react too slowly. Datadog connects directly to Kubernetes to auto-scale before users notice a lag.
       </p>
-      <div class="meter-pill">Billed Meter: $1.00 / container / mo ($0.002/hr)</div>
-      <p style="font-size:12px;color:var(--char);margin-top:8px">
-        <b>Account Pooling Advantage:</b> Each Enterprise host includes 10 containers. An estate with 250 hosts includes 2,500 containers free across the cluster before any $1/mo container fee applies.
-      </p>
+
+      <div class="value-callout">
+        <b>Why Platform Teams Choose Datadog for EKS:</b><br>
+        • <b>Scales on Business Orders:</b> Auto-scales on incoming checkout requests, not just delayed CPU counters.<br>
+        • <b>Stops Out-of-Memory Crashes:</b> Predicts container memory limits before pods get killed.<br>
+        • <b>Zero Extra Agents:</b> One agent on each host watches 100+ containers automatically.
+      </div>
     </div>
-    <div style="background:var(--bg);padding:10px 12px;border-radius:6px;font:500 11.5px var(--mono);color:var(--char)">
-      <b>Kubernetes Autoscaling ($2/node/mo):</b> Scales EKS pods based on real business metrics (payment queue depth, mada transaction TPS) rather than blunt CPU.
+
+    <div style="font:600 11px var(--mono);color:#059669;background:#ecfdf5;padding:8px 12px;border-radius:6px">
+      ✓ Generous Bundling: 10 containers included free with every enterprise host license.
     </div>
   </div>
 
-  <div class="eks-vis in4">
+  <!-- Right Side: Interactive Simulation -->
+  <div class="eks-vis">
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font:600 11px var(--mono);color:var(--lav)">AWS RIYADH EKS CLUSTER · me-central-2a</span>
-        <button class="hpa-btn" id="hpaToggle">Simulate Peak HPA Scale-Out</button>
+        <span style="font:700 11px var(--mono);color:#94a3b8">LIVE EKS CLUSTER · me-central-2 (RIYADH)</span>
+        <button class="hpa-btn" id="hpaToggle">⚡ Simulate Peak Traffic Surge</button>
       </div>
+
       <div class="pod-grid" id="podGrid">
-        <div class="pod-box"><div class="name"><span class="dot green"></span>auth-pod-7x</div><div class="stat-line">CPU: 18% · 120MB</div></div>
-        <div class="pod-box"><div class="name"><span class="dot green"></span>auth-pod-9b</div><div class="stat-line">CPU: 22% · 128MB</div></div>
-        <div class="pod-box warn"><div class="name"><span class="dot amber"></span>mada-gw-2k</div><div class="stat-line">CPU Throttled: 42%</div></div>
-        <div class="pod-box"><div class="name"><span class="dot green"></span>orders-db-1</div><div class="stat-line">IOPS: 1,420 · OK</div></div>
-        <div class="pod-box"><div class="name"><span class="dot green"></span>orders-db-2</div><div class="stat-line">IOPS: 1,380 · OK</div></div>
-        <div class="pod-box"><div class="name"><span class="dot green"></span>redis-cache</div><div class="stat-line">Hits: 99.4% · 42ms</div></div>
+        <div class="pod-box"><div class="name"><span class="dot green"></span>auth-pod-1</div><div class="stat-line">Healthy · 22% CPU</div></div>
+        <div class="pod-box"><div class="name"><span class="dot green"></span>auth-pod-2</div><div class="stat-line">Healthy · 26% CPU</div></div>
+        <div class="pod-box warn" id="warnPod"><div class="name"><span class="dot amber"></span>payment-gw</div><div class="stat-line">⚠️ Throttling (92%)</div></div>
+        <div class="pod-box"><div class="name"><span class="dot green"></span>orders-db</div><div class="stat-line">Healthy · 12ms</div></div>
+        <div class="pod-box"><div class="name"><span class="dot green"></span>inventory-api</div><div class="stat-line">Healthy · 18ms</div></div>
+        <div class="pod-box"><div class="name"><span class="dot green"></span>redis-cache</div><div class="stat-line">Hits: 99.4%</div></div>
       </div>
     </div>
-    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px" id="hpaStatus">
-      <div style="font:600 10.5px var(--mono);color:var(--teal)">OOM KILL &amp; THROTTLING PREDICTION</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:3px">
-        Watchdog detected <code>mada-gw-2k</code> hitting CPU quota limit. Automatic suggestion: increase <code>limits.cpu</code> from 500m to 1000m before users notice latency.
+
+    <div style="border-top:1px solid #334155;padding-top:10px" id="hpaStatus">
+      <div style="font:700 11px var(--mono);color:#f59e0b">⚠️ BOTTLENECK DETECTED: PAYMENT POD OVERLOAD</div>
+      <div style="font-size:12px;color:#cbd5e1;margin-top:3px">
+        Click the button above to simulate Datadog Cluster Agent scaling out pods automatically to protect checkout.
       </div>
     </div>
   </div>
 </div>
 
-<div class="bv in5">
-  <b>Why not AWS CloudWatch Container Insights?</b>
-  Container Insights charges extra for every metric stream ingested and creates disconnected dashboards. Datadog connects pod metrics directly to APM traces and SAMA compliance logs in one click.
+<div class="footer-banner in3">
+  <div><b>The Business Advantage:</b> End user transactions stay fast and reliable, even during unexpected 10x traffic surges.</div>
+  <span style="font:700 11px var(--mono);color:var(--teal)">Automatic Self-Healing</span>
 </div>
 
 <script src="../js/dd.js"></script>
@@ -86,25 +222,42 @@
 
   btn.addEventListener('click', () => {
     scaled = !scaled;
-    btn.textContent = scaled ? 'Reset Baseline' : 'Simulate Peak HPA Scale-Out';
     if (scaled) {
+      btn.textContent = '↺ Reset Cluster Baseline';
+      btn.style.background = '#334155';
       grid.innerHTML += `
-        <div class="pod-box in1" id="extra1"><div class="name"><span class="dot green"></span>mada-gw-3a</div><div class="stat-line">HPA Scaled · CPU: 12%</div></div>
-        <div class="pod-box in2" id="extra2"><div class="name"><span class="dot green"></span>mada-gw-3b</div><div class="stat-line">HPA Scaled · CPU: 15%</div></div>
-        <div class="pod-box in3" id="extra3"><div class="name"><span class="dot green"></span>mada-gw-3c</div><div class="stat-line">HPA Scaled · CPU: 14%</div></div>
+        <div class="pod-box" id="extra1" style="border-color:#2dd4bf"><div class="name"><span class="dot green"></span>payment-gw-2</div><div class="stat-line" style="color:#2dd4bf">Auto-Scaled · 18%</div></div>
+        <div class="pod-box" id="extra2" style="border-color:#2dd4bf"><div class="name"><span class="dot green"></span>payment-gw-3</div><div class="stat-line" style="color:#2dd4bf">Auto-Scaled · 20%</div></div>
+        <div class="pod-box" id="extra3" style="border-color:#2dd4bf"><div class="name"><span class="dot green"></span>payment-gw-4</div><div class="stat-line" style="color:#2dd4bf">Auto-Scaled · 19%</div></div>
       `;
+      const warn = document.getElementById('warnPod');
+      if(warn) {
+        warn.classList.remove('warn');
+        warn.querySelector('.dot').className = 'dot green';
+        warn.querySelector('.stat-line').textContent = 'Relieved · 24% CPU';
+        warn.querySelector('.stat-line').style.color = '#cbd5e1';
+      }
       stat.innerHTML = `
-        <div style="font:600 10.5px var(--mono);color:var(--teal)">CLUSTER AGENT HPA AUTOSCALING TRIGGERED</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.9);margin-top:3px">
-          Cluster Agent detected payment TPS spike; scaled <code>mada-gw</code> from 1 to 4 replicas in <b>6.2 seconds</b>. CPU throttling eliminated.
+        <div style="font:700 11px var(--mono);color:#2dd4bf">✓ CLUSTER AGENT AUTOSCALING COMPLETE</div>
+        <div style="font-size:12px;color:#cbd5e1;margin-top:3px">
+          Traffic split across 4 pods in <b>4.8 seconds</b>. CPU throttling dropped from 92% to 21%. Zero dropped customer orders!
         </div>
       `;
     } else {
+      btn.textContent = '⚡ Simulate Peak Traffic Surge';
+      btn.style.background = 'var(--purple)';
       ['extra1', 'extra2', 'extra3'].forEach(id => { const el = document.getElementById(id); if (el) el.remove(); });
+      const warn = document.getElementById('warnPod');
+      if(warn) {
+        warn.classList.add('warn');
+        warn.querySelector('.dot').className = 'dot amber';
+        warn.querySelector('.stat-line').textContent = '⚠️ Throttling (92%)';
+        warn.querySelector('.stat-line').style.color = '#f59e0b';
+      }
       stat.innerHTML = `
-        <div style="font:600 10.5px var(--mono);color:var(--teal)">OOM KILL &amp; THROTTLING PREDICTION</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:3px">
-          Watchdog detected <code>mada-gw-2k</code> hitting CPU quota limit. Automatic suggestion: increase <code>limits.cpu</code> from 500m to 1000m before users notice latency.
+        <div style="font:700 11px var(--mono);color:#f59e0b">⚠️ BOTTLENECK DETECTED: PAYMENT POD OVERLOAD</div>
+        <div style="font-size:12px;color:#cbd5e1;margin-top:3px">
+          Click the button above to simulate Datadog Cluster Agent scaling out pods automatically to protect checkout.
         </div>
       `;
     }

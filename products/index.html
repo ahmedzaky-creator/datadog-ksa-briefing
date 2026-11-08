@@ -206,13 +206,13 @@ const TITLES = [
   'Domain 6: Bits AI 10-Agent Roster',
   'Domain 6: Bits AI SRE Investigation',
   'Domain 6: Model Context Protocol (MCP)',
-  'Domain 7: Sovereign AI & Bedrock/ALLaM',
+  'Domain 7: Sovereign AI & Bedrock & Private LLMs',
   'Domains 8 & 9: CI/CD & Incident Mgmt',
   'FinOps: Cloud Cost & EDP Drawdown',
   'Saudi Compliance Master Matrix',
   'The 4 KSA Architectural Blueprints',
   'Production Vector VRL Scrubbing',
-  '30-60-90 Day Migration Roadmap'
+  'Your Path to AWS Riyadh Excellence'
 ];
 
 /* Speaker notes: Field talk tracks, regulatory citations & engineering proofs */
@@ -277,7 +277,7 @@ const NOTES = {
 '11-gpu-monitoring.html': `- GPU Monitoring ($10/accelerator/month): Direct integration with NVIDIA DCGM (Data Center GPU Manager).
 - Unifies hardware metrics for AWS EC2 P5 (H100), G5 (A10G), and on-prem DGX clusters.
 - Captures Tensor Core utilization, VRAM allocation, NVLink interconnect bandwidth, and PCIe thermal limits.
-- Essential for sovereign Arabic AI training (ALLaM 34B, HUMAIN ONE). Flags GPU idling caused by PyTorch data loader I/O bottlenecks.`,
+- Essential for sovereign Arabic AI training (Amazon Bedrock & Private LLMs, HUMAIN ONE). Flags GPU idling caused by PyTorch data loader I/O bottlenecks.`,
 
 '12-apm-tracing.html': `- Domain 2: APM & Distributed Tracing ($31/host/month).
 - Single-Step APM (SSI): Automatically injects tracing bytecode at Kubernetes admission level without touching developer Dockerfiles.
@@ -377,7 +377,7 @@ const NOTES = {
 - Developers ask in natural language in their terminal: "Why did payment errors jump?" Claude queries Datadog metrics, finds the offending line of code, and generates the fix PR.`,
 
 '30-sovereign-ai-llm-obs.html': `- Domain 7: Sovereign AI & LLM Observability.
-- Monitoring enterprise GenAI on Amazon Bedrock, ALLaM 34B, and HUMAIN agent networks in AWS Riyadh.
+- Monitoring enterprise GenAI on Amazon Bedrock, Amazon Bedrock & Private LLMs, and HUMAIN agent networks in AWS Riyadh.
 - Traces multi-step agent tool calls, token consumption, step latency, and RAG retrieval cosine similarity.
 - AI Guard ($0.05/1k requests): Real-time prompt injection defense and Arabic citizen PII redaction.
 - Connects mobile RUM -> backend APM -> Bedrock LLM trace -> NVIDIA H100 GPU metrics on one screen.`,
@@ -422,7 +422,7 @@ const NOTES = {
 2. Digital Government: Nafath SSO and Absher morning authentication surges across 530+ agencies.
 3. Hajj & Umrah: Nusuk super-app handling 2.5M pilgrims in Mina cellular congestion.
 4. National Telecom: 5G Core User Plane Functions (UPF) latency & CST CDR retention in Flex Logs.
-5. Sovereign AI: ALLaM 34B multi-step agent tracing & NVIDIA H100 GPU optimization.`,
+5. Sovereign AI: Amazon Bedrock & Private LLMs multi-step agent tracing & NVIDIA H100 GPU optimization.`,
 
 '38-migration-roadmap.html': `- The 30-60-90 Day Migration Plan for AWS Riyadh:
 - Days 1-30: Baseline existing on-prem systems and deploy Agent v7 on new EKS clusters in Riyadh; enable 1,000+ turn-key integrations.
