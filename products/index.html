@@ -92,9 +92,8 @@
 
 <div id="bar">
   <span class="brand"><i></i><b>AWS Riyadh · Product Catalog</b></span>
-  <a href="../#1" style="text-decoration:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;font:600 11px Inter,sans-serif;padding:4px 8px;border-radius:6px;margin-left:6px;display:inline-flex;align-items:center;gap:4px" title="Back to Competitive Briefing">← <span>Competitive Briefing (34 slides)</span></a>
   <button id="bPrev" title="Previous (←)">←</button>
-  <span id="count">1 / 38</span>
+  <span id="count">1 / 35</span>
   <button id="bNext" title="Next (→)">→</button>
   <span class="sp"></span>
   <button id="bDenM" title="Less detail (−)">−</button>
@@ -174,7 +173,7 @@ const SLIDES = [
   '33-saudi-compliance-matrix.html',
   '34-architectural-blueprints.html',
   '35-vrl-pipeline-code.html',
-  '38-migration-roadmap.html'
+  '38-executive-conclusion.html'
 ];
 
 const TITLES = [
@@ -212,7 +211,7 @@ const TITLES = [
   'Saudi Compliance Master Matrix',
   'The 4 KSA Architectural Blueprints',
   'Production Vector VRL Scrubbing',
-  'Your Path to AWS Riyadh Excellence'
+  'Executive Conclusion: Vision 2030'
 ];
 
 /* Speaker notes: Field talk tracks, regulatory citations & engineering proofs */
@@ -424,11 +423,12 @@ const NOTES = {
 4. National Telecom: 5G Core User Plane Functions (UPF) latency & CST CDR retention in Flex Logs.
 5. Sovereign AI: Amazon Bedrock & Private LLMs multi-step agent tracing & NVIDIA H100 GPU optimization.`,
 
-'38-migration-roadmap.html': `- The 30-60-90 Day Migration Plan for AWS Riyadh:
-- Days 1-30: Baseline existing on-prem systems and deploy Agent v7 on new EKS clusters in Riyadh; enable 1,000+ turn-key integrations.
-- Days 31-60: Enforce Unified Service Tagging, set payment SLOs, put Bits AI SRE into active incident flow. MTTR drops to <5 mins.
-- Days 61-90: Route compliance logs to Flex Logs on local S3, activate Cloud SIEM, retire legacy Splunk/APM tools, and lock in 51% TCO savings via 100% AWS EDP drawdown.
-- Local Riyadh Delivery Partner: Zero&One (Advanced Tier Partner with Riyadh office).`
+'38-executive-conclusion.html': `- Executive Summary & Vision 2030 Conclusion:
+- Three strategic pillars guarantee Day-1 launch success in AWS Riyadh without operational war rooms or regulatory penalties.
+- Pillar 1 (Full-Stack Visibility): Single operational pane of glass uniting legacy on-prem datacenters with AWS Riyadh using one lightweight agent.
+- Pillar 2 (Saudi Sovereign Shield): 100% in-Kingdom log retention in local Amazon S3 for SAMA and NCA compliance, with in-memory citizen PII scrubbing.
+- Pillar 3 (Autonomous AI & FinOps): Automated root cause analysis via Bits AI reduces MTTR from hours to minutes, funded 100% via AWS EDP committed spend drawdown.
+- Immediate Next Step: Initiate a 14-day production pilot in AWS Riyadh with local implementation partner Zero&One / NTT DATA.`
 };
 
 /* Shell logic matching datadog-preso */
