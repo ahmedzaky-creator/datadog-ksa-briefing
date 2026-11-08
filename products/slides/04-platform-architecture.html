@@ -5,91 +5,174 @@
 <title>Agent v7 & eBPF Kernel Architecture</title>
 <link rel="stylesheet" href="../css/dd.css">
 <style>
-  #arch{position:absolute;left:64px;top:200px;width:1152px;height:340px}
-  .legend{position:absolute;left:64px;right:64px;top:555px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-  .legend div{font-size:12.5px;line-height:1.45;color:var(--char);border-top:2px solid var(--c);padding-top:8px}
-  .legend b{color:var(--ink);font-family:var(--sans)}
-  html[data-density="1"] .legend{display:none}
+  body {
+    padding: 28px 48px;
+    height: 720px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header-left .eyebrow {
+    font: 700 11px var(--mono);
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 4px 0 2px;
+    line-height: 1.2;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--char);
+    margin: 0;
+  }
+  .arch-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 14px 0;
+  }
+  .arch-box {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,.03);
+    height: 380px;
+  }
+  .arch-box.dark {
+    background: #0f172a;
+    color: #fff;
+    border-color: #334155;
+  }
+  .arch-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge-tag {
+    font: 700 10px var(--mono);
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .step-item {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--char);
+  }
+  .arch-box.dark .step-item {
+    background: #1e293b;
+    border-color: #334155;
+    color: #cbd5e1;
+  }
+  .step-item b {
+    color: var(--ink);
+  }
+  .arch-box.dark .step-item b {
+    color: #fff;
+  }
+  .footer-banner {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 </style>
 </head>
-<body class="soft" data-foot="Agent v7 Architecture · Linux eBPF Kernel Subsystems" data-who="sre,dev,cio">
-<div class="z">
-  <div class="eyebrow in1">The Foundation Under Every Product</div>
-  <h1 class="in2">One agent. <span class="b">Kernel-level eBPF. Zero code changes.</span></h1>
-  <p class="sub in3">Rather than installing 8 separate vendor daemons, the Datadog v7 agent hooks directly into the Linux kernel via eBPF. It observes every system call, network flow, and pod lifecycle event with under 1% CPU overhead.</p>
+<body class="soft" data-foot="Architecture · Lightweight Single-Agent Foundation" data-who="sre,dev,cio">
+
+<div class="header-left in1">
+  <div class="eyebrow">Under The Hood · Simple Architecture</div>
+  <h1>One invisible program. <span class="b" style="color:var(--purple)">Zero performance slowdown.</span></h1>
+  <p>Instead of installing 8 heavy monitoring tools that drain your server power, Datadog runs as a single, ultra-efficient program using less than 1% CPU.</p>
 </div>
 
-<svg id="arch" viewBox="0 0 1152 340"></svg>
+<div class="arch-container in2">
+  <!-- Left: The Old Nightmare -->
+  <div class="arch-box">
+    <div>
+      <div class="arch-title" style="color:#e11d48">
+        <span>❌</span> The Old Multi-Tool Nightmare
+        <span class="badge-tag" style="background:#ffe4e6;color:#e11d48">8+ Separate Agents</span>
+      </div>
+      <p style="font-size:12px;color:var(--grey);margin-bottom:12px">Companies struggle with high server overhead, conflicting data, and constant manual setup.</p>
+      <div class="step-list">
+        <div class="step-item">
+          <b>High Resource Tax (10–15% CPU):</b> Running separate monitoring agents for logs, metrics, APM, network, and security burns expensive server memory.
+        </div>
+        <div class="step-item">
+          <b>Manual Code Rewrites:</b> Developers must modify application code, recompile Docker images, and configure custom log collectors for every service.
+        </div>
+        <div class="step-item">
+          <b>Conflicting Consoles:</b> When an outage happens, the network tool says "all good," while the APM tool shows errors—leading to 2-hour blame sessions.
+        </div>
+      </div>
+    </div>
+    <div style="font:600 11px var(--mono);color:#e11d48;background:#fff1f2;padding:6px 10px;border-radius:4px">
+      Result: Slower servers, higher AWS bills, and frustrated teams.
+    </div>
+  </div>
 
-<div class="legend">
-  <div style="--c:var(--purple)" data-d="6">
-    <b>System-Probe &amp; eBPF:</b> Hooks socket events, TCP handshakes, and process executions directly in kernel space without bytecode modification.
+  <!-- Right: The Datadog Way -->
+  <div class="arch-box dark">
+    <div>
+      <div class="arch-title" style="color:#2dd4bf">
+        <span>✓</span> The Datadog Single-Agent Way
+        <span class="badge-tag" style="background:rgba(45,212,191,.2);color:#2dd4bf">&lt;1% CPU Overhead</span>
+      </div>
+      <p style="font-size:12px;color:#94a3b8;margin-bottom:12px">A single, compiled background program connects directly to the operating system kernel.</p>
+      <div class="step-list">
+        <div class="step-item">
+          <b>eBPF Kernel Listening:</b> Reads network traffic, process changes, and security calls straight from the Linux operating system without touching your code.
+        </div>
+        <div class="step-item">
+          <b>Instant Zero-Touch Discovery:</b> Detects new Amazon EKS containers the second they start and instruments them automatically.
+        </div>
+        <div class="step-item">
+          <b>One Single Secure Port:</b> All telemetry is encrypted and sent out through standard HTTPS (Port 443)—no complicated firewall holes needed.
+        </div>
+      </div>
+    </div>
+    <div style="font:600 11px var(--mono);color:#2dd4bf;background:rgba(45,212,191,.1);padding:6px 10px;border-radius:4px">
+      Result: Lightweight, automatic, and proven in 33,000+ enterprise environments.
+    </div>
   </div>
-  <div style="--c:var(--teal)" data-d="7">
-    <b>Autodiscovery &amp; Dynamic Tracing:</b> Detects new EKS pods instantly, injects Single-Step APM bytecode, and scrapes container metrics.
-  </div>
-  <div style="--c:var(--amber)" data-d="8">
-    <b>Single Secure TLS 443 Egress:</b> Batches, compresses, and forwards all telemetry streams via one outbound tunnel, simplifying firewall rules.
-  </div>
+</div>
+
+<div class="footer-banner in3">
+  <div><b>The Bottom Line:</b> You turn on monitoring across your entire AWS Riyadh fleet in minutes, without your developers writing a single line of monitoring code.</div>
+  <span style="font:700 11px var(--mono);color:var(--teal)">Turn-Key Simplicity</span>
 </div>
 
 <script src="../js/dd.js"></script>
-<script>
-(function(){
-  const svg = document.getElementById('arch');
-  
-  // Background zones: Kernel Space (bottom) and User Space (top)
-  const kZone = DD.el('rect', {x: 20, y: 190, width: 720, height: 130, rx: 10, fill: '#170B2B', stroke: 'rgba(255,255,255,.1)'}, svg);
-  DD.el('text', {x: 35, y: 215, fill: '#A47CE8', style: 'font:600 11px JetBrains Mono,monospace;letter-spacing:.06em'}, svg).textContent = 'LINUX KERNEL SPACE (eBPF HOOKS · <1% OVERHEAD)';
-  
-  const uZone = DD.el('rect', {x: 20, y: 20, width: 720, height: 150, rx: 10, fill: '#fff', stroke: 'var(--line)', 'stroke-width': 1.5}, svg);
-  DD.el('text', {x: 35, y: 45, fill: '#6E6784', style: 'font:600 11px JetBrains Mono,monospace;letter-spacing:.06em'}, svg).textContent = 'USER SPACE DAEMON · DATADOG AGENT v7.x CONTAINER / POD';
-
-  // Kernel eBPF Programs
-  const ebpfModules = [
-    {x: 40, y: 235, w: 150, t: 'Network Tracer', s: 'TCP/UDP Flows & RTT'},
-    {x: 210, y: 235, w: 150, t: 'USM eBPF Tracer', s: 'HTTP/gRPC Auto-RED'},
-    {x: 380, y: 235, w: 150, t: 'CWS Security Probe', s: 'Syscall & Privilege Audit'},
-    {x: 550, y: 235, w: 165, t: 'OOM & cgroup Monitor', s: 'Memory limits & Throttle'}
-  ];
-  ebpfModules.forEach(m => {
-    const g = DD.el('g', {}, svg);
-    DD.el('rect', {x: m.x, y: m.y, width: m.w, height: 65, rx: 6, fill: '#2A1250', stroke: '#A47CE8', 'stroke-width': 1}, g);
-    DD.el('text', {x: m.x + 12, y: m.y + 26, fill: '#fff', style: 'font:600 12px Inter,sans-serif'}, g).textContent = m.t;
-    DD.el('text', {x: m.x + 12, y: m.y + 46, fill: '#C9B2F2', style: 'font:400 10px JetBrains Mono,monospace'}, g).textContent = m.s;
-  });
-
-  // User Space Daemons
-  const userDaemons = [
-    {x: 40, y: 65, w: 125, t: 'Core Collector', s: '1,000+ Integrations'},
-    {x: 180, y: 65, w: 125, t: 'Trace Agent', s: 'APM & Flame Graphs'},
-    {x: 320, y: 65, w: 125, t: 'Process Agent', s: 'Live /proc (2s)'},
-    {x: 460, y: 65, w: 125, t: 'Security Agent', s: 'NCA & CIS Rules'},
-    {x: 600, y: 65, w: 125, t: 'Cluster Agent', s: 'EKS HPA & Admission'}
-  ];
-  userDaemons.forEach(d => {
-    const g = DD.el('g', {}, svg);
-    DD.el('rect', {x: d.x, y: d.y, width: d.w, height: 80, rx: 6, fill: 'var(--bg)', stroke: 'var(--line)'}, g);
-    DD.el('text', {x: d.x + 10, y: d.y + 28, fill: 'var(--ink)', style: 'font:650 12px Inter,sans-serif'}, g).textContent = d.t;
-    DD.el('text', {x: d.x + 10, y: d.y + 50, fill: 'var(--grey)', style: 'font:400 10px JetBrains Mono,monospace'}, g).textContent = d.s;
-  });
-
-  // Egress Gateway (Right box)
-  const egBox = DD.el('rect', {x: 820, y: 50, width: 300, height: 230, rx: 12, fill: '#140A24', stroke: '#2FD3B5', 'stroke-width': 1.5}, svg);
-  DD.el('text', {x: 840, y: 85, fill: '#2FD3B5', style: 'font:600 13px JetBrains Mono,monospace;letter-spacing:.05em'}, svg).textContent = 'SINGLE OUTBOUND STREAM';
-  DD.el('text', {x: 840, y: 115, fill: '#fff', style: 'font:700 18px Inter,sans-serif'}, svg).textContent = 'TLS Port 443 Forwarder';
-  DD.el('text', {x: 840, y: 145, fill: 'rgba(255,255,255,.7)', style: 'font:400 12px Inter,sans-serif'}, svg).textContent = '• Snappy in-memory compression';
-  DD.el('text', {x: 840, y: 170, fill: 'rgba(255,255,255,.7)', style: 'font:400 12px Inter,sans-serif'}, svg).textContent = '• Zero inbound ports required';
-  DD.el('text', {x: 840, y: 195, fill: 'rgba(255,255,255,.7)', style: 'font:400 12px Inter,sans-serif'}, svg).textContent = '• Routes to In-Kingdom Vector Edge';
-  DD.el('text', {x: 840, y: 220, fill: 'rgba(255,255,255,.7)', style: 'font:400 12px Inter,sans-serif'}, svg).textContent = '• Strict proxy & VPC endpoint support';
-
-  // Connecting Paths
-  const pKernelToUser = DD.el('path', {d: 'M380,235 L380,145', class: 'flowpath'}, svg);
-  const pUserToEgress = DD.el('path', {d: 'M740,110 L820,110', class: 'flowpath'}, svg);
-  
-  DD.flow(svg, [pKernelToUser], {n: 4, r: 3, color: '#A47CE8', speed: .4, delay: .5});
-  DD.flow(svg, [pUserToEgress], {n: 5, r: 3.5, color: '#2FD3B5', speed: .45, delay: .8});
-})();
-</script>
 </body>
 </html>

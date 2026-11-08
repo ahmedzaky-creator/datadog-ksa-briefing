@@ -5,107 +5,322 @@
 <title>Product Catalog Master Matrix</title>
 <link rel="stylesheet" href="../css/dd.css">
 <style>
-  .matrix-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:12px;margin-top:18px;height:430px}
-  .dom-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;border-left:4px solid var(--c,var(--purple));transition:transform .2s}
-  .dom-card:hover{transform:translateY(-2px);border-color:var(--c,var(--purple))}
-  .dom-head{display:flex;justify-content:space-between;align-items:center}
-  .dom-head h4{font-size:14px;font-weight:700;color:var(--ink)}
-  .dom-head span{font:600 10px var(--mono);color:var(--grey);background:var(--bg);padding:2px 6px;border-radius:4px}
-  .dom-items{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-  .dom-pill{font:500 10px var(--mono);color:var(--char);background:var(--bg);padding:2px 6px;border-radius:3px}
-  .dom-meter{font:500 10px var(--mono);color:var(--c,var(--purple));margin-top:4px}
-  .stat-badge{position:absolute;right:64px;top:40px;display:flex;gap:12px}
-  .stat-pill{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 14px;text-align:center}
-  .stat-pill .num{font:700 20px/1 var(--mono);color:var(--purple)}
-  .stat-pill .lbl{font:500 9.5px var(--mono);color:var(--grey);text-transform:uppercase;margin-top:2px}
+  body {
+    padding: 30px 48px;
+    height: 720px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+    padding-bottom: 12px;
+  }
+  .header-left .eyebrow {
+    font: 700 11px var(--mono);
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 4px 0 2px;
+    line-height: 1.2;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--char);
+    margin: 0;
+  }
+  .stat-row {
+    display: flex;
+    gap: 10px;
+  }
+  .stat-pill {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 14px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,.03);
+  }
+  .stat-pill .num {
+    font: 800 18px var(--mono);
+    color: var(--purple);
+    line-height: 1.1;
+  }
+  .stat-pill .lbl {
+    font: 600 9px var(--mono);
+    color: var(--grey);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* 3x3 Matrix Grid */
+  .matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 116px);
+    gap: 12px;
+    margin: 12px 0 8px;
+  }
+  .dom-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 4px solid var(--c, var(--purple));
+    box-shadow: 0 2px 6px rgba(0,0,0,.02);
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .dom-card:hover, .dom-card.active {
+    transform: translateY(-2px);
+    border-color: var(--c, var(--purple));
+    box-shadow: 0 8px 18px rgba(99,44,166,.12);
+  }
+  .dom-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dom-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .dom-title .icon {
+    font-size: 14px;
+  }
+  .dom-badge {
+    font: 600 9.5px var(--mono);
+    color: var(--c, var(--purple));
+    background: rgba(0,0,0,.04);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .dom-desc {
+    font-size: 11.5px;
+    color: var(--char);
+    line-height: 1.35;
+    margin: 4px 0 6px;
+  }
+  .dom-pills {
+    display: flex;
+    gap: 5px;
+  }
+  .dom-tag {
+    font: 600 9px var(--mono);
+    color: #475569;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* Interactive Banner */
+  .footer-banner {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--purple);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-banner b {
+    color: var(--purple);
+  }
 </style>
 </head>
-<body class="soft" data-foot="Platform Catalog · 9 Operational Domains · 30+ Core Offerings" data-who="cio,exec,sre,ciso">
-<div class="z">
-  <div class="eyebrow in1">The Complete 2026 Platform Spectrum</div>
-  <h1 class="in2">Nine operational domains. <span class="b">One single pane of glass.</span></h1>
-  <p class="sub in3">Every product shares the same agent, the same unified tags, and the same UI. Adding a product is a configuration toggle, never a re-instrumentation project.</p>
-</div>
+<body class="soft" data-foot="Datadog Platform · 9 Core Domains · 30+ Products" data-who="cio,exec,sre,ciso">
 
-<div class="stat-badge in2">
-  <div class="stat-pill"><div class="num"><span data-count="30" data-post="+"></span></div><div class="lbl">Core Products</div></div>
-  <div class="stat-pill"><div class="num"><span data-count="56"></span></div><div class="lbl">Priced Offerings</div></div>
-  <div class="stat-pill"><div class="num"><span data-count="1000" data-post="+"></span></div><div class="lbl">Integrations</div></div>
+<div class="header-row in1">
+  <div class="header-left">
+    <div class="eyebrow">The 2026 Datadog Platform Spectrum</div>
+    <h1>Nine core capabilities. <span class="b" style="color:var(--purple)">One unified platform.</span></h1>
+    <p>Every capability runs through a single lightweight agent. Turn on what you need with one click—zero extra tools to install.</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat-pill">
+      <div class="num"><span data-count="30" data-post="+">30+</span></div>
+      <div class="lbl">Core Offerings</div>
+    </div>
+    <div class="stat-pill">
+      <div class="num"><span data-count="1000" data-post="+">1,000+</span></div>
+      <div class="lbl">Integrations</div>
+    </div>
+    <div class="stat-pill">
+      <div class="num" style="color:var(--teal)">1</div>
+      <div class="lbl">Unified Agent</div>
+    </div>
+  </div>
 </div>
 
 <div class="matrix-grid">
-  <div class="dom-card in2" style="--c:#632CA6">
-    <div class="dom-head"><h4>1. Infra &amp; Systems</h4><span>13 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">Infra Pro/Ent</span><span class="dom-pill">Containers</span><span class="dom-pill">CNM</span><span class="dom-pill">NDM</span><span class="dom-pill">NetFlow</span><span class="dom-pill">GPU Mon.</span>
+  <!-- 1. Infra & Cloud -->
+  <div class="dom-card in2" style="--c:#632CA6" data-info="<b>Infrastructure:</b> Monitors every cloud VM, container, and physical server. Alerts instantly on high CPU, memory leaks, or disk exhaustion.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">🖥️</span> 1. Infrastructure &amp; Servers</div>
+      <span class="dom-badge">13 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per Host / Container / GPU / Flow</div>
+    <div class="dom-desc">Know immediately when any server, EKS container, or network link slows down.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">AWS EC2 / EKS</span>
+      <span class="dom-tag">Live Containers</span>
+      <span class="dom-tag">NVIDIA GPUs</span>
+    </div>
   </div>
 
-  <div class="dom-card in3" style="--c:#5AB8F2">
-    <div class="dom-head"><h4>2. APM &amp; Code</h4><span>6 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">APM Tracing</span><span class="dom-pill">Single-Step</span><span class="dom-pill">Continuous Profiler</span><span class="dom-pill">USM</span><span class="dom-pill">DBM (RDS)</span><span class="dom-pill">Data Streams</span>
+  <!-- 2. APM & Code -->
+  <div class="dom-card in2" style="--c:#0284C7" data-info="<b>APM & Distributed Tracing:</b> Tracks every transaction from the mobile app down to the database row. Identifies bottlenecks in seconds.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">⚡</span> 2. Application Speed (APM)</div>
+      <span class="dom-badge">6 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per APM Host (Pooled Spans &amp; Ingest)</div>
+    <div class="dom-desc">Pinpoint the exact line of slow code in 3 clicks so users never see spinning wheels.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">Zero-Code Tracing</span>
+      <span class="dom-tag">Code Profiler</span>
+      <span class="dom-tag">RDS Database</span>
+    </div>
   </div>
 
-  <div class="dom-card in4" style="--c:#2FD3B5">
-    <div class="dom-head"><h4>3. Logs &amp; Pipelines</h4><span>8 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">Log Ingest</span><span class="dom-pill">15D/30D Index</span><span class="dom-pill">Flex Logs (S3)</span><span class="dom-pill">Vector Pipelines</span><span class="dom-pill">BYOC</span><span class="dom-pill">Scanner</span>
+  <!-- 3. Logs & S3 -->
+  <div class="dom-card in3" style="--c:#0D9488" data-info="<b>Logging Without Limits:</b> Keep 100% of your operational and compliance logs on Amazon S3 in Riyadh for $0.05/GB. Fully searchable via SQL.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">📜</span> 3. Log Management &amp; S3</div>
+      <span class="dom-badge">8 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per GB Ingested / Indexed / Retained</div>
+    <div class="dom-desc">Store 100% of logs safely in Saudi Arabia for 18 months without ballooning bills.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">Flex Logs ($0.05)</span>
+      <span class="dom-tag">Vector Pipelines</span>
+      <span class="dom-tag">S3 Storage</span>
+    </div>
   </div>
 
-  <div class="dom-card in3" style="--c:#FFB52E">
-    <div class="dom-head"><h4>4. Digital Experience</h4><span>7 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">RUM Measure</span><span class="dom-pill">RUM Investigate</span><span class="dom-pill">Session Replay</span><span class="dom-pill">Synthetics API</span><span class="dom-pill">Synthetics Browser</span>
+  <!-- 4. Digital Experience -->
+  <div class="dom-card in3" style="--c:#D97706" data-info="<b>Digital Experience:</b> Real-time session replay of citizen journeys on Absher or Nusuk, with all National IDs and credit cards masked at the glass.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">📱</span> 4. Customer &amp; Mobile CX</div>
+      <span class="dom-badge">7 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per 1k Sessions / Tests / Replays</div>
+    <div class="dom-desc">Watch video replays of user journeys to fix mobile app crashes and checkout drop-offs.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">Mobile RUM</span>
+      <span class="dom-tag">Session Replay</span>
+      <span class="dom-tag">API Synthetics</span>
+    </div>
   </div>
 
-  <div class="dom-card in4" style="--c:#F2668B">
-    <div class="dom-head"><h4>5. Cloud Security</h4><span>10 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">Cloud SIEM</span><span class="dom-pill">CSPM Posture</span><span class="dom-pill">CWPP Threats</span><span class="dom-pill">AAP / RASP</span><span class="dom-pill">Code Security</span><span class="dom-pill">CIEM</span>
+  <!-- 5. Cloud Security -->
+  <div class="dom-card in4" style="--c:#E11D48" data-info="<b>Cloud Security:</b> 800+ out-of-the-box detection rules. Detects stolen AWS IAM keys, container breakouts, and web exploits in real time.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">🛡️</span> 5. Cloud Security &amp; SIEM</div>
+      <span class="dom-badge">10 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per Host / Resource / GB Analyzed</div>
+    <div class="dom-desc">Stop cyber threats, protect AWS IAM roles, and detect container attacks in real time.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">Cloud SIEM</span>
+      <span class="dom-tag">eBPF Threat Watch</span>
+      <span class="dom-tag">NCA Posture</span>
+    </div>
   </div>
 
-  <div class="dom-card in5" style="--c:#A47CE8">
-    <div class="dom-head"><h4>6. Autonomous AI (Bits)</h4><span>4 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">Bits AI SRE</span><span class="dom-pill">Bits Code</span><span class="dom-pill">Bits Remediation</span><span class="dom-pill">Bits Security</span><span class="dom-pill">MCP Server</span>
+  <!-- 6. Autonomous AI -->
+  <div class="dom-card in4" style="--c:#7C3AED" data-info="<b>Bits AI SRE:</b> Automatically investigates alerts, identifies root causes, and generates ready-to-merge pull requests to fix bugs.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">🤖</span> 6. Autonomous AI (Bits)</div>
+      <span class="dom-badge">4 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per AI Credits Pack ($500/500 units)</div>
+    <div class="dom-desc">An AI teammate that investigates 3 AM alerts, finds root causes, and drafts code fixes.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">Bits AI SRE</span>
+      <span class="dom-tag">Bits Code Fixer</span>
+      <span class="dom-tag">IDE MCP Server</span>
+    </div>
   </div>
 
-  <div class="dom-card in4" style="--c:#4B1F82">
-    <div class="dom-head"><h4>7. Sovereign AI &amp; LLM</h4><span>3 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">LLM Observability</span><span class="dom-pill">AI Guard (Arabic)</span><span class="dom-pill">Agent Chains</span><span class="dom-pill">Bedrock / ALLaM</span>
+  <!-- 7. Sovereign AI -->
+  <div class="dom-card in5" style="--c:#9333EA" data-info="<b>Sovereign Arabic AI:</b> Tracks token spend, latency, and hallucinations for Bedrock and ALLaM 34B models. AI Guard blocks prompt injections.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">🧠</span> 7. Sovereign AI &amp; ALLaM</div>
+      <span class="dom-badge">3 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per Scanned Requests / Spans</div>
+    <div class="dom-desc">Keep Arabic LLM assistants fast, cost-efficient, and protected against data leaks.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">ALLaM 34B Tracing</span>
+      <span class="dom-tag">AI Guard</span>
+      <span class="dom-tag">Bedrock Monitoring</span>
+    </div>
   </div>
 
-  <div class="dom-card in5" style="--c:#1F6FA8">
-    <div class="dom-head"><h4>8. Software Delivery</h4><span>4 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">CI Visibility</span><span class="dom-pill">Test Optimization</span><span class="dom-pill">Quality Gates</span><span class="dom-pill">Developer Portal</span>
+  <!-- 8. Software Delivery -->
+  <div class="dom-card in5" style="--c:#059669" data-info="<b>Software Delivery:</b> Speeds up CI/CD pipelines, detects flaky automated tests, and blocks bad code before it hits production in Riyadh.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">🚀</span> 8. Software Delivery</div>
+      <span class="dom-badge">4 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per Active Committer / Month</div>
+    <div class="dom-desc">Ship software faster and catch bugs in testing before they reach real customers.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">CI/CD Pipeline</span>
+      <span class="dom-tag">Test Optimizer</span>
+      <span class="dom-tag">Release Guard</span>
+    </div>
   </div>
 
-  <div class="dom-card in6" style="--c:#007A3D">
-    <div class="dom-head"><h4>9. Service Mgmt &amp; Cost</h4><span>5 offerings</span></div>
-    <div class="dom-items">
-      <span class="dom-pill">Datadog On-Call</span><span class="dom-pill">Incident Mgmt</span><span class="dom-pill">Workflow Auto</span><span class="dom-pill">CCM FinOps</span><span class="dom-pill">EDP Drawdown</span>
+  <!-- 9. FinOps & Cost -->
+  <div class="dom-card in6" style="--c:#15803D" data-info="<b>FinOps & EDP:</b> Ingests AWS billing data, matches spend to microservices, and eliminates cloud waste. 100% draws down against your AWS EDP.">
+    <div class="dom-top">
+      <div class="dom-title"><span class="icon">💰</span> 9. Cloud Cost &amp; FinOps</div>
+      <span class="dom-badge">5 Offerings</span>
     </div>
-    <div class="dom-meter">Billed per Seat / Execution / $1k Cloud Spend</div>
+    <div class="dom-desc">Track AWS spend per team in real time, terminate idle servers, and eliminate bill shock.</div>
+    <div class="dom-pills">
+      <span class="dom-tag">Cost per Service</span>
+      <span class="dom-tag">Idle Cleanup</span>
+      <span class="dom-tag">100% EDP Drawdown</span>
+    </div>
   </div>
 </div>
+
+<div class="footer-banner in6" id="domainBanner">
+  <div><b>Hover or click any domain above</b> to see how it simplifies your AWS Riyadh operations.</div>
+  <span style="font:600 11px var(--mono);color:var(--grey)">Unified Service Tagging (env · service · version)</span>
+</div>
+
 <script src="../js/dd.js"></script>
+<script>
+(function(){
+  const cards = document.querySelectorAll('.dom-card');
+  const banner = document.getElementById('domainBanner');
+
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const info = card.getAttribute('data-info');
+      banner.innerHTML = `<div>${info}</div><span style="font:600 11px var(--mono);color:var(--purple)">Active Focus</span>`;
+    });
+  });
+})();
+</script>
 </body>
 </html>

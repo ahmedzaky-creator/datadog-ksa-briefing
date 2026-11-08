@@ -2,104 +2,197 @@
 <html lang="en" data-density="3">
 <head>
 <meta charset="UTF-8">
-<title>Observability Pipelines (Vector Edge)</title>
+<title>Domain 3: Observability Pipelines</title>
 <link rel="stylesheet" href="../css/dd.css">
 <style>
-  .cols{display:grid;grid-template-columns:1.05fr 1fr;gap:20px;margin-top:20px}
-  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
-  .vec-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
-  .vrl-snippet{background:#0D051A;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:12px;font:500 11px/1.5 var(--mono);color:#E2DCEC;margin-top:10px}
-  .kw{color:#F2668B}
-  .str{color:#2FD3B5}
-  .cm{color:#6E6784;font-style:italic}
+  body {
+    padding: 28px 48px;
+    height: 720px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header-left .eyebrow {
+    font: 700 11px var(--mono);
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 4px 0 2px;
+    line-height: 1.2;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--char);
+    margin: 0;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 20px;
+    margin: 14px 0;
+  }
+  .card-l {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.03);
+  }
+  .sim-box {
+    background: #0f172a;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px;
+    color: #fff;
+  }
+  .code-window {
+    background: #1e293b;
+    border-radius: 6px;
+    padding: 12px;
+    font: 500 11px/1.5 var(--mono);
+    color: #cbd5e1;
+    overflow-x: auto;
+  }
+  .redacted {
+    color: #2dd4bf;
+    font-weight: 700;
+    background: rgba(45,212,191,.15);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .raw-pii {
+    color: #f43f5e;
+    font-weight: 700;
+    background: rgba(244,63,94,.15);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .footer-banner {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 </style>
 </head>
-<body class="soft" data-foot="Domain 3 · Observability Pipelines (Vector) In-Kingdom Edge Gateway" data-who="ciso,sre,cio">
-<div class="z">
-  <div class="eyebrow in1">Domain 3 · High-Performance Edge Stream Processing</div>
-  <h1 class="in2">Observability Pipelines: <span class="b">The in-Kingdom sovereign filter.</span></h1>
-  <p class="sub in3">Plain Language: Think of Observability Pipelines as a high-speed customs inspection checkpoint inside your own private network. Written in Rust (Vector), it scrubs personal data at memory speed before any telemetry ever leaves your servers.</p>
+<body class="soft" data-foot="Domain 3 · In-Kingdom Sovereign Shield" data-who="ciso,cio,compliance">
+
+<div class="header-left in1">
+  <div class="eyebrow">Domain 3 · Sovereign Data Compliance</div>
+  <h1>The In-Kingdom Sovereign Shield. <span class="b" style="color:var(--teal)">Zero citizen data leaves Saudi Arabia.</span></h1>
+  <p>Saudi regulations (SDAIA PDPL, NDMO, SAMA CSF) strictly protect personal citizen data. Datadog Observability Pipelines scrubs sensitive data inside your local AWS Riyadh VPC before telemetry is sent.</p>
 </div>
 
-<div class="cols">
-  <div class="card-l in3">
+<div class="cols in2">
+  <!-- Left Side: Plain English Explanation -->
+  <div class="card-l">
     <div>
-      <div class="tag">In-VPC Rust Stream Processor</div>
-      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Zero-Egress Data Scrubbing</h3>
-      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
-        Deployed as a stateless cluster directly in your AWS Riyadh VPC or on-prem datacenters. Processes over 250 MB/s per CPU core, routing data simultaneously to local S3 buckets, SIEMs, and Datadog SaaS.
+      <div style="font:700 11px var(--mono);color:var(--teal);text-transform:uppercase;margin-bottom:4px">Built for SAMA &amp; SDAIA</div>
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">Data Sovereignty Without Compromise</h3>
+      <p style="font-size:12.5px;color:var(--char);line-height:1.5;margin-bottom:12px">
+        You don't have to choose between strict Saudi compliance and world-class cloud monitoring. A lightweight filter engine (Vector) runs inside your own AWS Riyadh network.
       </p>
-      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
-        <b>Billed Meter:</b> <b>$0.10</b> / GB processed at the edge<br>
-        • Replaces heavy Logstash &amp; Fluentd clusters<br>
-        • Redacts PII, credit card PANs, and national identifiers
+      
+      <div style="background:#f8fafc;border-left:4px solid var(--teal);padding:10px 14px;border-radius:4px;font-size:12px;line-height:1.45;color:var(--char)">
+        <b>How the 2-Way Shield Works:</b><br>
+        1. <b>100% Raw Logs Stay in Riyadh:</b> Raw, unedited audit logs flow directly into your local Amazon S3 bucket for the mandated 18-month NCA retention.<br>
+        2. <b>Instant In-Memory Masking:</b> Saudi National IDs, Iqamas, IBANs, and credit cards are scrubbed in memory at microsecond speed.<br>
+        3. <b>Only Clean Health Metrics Leave:</b> Only anonymized performance charts and CPU/memory stats reach the Datadog interface.
       </div>
     </div>
-    <div style="font-size:12px;color:var(--char)">
-      <b>SDAIA PDPL Enforcement:</b> Guarantees that citizen personal data is sanitized before telemetry touches any cloud service.
+    
+    <div style="font:600 11px var(--mono);color:#059669;background:#ecfdf5;padding:8px 12px;border-radius:6px">
+      ✓ Free Ingestion: Observability Pipelines processing is 100% FREE when routing into Datadog.
     </div>
   </div>
 
-  <div class="vec-vis in4">
+  <!-- Right Side: Live Interactive Data Scrubber -->
+  <div class="sim-box">
     <div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font:600 11px var(--mono);color:var(--teal)">VECTOR DUAL-FORK PIPELINE · IN-VPC EDGE</span>
-        <span class="chip on" style="font-size:9px">>250 MB/s/Core</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font:700 11px var(--mono);color:#94a3b8">IN-MEMORY DATA REDACTION ENGINE</span>
+        <span class="chip on" id="scrubBadge" style="font-size:10px;background:#059669">Shield Active: PII Scrubbed</span>
       </div>
 
-      <svg id="vec-flow-svg" viewBox="0 0 520 120" style="width:100%;height:120px;margin-top:6px"></svg>
-
-      <div class="vrl-snippet" style="margin-top:6px;padding:8px 12px;font-size:10px;line-height:1.4">
-        <span class="cm"># In-Memory Rust Scrubbing Engine</span><br>
-        .national_id = <span class="kw">replace</span>(.national_id, <span class="str">r'^[1][0-9]{9}$'</span>, <span class="str">"[REDACTED_SA_NID]"</span>)<br>
-        .iqama = <span class="kw">replace</span>(.iqama, <span class="str">r'^[2][0-9]{9}$'</span>, <span class="str">"[REDACTED_IQAMA]"</span>)<br>
-        <span class="kw">emit_local_s3_riyadh</span>(.) <span class="cm"># 100% Raw Archive</span> &nbsp;|&nbsp; <span class="kw">emit_datadog_saas</span>(.) <span class="cm"># Clean Alerts</span>
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">Sample Log Message Received in AWS Riyadh VPC:</div>
+      <div class="code-window" id="logContent">
+{<br>
+&nbsp;&nbsp;"timestamp": "2026-12-14T08:30:12Z",<br>
+&nbsp;&nbsp;"user_id": "cust_84920",<br>
+&nbsp;&nbsp;"saudi_nid": "<span class="redacted">[PROTECTED_NATIONAL_ID]</span>",<br>
+&nbsp;&nbsp;"saudi_iban": "<span class="redacted">[PROTECTED_SAUDI_IBAN]</span>",<br>
+&nbsp;&nbsp;"transaction_amount": 450.00,<br>
+&nbsp;&nbsp;"status": "APPROVED",<br>
+&nbsp;&nbsp;"compliance": "SDAIA-PDPL-CLEAN"<br>
+}
       </div>
     </div>
 
-    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:8px;font-size:11px;color:rgba(255,255,255,.8)">
-      <b style="color:var(--teal)">Zero-Egress Security:</b> Citizen IDs are permanently scrubbed inside the VPC before TLS egress.
+    <!-- Toggle Button -->
+    <div style="border-top:1px solid #334155;padding-top:12px;display:flex;justify-content:space-between;align-items:center">
+      <div id="scrubExpl" style="font-size:11.5px;color:#cbd5e1">
+        <b style="color:#2dd4bf">Status:</b> Citizen National ID and IBAN safely sanitized before cloud egress.
+      </div>
+      <button id="btnToggleScrub" style="background:#334155;border:none;color:#fff;font:700 11px var(--mono);padding:8px 14px;border-radius:6px;cursor:pointer">
+        👁️ View Unmasked (Raw On-Prem View)
+      </button>
     </div>
   </div>
 </div>
 
-<div class="bv in5">
-  <b>CISO Defensibility</b>
-  During a compliance audit, the CISO can show that sensitive citizen identifiers are stripped in-memory inside the VPC boundary, rendering telemetry 100% compliant with Saudi PDPL transfer restrictions.
+<div class="footer-banner in3">
+  <div><b>Peace of Mind for Saudi CISOs:</b> Never worry about audit fines or compliance breaches. Zero unencrypted citizen records ever cross international borders.</div>
+  <span style="font:700 11px var(--mono);color:var(--teal)">SDAIA PDPL · SAMA CSF · NCA ECC</span>
 </div>
 
 <script src="../js/dd.js"></script>
 <script>
 (function(){
-  const svg = document.getElementById('vec-flow-svg');
+  const btn = document.getElementById('btnToggleScrub');
+  const log = document.getElementById('logContent');
+  const badge = document.getElementById('scrubBadge');
+  const expl = document.getElementById('scrubExpl');
+  let raw = false;
 
-  // Intake Node
-  DD.el('rect', {x: 10, y: 35, width: 100, height: 50, rx: 6, fill: '#632CA6'}, svg);
-  DD.el('text', {x: 60, y: 58, fill: '#fff', 'text-anchor': 'middle', style: 'font:600 10.5px Inter,sans-serif'}, svg).textContent = 'VPC Intake';
-  DD.el('text', {x: 60, y: 72, fill: 'rgba(255,255,255,.7)', 'text-anchor': 'middle', style: 'font:400 8.5px JetBrains Mono,monospace'}, svg).textContent = 'Raw Telemetry';
-
-  // Vector Engine Hub
-  DD.el('rect', {x: 160, y: 30, width: 130, height: 60, rx: 6, fill: '#2A1250', stroke: '#2FD3B5', 'stroke-width': 1.5}, svg);
-  DD.el('text', {x: 225, y: 55, fill: '#2FD3B5', 'text-anchor': 'middle', style: 'font:650 11px Inter,sans-serif'}, svg).textContent = 'Vector Edge Hub';
-  DD.el('text', {x: 225, y: 72, fill: '#fff', 'text-anchor': 'middle', style: 'font:500 8.5px JetBrains Mono,monospace'}, svg).textContent = 'VRL In-Memory Scrub';
-
-  // Fork 1: S3 Local Bucket
-  DD.el('rect', {x: 350, y: 10, width: 160, height: 42, rx: 6, fill: '#1F1533', stroke: '#FFB52E'}, svg);
-  DD.el('text', {x: 430, y: 28, fill: '#FFB52E', 'text-anchor': 'middle', style: 'font:600 10px Inter,sans-serif'}, svg).textContent = 'AWS Riyadh S3 (Raw)';
-  DD.el('text', {x: 430, y: 42, fill: 'rgba(255,255,255,.6)', 'text-anchor': 'middle', style: 'font:400 8px JetBrains Mono,monospace'}, svg).textContent = 'SAMA 18-Mo Retention';
-
-  // Fork 2: Datadog SaaS
-  DD.el('rect', {x: 350, y: 68, width: 160, height: 42, rx: 6, fill: '#1F1533', stroke: '#2FD3B5'}, svg);
-  DD.el('text', {x: 430, y: 86, fill: '#2FD3B5', 'text-anchor': 'middle', style: 'font:600 10px Inter,sans-serif'}, svg).textContent = 'Datadog SaaS (Scrubbed)';
-  DD.el('text', {x: 430, y: 100, fill: 'rgba(255,255,255,.6)', 'text-anchor': 'middle', style: 'font:400 8px JetBrains Mono,monospace'}, svg).textContent = 'Zero PII Egress';
-
-  const p1 = DD.el('path', {d: 'M110,60 L160,60', class: 'flowpath'}, svg);
-  const p2 = DD.el('path', {d: 'M290,50 C320,50 320,31 350,31', class: 'flowpath'}, svg);
-  const p3 = DD.el('path', {d: 'M290,70 C320,70 320,89 350,89', class: 'flowpath'}, svg);
-
-  DD.flow(svg, [p1], {n: 3, r: 3, color: '#A47CE8', speed: .5, delay: .3});
-  DD.flow(svg, [p2], {n: 3, r: 2.8, color: '#FFB52E', speed: .4, delay: .6});
-  DD.flow(svg, [p3], {n: 3, r: 2.8, color: '#2FD3B5', speed: .4, delay: .6});
+  btn.addEventListener('click', () => {
+    raw = !raw;
+    if(raw){
+      log.innerHTML = '{<br>&nbsp;&nbsp;"timestamp": "2026-12-14T08:30:12Z",<br>&nbsp;&nbsp;"user_id": "cust_84920",<br>&nbsp;&nbsp;"saudi_nid": "<span class=\"raw-pii\">1098234812</span>",<br>&nbsp;&nbsp;"saudi_iban": "<span class=\"raw-pii\">SA4420000001234567890123</span>",<br>&nbsp;&nbsp;"transaction_amount": 450.00,<br>&nbsp;&nbsp;"status": "APPROVED",<br>&nbsp;&nbsp;"compliance": "RAW_LOCAL_S3_ARCHIVE"<br>}';
+      badge.textContent = 'RAW LOCAL VIEW (KSA ONLY)';
+      badge.style.background = '#e11d48';
+      expl.innerHTML = '<b style="color:#f43f5e">Warning:</b> Raw PII visible only inside local Riyadh Amazon S3 audit storage.';
+      btn.textContent = '🛡️ Apply In-Memory Scrubbing';
+      btn.style.background = '#059669';
+    } else {
+      log.innerHTML = '{<br>&nbsp;&nbsp;"timestamp": "2026-12-14T08:30:12Z",<br>&nbsp;&nbsp;"user_id": "cust_84920",<br>&nbsp;&nbsp;"saudi_nid": "<span class=\"redacted\">[PROTECTED_NATIONAL_ID]</span>",<br>&nbsp;&nbsp;"saudi_iban": "<span class=\"redacted\">[PROTECTED_SAUDI_IBAN]</span>",<br>&nbsp;&nbsp;"transaction_amount": 450.00,<br>&nbsp;&nbsp;"status": "APPROVED",<br>&nbsp;&nbsp;"compliance": "SDAIA-PDPL-CLEAN"<br>}';
+      badge.textContent = 'Shield Active: PII Scrubbed';
+      badge.style.background = '#059669';
+      expl.innerHTML = '<b style="color:#2dd4bf">Status:</b> Citizen National ID and IBAN safely sanitized before cloud egress.';
+      btn.textContent = '👁️ View Unmasked (Raw On-Prem View)';
+      btn.style.background = '#334155';
+    }
+  });
 })();
 </script>
 </body>

@@ -5,100 +5,207 @@
 <title>30-60-90 Day Migration Roadmap</title>
 <link rel="stylesheet" href="../css/dd.css">
 <style>
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
-  .phase-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px;border-top:4px solid var(--c,var(--purple))}
-  .phase-card .days{font:700 24px/1 var(--mono);color:var(--c,var(--purple));margin-bottom:6px}
-  .phase-card h3{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px}
-  .phase-card p{font-size:13px;color:var(--grey);line-height:1.45}
-  .tasks{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:6px}
-  .tasks li{font-size:12px;color:var(--char);display:flex;align-items:center;gap:6px}
-  .tasks li::before{content:'▸';color:var(--c,var(--purple));font-weight:700}
-  .kpi-box{background:var(--bg);border-radius:6px;padding:10px 12px;font:600 11.5px var(--mono);color:var(--c,var(--purple));margin-top:12px}
-  .partner-strip{position:absolute;right:64px;top:40px;display:flex;align-items:center;gap:10px}
-  .p-pill{background:#fff;border:1px solid var(--line);padding:6px 12px;border-radius:6px;font:600 11px var(--mono);color:var(--char)}
+  body {
+    padding: 28px 48px;
+    height: 720px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+    padding-bottom: 10px;
+  }
+  .header-left .eyebrow {
+    font: 700 11px var(--mono);
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 4px 0 2px;
+    line-height: 1.2;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--char);
+    margin: 0;
+  }
+  .p-pill {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font: 600 10.5px var(--mono);
+    color: var(--char);
+    box-shadow: 0 2px 6px rgba(0,0,0,.02);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 14px 0;
+  }
+  .phase-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px;
+    border-top: 4px solid var(--c, var(--purple));
+    box-shadow: 0 2px 8px rgba(0,0,0,.03);
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .phase-card:hover, .phase-card.active {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(99,44,166,.12);
+  }
+  .phase-card .days {
+    font: 800 22px/1 var(--mono);
+    color: var(--c, var(--purple));
+    margin-bottom: 6px;
+  }
+  .phase-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .phase-card p {
+    font-size: 12.5px;
+    color: var(--char);
+    line-height: 1.45;
+  }
+  .tasks {
+    list-style: none;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tasks li {
+    font-size: 12px;
+    color: var(--char);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tasks li::before {
+    content: '✓';
+    color: var(--c, var(--purple));
+    font-weight: 800;
+  }
+  .kpi-box {
+    background: #f8fafc;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font: 700 11px var(--mono);
+    color: var(--c, var(--purple));
+    margin-top: 12px;
+  }
+  .footer-banner {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--purple);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 </style>
 </head>
-<body class="soft" data-foot="Path to Value · 30-60-90 Day Implementation Blueprint" data-who="cio,exec,sre,ciso">
-<div class="z">
-  <div class="eyebrow in1">Structured Path to Production Value</div>
-  <h1 class="in2">30-60-90 Day plan: <span class="b">De-risking AWS Riyadh go-live.</span></h1>
-  <p class="sub in3">Plain Language: Moving to the cloud shouldn't mean months of chaotic tool configuration. Here is the proven phased roadmap to establish Day-1 baselines, eliminate war rooms, and retire legacy licenses.</p>
-</div>
+<body class="soft" data-foot="Path to Production · 30-60-90 Day Implementation Roadmap" data-who="cio,exec,sre,ciso">
 
-<div class="partner-strip in2">
-  <div class="p-pill">Local Partner: <b>Zero&amp;One</b> (Riyadh Advanced Tier)</div>
+<div class="header-row in1">
+  <div class="header-left">
+    <div class="eyebrow">Structured Path to Production Value</div>
+    <h1>30-60-90 Day migration plan. <span class="b" style="color:var(--purple)">De-risking your AWS Riyadh go-live.</span></h1>
+    <p>Moving to AWS Riyadh shouldn't mean months of chaotic tool configuration. Here is the proven phased roadmap to launch with complete confidence.</p>
+  </div>
+  <div class="p-pill">
+    AWS Partner: <b style="color:var(--purple)">Zero&amp;One / NTT DATA</b> (Riyadh)
+  </div>
 </div>
 
 <div class="grid">
-  <div class="phase-card in3" style="--c:var(--purple)">
+  <!-- Days 1-30 -->
+  <div class="phase-card in2" style="--c:#632CA6" data-phase="Phase 1: Assess &amp; Baseline. Complete visibility across your on-premise systems and your newly provisioned AWS Riyadh landing zone.">
     <div>
       <div class="days">Days 1 – 30</div>
       <h3>Baseline &amp; Landing Zone</h3>
-      <p>Establish side-by-side baselines on existing on-prem systems and deploy the Agent DaemonSet across new Amazon EKS clusters in Riyadh.</p>
+      <p>Establish side-by-side performance baselines on existing on-premises servers and deploy the Datadog agent across new Amazon EKS clusters in Riyadh.</p>
       <ul class="tasks">
-        <li>Deploy Agent v7 on core VMs &amp; EKS nodes</li>
-        <li>Enable 1,000+ turn-key integrations</li>
-        <li>Activate Single-Step APM for zero-code tracing</li>
+        <li>Deploy lightweight agent on core VMs and EKS nodes</li>
+        <li>Enable automatic AWS integrations via IAM Role</li>
+        <li>Activate zero-code Single-Step APM for microservices</li>
       </ul>
     </div>
-    <div class="kpi-box">KPI: 100% hybrid estate baselined</div>
+    <div class="kpi-box">Milestone: 100% Hybrid Visibility</div>
   </div>
 
-  <div class="phase-card in4" style="--c:var(--teal)">
+  <!-- Days 31-60 -->
+  <div class="phase-card in3" style="--c:#0D9488" data-phase="Phase 2: Modernize &amp; Protect. Zero-PII scrubbing active at the edge, SAMA/NCA audit compliance locked in, and Bits AI SRE standing guard.">
     <div>
       <div class="days">Days 31 – 60</div>
-      <h3>Unified Tags &amp; Bits AI</h3>
-      <p>Standardize tags across all microservices, define business SLOs on payment journeys, and put Bits AI SRE into the active incident flow.</p>
+      <h3>Sovereign Shield &amp; Bits AI</h3>
+      <p>Standardize tags across all services, activate in-memory Saudi PII scrubbing, and empower your operations team with autonomous Bits AI root-cause analysis.</p>
       <ul class="tasks">
-        <li>Apply <code>env</code>, <code>service</code>, and <code>version</code> tags everywhere</li>
-        <li>Deploy Vector Edge workers for PII scrubbing</li>
-        <li>Configure Datadog On-Call &amp; Bits AI RCA</li>
+        <li>Apply standard tags (env, service, version)</li>
+        <li>Deploy Vector Edge workers for in-memory PII scrubbing</li>
+        <li>Activate Bits AI SRE for autonomous 3-minute alert triage</li>
       </ul>
     </div>
-    <div class="kpi-box">KPI: MTTR drops from 2h to &lt;5 mins</div>
+    <div class="kpi-box">Milestone: MTTR Down from 2 Hours to &lt;5 Mins</div>
   </div>
 
-  <div class="phase-card in5" style="--c:var(--amber)">
+  <!-- Days 61-90 -->
+  <div class="phase-card in4" style="--c:#0284C7" data-phase="Phase 3: Production Cutover &amp; FinOps. Zero-downtime DNS swing, 100% AWS EDP credit drawdown, and retirement of legacy point tools.">
     <div>
       <div class="days">Days 61 – 90</div>
-      <h3>S3 Tiers &amp; Tool Retirement</h3>
-      <p>Route compliance logs to Flex Logs on Amazon S3 in Riyadh, turn on Cloud SIEM for SAMA audits, and decommission legacy point tools.</p>
+      <h3>Cutover &amp; Tool Consolidation</h3>
+      <p>Validate real-time traffic cutovers to AWS Riyadh, eliminate legacy tool licensing fees, and optimize container costs using live FinOps dashboards.</p>
       <ul class="tasks">
-        <li>Enable 18-month S3 Flex Logs retention</li>
-        <li>Activate Cloud SIEM 800+ security rules</li>
-        <li>Retire Splunk, PagerDuty &amp; APM point tools</li>
+        <li>Execute DNS cutover with live Synthetic monitoring</li>
+        <li>Retire expensive legacy point tools (Splunk, Dynatrace)</li>
+        <li>Track cloud savings and 100% AWS EDP budget drawdown</li>
       </ul>
     </div>
-    <div class="kpi-box">KPI: 51% TCO savings + EDP drawdown</div>
+    <div class="kpi-box">Milestone: 40% Tool Consolidation ROI Realized</div>
   </div>
 </div>
 
-</div>
-
-<div class="bv in6" id="phaseBanner">
-  <b>Executive Commitment:</b>
-  With Zero&One's local Riyadh engineering presence and Datadog's pre-built content, enterprise customers achieve full observability and SAMA compliance before cutting over production traffic to AWS Riyadh. Click a phase above to view milestone deliverables.
+<div class="footer-banner in5" id="roadmapBanner">
+  <div><b>Hover or click any phase above</b> to see how Datadog protects each stage of your cloud journey.</div>
+  <span style="font:700 11px var(--mono);color:var(--teal)">Proven Saudi Enterprise Framework</span>
 </div>
 
 <script src="../js/dd.js"></script>
 <script>
 (function(){
   const cards = document.querySelectorAll('.phase-card');
-  const banner = document.getElementById('phaseBanner');
+  const banner = document.getElementById('roadmapBanner');
 
-  const phaseDetails = [
-    "<b>Phase 1 Focus (Days 1–30):</b> Zero&One deploys Agent v7 DaemonSet on Amazon EKS in AWS Riyadh (me-central-2). 1,000+ turn-key integrations baselined against legacy on-premises datacenters.",
-    "<b>Phase 2 Focus (Days 31–60):</b> Unified Service Tagging (env, service, version) applied across all CI/CD pipelines. Vector Edge workers deployed for SDAIA PDPL PII redaction. Bits AI SRE trained on live telemetry.",
-    "<b>Phase 3 Focus (Days 61–90):</b> Long-term SAMA CSF 3.3.14 compliance logs routed to Flex Logs on Amazon S3 in Riyadh ($0.05/GB). Splunk and PagerDuty retired, releasing 51% in net TCO savings."
-  ];
-
-  cards.forEach((c, i) => {
-    c.style.cursor = 'pointer';
-    c.addEventListener('click', () => {
-      cards.forEach(x => { x.style.boxShadow = ''; x.style.borderColor = ''; });
-      c.style.boxShadow = '0 0 0 2px var(--c, var(--purple))';
-      c.style.borderColor = 'var(--c, var(--purple))';
-      banner.innerHTML = phaseDetails[i];
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const p = card.getAttribute('data-phase');
+      banner.innerHTML = `<div><b>${p}</b></div><span style="font:700 11px var(--mono);color:var(--purple)">Active Phase</span>`;
     });
   });
 })();

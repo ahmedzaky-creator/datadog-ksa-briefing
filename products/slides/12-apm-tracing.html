@@ -5,95 +5,243 @@
 <title>Domain 2: APM & Distributed Tracing</title>
 <link rel="stylesheet" href="../css/dd.css">
 <style>
-  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:20px}
-  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
-  .trace-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
-  .span-bar{display:flex;align-items:center;margin-bottom:8px}
-  .span-lbl{width:140px;font:500 11px var(--mono);color:rgba(255,255,255,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .span-track{flex:1;height:22px;background:rgba(255,255,255,.05);border-radius:4px;position:relative;overflow:hidden}
-  .span-fill{position:absolute;top:0;bottom:0;border-radius:4px;display:flex;align-items:center;padding-left:8px;font:600 10px var(--mono);color:#fff;cursor:pointer;transition:transform .2s}
-  .span-fill:hover{transform:scaleY(1.15);box-shadow:0 0 10px rgba(255,255,255,.3)}
-  .span-fill.bottleneck{animation:pulse 1.4s infinite;border:1px solid #FF8CA8}
-  .pool-box{background:var(--purple-ll);border:1px solid var(--purple-l);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--char);margin-top:10px}
+  body {
+    padding: 28px 48px;
+    height: 720px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header-left .eyebrow {
+    font: 700 11px var(--mono);
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 4px 0 2px;
+    line-height: 1.2;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--char);
+    margin: 0;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 20px;
+    margin: 14px 0;
+  }
+  .card-l {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.03);
+  }
+  .trace-vis {
+    background: #0f172a;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 380px;
+    color: #fff;
+  }
+  .span-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .span-lbl {
+    width: 140px;
+    font: 600 11px var(--mono);
+    color: #cbd5e1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .span-track {
+    flex: 1;
+    height: 24px;
+    background: rgba(255,255,255,.06);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .span-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font: 700 10.5px var(--mono);
+    color: #fff;
+    transition: width .4s ease, background .4s ease;
+  }
+  .span-fill.bottleneck {
+    background: #e11d48;
+    animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .value-callout {
+    background: #f8fafc;
+    border-left: 4px solid var(--purple);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--char);
+  }
+  .footer-banner {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 </style>
 </head>
-<body class="soft" data-foot="Domain 2 · APM & Distributed Tracing (6 Offerings)" data-who="dev,sre,cio">
-<div class="z">
-  <div class="eyebrow in1">Domain 2 · Application Performance &amp; Tracing</div>
-  <h1 class="in2">APM &amp; Distributed Tracing: <span class="b">GPS tracking for every transaction.</span></h1>
-  <p class="sub in3">Plain Language: When a Saudi banking customer taps "Transfer" on their mobile app, that single request passes through 10 microservices. APM places a GPS tracker on that transaction, revealing the exact millisecond where it slowed down.</p>
+<body class="soft" data-foot="Domain 2 · Application Performance & Tracing" data-who="dev,sre,cio">
+
+<div class="header-left in1">
+  <div class="eyebrow">Domain 2 · Application Performance (APM)</div>
+  <h1>GPS tracking for every transaction. <span class="b" style="color:var(--purple)">Spot slow code in 3 clicks.</span></h1>
+  <p>When a Saudi citizen taps "Pay" on their mobile phone, the request touches 8 different backend services. Datadog reveals the exact millisecond where it slowed down.</p>
 </div>
 
-<div class="cols">
-  <div class="card-l in3">
+<div class="cols in2">
+  <!-- Left Side: Plain English Explanation -->
+  <div class="card-l">
     <div>
-      <div class="tag">Zero-Code Instrumentation</div>
-      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Single-Step APM (SSI)</h3>
-      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
-        Developers do not need to rewrite Dockerfiles or import SDKs. Single-Step APM injects bytecode into running Java, .NET, Python, and Node.js containers automatically at the Kubernetes admission level.
+      <div style="font:700 11px var(--mono);color:var(--purple);text-transform:uppercase;margin-bottom:4px">Instant Code Transparency</div>
+      <h3 style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">No More "Why Is It Slow?" War Rooms</h3>
+      <p style="font-size:12.5px;color:var(--char);line-height:1.5;margin-bottom:12px">
+        Traditional monitoring only tells you when a server's CPU is high. Datadog APM follows each user's transaction from the web screen, through API gateways, into microservices, and down to the exact SQL query in your database.
       </p>
-      <div class="pool-box">
-        <b>Billed Meter &amp; Generous Pooled Allotment:</b><br>
-        • <b>$31.00</b> / APM host / month (annual commit)<br>
-        • <b>150 GB</b> trace ingestion included per host pooled<br>
-        • <b>1,000,000</b> indexed spans included per host pooled<br>
-        • <b>Continuous Profiler included free ($0 add-on)</b>
+      
+      <div class="value-callout">
+        <b>What This Means for Saudi Business:</b><br>
+        • <b>Zero Code Rewrites:</b> Automatically turns on inside Java, .NET, Python, and Node.js containers.<br>
+        • <b>Protect Ramadan &amp; White Friday Sales:</b> Catch database lockups before shoppers abandon their carts.<br>
+        • <b>Clear Responsibility:</b> Immediately see whether a slowdown is in your app, your database, or an external bank payment gateway.
       </div>
     </div>
-    <div style="font-size:12px;color:var(--char)">
-      <b>Pooled Protection:</b> 100 APM hosts generate 15,000 GB and 100M indexed spans pooled across the entire organization—virtually eliminating overages.
+    
+    <div style="font:600 11px var(--mono);color:#059669;background:#ecfdf5;padding:8px 12px;border-radius:6px">
+      ✓ Generous Bundling: 150 GB of trace ingestion + 1,000,000 indexed traces included with every host.
     </div>
   </div>
 
-  <div class="trace-vis in4">
+  <!-- Right Side: Interactive Trace Waterfall -->
+  <div class="trace-vis">
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <span style="font:600 11px var(--mono);color:var(--lav)">DISTRIBUTED TRACE · trace_id: 8b7f21a</span>
-        <span class="chip on" style="font-size:9px">Total Duration: 412ms</span>
+        <span style="font:700 11px var(--mono);color:#94a3b8">LIVE DISTRIBUTED TRACE · /api/v1/checkout</span>
+        <span class="chip on" id="totalDurationBadge" style="font-size:10px;background:#e11d48">Total Time: 1,840ms (SLOW)</span>
+      </div>
+
+      <!-- Spans -->
+      <div class="span-bar">
+        <div class="span-lbl">1. web-frontend</div>
+        <div class="span-track">
+          <div class="span-fill" style="left:0;width:95%;background:#632ca6">1,840ms</div>
+        </div>
       </div>
 
       <div class="span-bar">
-        <span class="span-lbl">mada-api-gateway</span>
-        <div class="span-track"><div class="span-fill" style="left:0%;width:100%;background:#632CA6" title="Click to inspect">412ms (GET /v1/transfer)</div></div>
+        <div class="span-lbl">2. api-gateway</div>
+        <div class="span-track">
+          <div class="span-fill" style="left:5%;width:90%;background:#0284c7">1,720ms</div>
+        </div>
       </div>
+
       <div class="span-bar">
-        <span class="span-lbl">auth-service-jwt</span>
-        <div class="span-track"><div class="span-fill" style="left:5%;width:15%;background:#5AB8F2" title="Click to inspect">18ms (verify)</div></div>
+        <div class="span-lbl">3. payment-service</div>
+        <div class="span-track">
+          <div class="span-fill" style="left:12%;width:80%;background:#0d9488">1,510ms</div>
+        </div>
       </div>
+
       <div class="span-bar">
-        <span class="span-lbl">ledger-balance-svc</span>
-        <div class="span-track"><div class="span-fill" style="left:22%;width:28%;background:#2FD3B5" title="Click to inspect">45ms (check_funds)</div></div>
-      </div>
-      <div class="span-bar">
-        <span class="span-lbl">sarie-payment-hub</span>
-        <div class="span-track"><div class="span-fill bottleneck" style="left:52%;width:44%;background:#F2668B" title="Bottleneck isolated!">310ms (SAMA IPN Hop) ⚠️</div></div>
-      </div>
-      <div class="span-bar">
-        <span class="span-lbl">postgres-rds-db</span>
-        <div class="span-track"><div class="span-fill" style="left:58%;width:12%;background:#FFB52E" title="Click to inspect">22ms (commit_tx)</div></div>
+        <div class="span-lbl" style="color:#f43f5e;font-weight:700">4. db-oracle (Lock)</div>
+        <div class="span-track">
+          <div class="span-fill bottleneck" id="bottleneckSpan" style="left:20%;width:70%">1,420ms (LOCK WAIT)</div>
+        </div>
       </div>
     </div>
 
-    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8)" id="spanDetail">
-      <b style="color:var(--pink)">Immediate Root Cause Isolation:</b> 75% of the total request time was spent in the external central payment hub (310ms), not inside the bank's AWS Riyadh cluster.
+    <!-- Interactive Fix Button -->
+    <div style="border-top:1px solid #334155;padding-top:12px;display:flex;justify-content:space-between;align-items:center">
+      <div id="traceExplanation" style="font-size:11.5px;color:#cbd5e1">
+        <b style="color:#f43f5e">Identified Bottleneck:</b> Oracle database row lock on <code>orders_table</code>.
+      </div>
+      <button id="btnFixTrace" style="background:#059669;border:none;color:#fff;font:700 11px var(--mono);padding:8px 14px;border-radius:6px;cursor:pointer">
+        ⚡ 1-Click: Release Lock
+      </button>
     </div>
   </div>
 </div>
 
-<div class="bv in5">
-  <b>Why not AWS X-Ray?</b>
-  X-Ray is functional for simple Lambda calls, but lacks automatic bytecode flame graphs for legacy enterprise workloads, cannot map message queues, and doesn't baseline on-prem transactions.
+<div class="footer-banner in3">
+  <div><b>Business Impact:</b> Instead of 15 engineers spending 2 hours debugging in a war room, Datadog isolates the exact line causing the stall in 3 seconds.</div>
+  <span style="font:700 11px var(--mono);color:var(--teal)">MTTR: 2 Hours → 2 Minutes</span>
 </div>
 
 <script src="../js/dd.js"></script>
 <script>
 (function(){
-  const detail = document.getElementById('spanDetail');
-  document.querySelectorAll('.span-fill').forEach(el => {
-    el.addEventListener('click', () => {
-      const txt = el.textContent;
-      detail.innerHTML = `<b style="color:var(--teal)">Inspecting Span:</b> <code>${txt}</code> — env:prod-riyadh, service:${el.parentElement.parentElement.querySelector('.span-lbl').textContent}. Execution verified.`;
-    });
+  const btn = document.getElementById('btnFixTrace');
+  const span = document.getElementById('bottleneckSpan');
+  const badge = document.getElementById('totalDurationBadge');
+  const expl = document.getElementById('traceExplanation');
+  let fixed = false;
+
+  btn.addEventListener('click', () => {
+    fixed = !fixed;
+    if(fixed){
+      span.classList.remove('bottleneck');
+      span.style.background = '#059669';
+      span.style.width = '10%';
+      span.textContent = '14ms';
+      badge.textContent = 'Total Time: 42ms (FAST)';
+      badge.style.background = '#059669';
+      expl.innerHTML = '<b style="color:#2dd4bf">✓ Performance Restored:</b> Lock released. Transaction time plummeted from 1,840ms to 42ms.';
+      btn.textContent = '↺ Simulate Slowdown';
+      btn.style.background = '#334155';
+    } else {
+      span.classList.add('bottleneck');
+      span.style.background = '#e11d48';
+      span.style.width = '70%';
+      span.textContent = '1,420ms (LOCK WAIT)';
+      badge.textContent = 'Total Time: 1,840ms (SLOW)';
+      badge.style.background = '#e11d48';
+      expl.innerHTML = '<b style="color:#f43f5e">Identified Bottleneck:</b> Oracle database row lock on <code>orders_table</code>.';
+      btn.textContent = '⚡ 1-Click: Release Lock';
+      btn.style.background = '#059669';
+    }
   });
 })();
 </script>

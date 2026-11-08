@@ -5,72 +5,224 @@
 <title>The AWS Riyadh Moment</title>
 <link rel="stylesheet" href="../css/dd.css">
 <style>
-  .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}
-  .s-box{background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:8px;border-left:3px solid var(--purple)}
-  .s-box .v{font:700 24px/1 var(--mono);color:var(--purple)}
-  .s-box .l{font:500 10px var(--mono);text-transform:uppercase;color:var(--char);margin-top:4px}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
-  .card{padding:14px 16px;border-radius:10px;background:#fff;border:1px solid var(--line);position:relative;display:flex;flex-direction:column;justify-content:space-between;height:260px}
-  .card .num{font:700 20px var(--mono);color:var(--c,var(--purple));margin-bottom:4px}
-  .card h3{font-size:16px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:6px}
-  .card p{font-size:11.5px;line-height:1.45;color:var(--grey)}
-  .card .pill{font:600 9.5px var(--mono);text-transform:uppercase;padding:3px 7px;border-radius:4px;background:var(--bg);color:var(--c,var(--purple));align-self:flex-start;margin-top:8px}
-  html[data-density="1"] .stats-strip{display:none}
+  body {
+    padding: 28px 48px;
+    height: 720px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+    padding-bottom: 10px;
+  }
+  .header-left .eyebrow {
+    font: 700 11px var(--mono);
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 4px 0 2px;
+    line-height: 1.2;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--char);
+    margin: 0;
+  }
+  .stats-strip {
+    display: flex;
+    gap: 12px;
+  }
+  .s-box {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 6px 14px;
+    border-radius: 8px;
+    border-left: 3px solid var(--purple);
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,.02);
+  }
+  .s-box .v {
+    font: 800 18px var(--mono);
+    color: var(--purple);
+    line-height: 1.1;
+  }
+  .s-box .l {
+    font: 600 9px var(--mono);
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-top: 2px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 12px 0 10px;
+  }
+  .card {
+    padding: 16px 16px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--line);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 280px;
+    border-top: 4px solid var(--c, var(--purple));
+    box-shadow: 0 2px 8px rgba(0,0,0,.03);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(99,44,166,.12);
+  }
+  .card .num {
+    font: 800 16px var(--mono);
+    color: var(--c, var(--purple));
+    margin-bottom: 6px;
+  }
+  .card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .card p {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--char);
+  }
+  .card .pill {
+    font: 600 10px var(--mono);
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: var(--c, var(--purple));
+    align-self: flex-start;
+    margin-top: 10px;
+  }
+  .interactive-bar {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sim-btn {
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    font: 700 11px var(--mono);
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .sim-btn:hover {
+    background: #4b1f82;
+  }
 </style>
 </head>
-<body class="soft" data-foot="Strategic Context · AWS Riyadh (me-central-2) Launch Edition" data-who="cio,exec,ciso">
-<div class="z">
-  <div class="eyebrow in1">The Decisive Shift · December 2026</div>
-  <h1 class="in2">AWS lands in Riyadh next month.<br><span class="b">Here are the 4 migration realities.</span></h1>
-  <p class="sub in3">AWS is activating its $5.3B Cloud Region in Riyadh with 3 Availability Zones. Every bank, government agency, and enterprise is preparing migration cutovers. Here is why observability makes or breaks go-live.</p>
-</div>
+<body class="soft" data-foot="Strategic Context · AWS Riyadh Launch Edition" data-who="cio,exec,ciso">
 
-<div class="stats-strip in3">
-  <div class="s-box"><div class="v"><span data-count="5.3" data-dec="1" data-pre="$" data-post="B"></span></div><div class="l">AWS Riyadh Commitment</div></div>
-  <div class="s-box"><div class="v"><span data-count="3" data-post=" AZs"></span></div><div class="l">Availability Zones</div></div>
-  <div class="s-box"><div class="v"><span data-count="0" data-post=" PII"></span></div><div class="l">Zero Citizen Egress</div></div>
-  <div class="s-box"><div class="v"><span data-count="100" data-post="%"></span></div><div class="l">AWS EDP Drawdown</div></div>
+<div class="header-row in1">
+  <div class="header-left">
+    <div class="eyebrow">The Decisive Moment · AWS in Riyadh Next Month</div>
+    <h1>The Kingdom's cloud transformation. <span class="b" style="color:var(--purple)">Four reasons you need Datadog.</span></h1>
+    <p>AWS is opening 3 state-of-the-art datacenters in Riyadh ($5.3B investment). Here is how Datadog guarantees your go-live is smooth and risk-free.</p>
+  </div>
+  <div class="stats-strip in2">
+    <div class="s-box"><div class="v"><span data-count="5.3" data-dec="1" data-pre="$" data-post="B">$5.3B</span></div><div class="l">AWS Investment</div></div>
+    <div class="s-box"><div class="v">3 AZs</div><div class="l">Local Datacenters</div></div>
+    <div class="s-box"><div class="v" style="color:var(--teal)">0 PII</div><div class="l">Citizen Data Leaves</div></div>
+    <div class="s-box"><div class="v" style="color:var(--amber)">100%</div><div class="l">AWS EDP Drawdown</div></div>
+  </div>
 </div>
 
 <div class="grid">
-  <div class="card in4" style="--c:var(--purple)">
+  <!-- Card 1 -->
+  <div class="card in2" style="--c:#632CA6">
     <div>
       <div class="num">01</div>
-      <h3>The Dual-Run Risk</h3>
-      <p>You cannot cut over overnight. For 6 to 18 months, your mission-critical estate runs in a hybrid state—partly in Riyadh datacenters, partly in AWS me-central-2. When transactions stall, you cannot have teams guessing across disjointed consoles.</p>
+      <h3>The Hybrid Safety Net</h3>
+      <p>You cannot move everything overnight. For the next 6 to 18 months, your apps will run partly in your Riyadh datacenters and partly in AWS. Datadog lets you see both on a single screen so nobody is left guessing.</p>
     </div>
-    <div class="pill">Side-by-side baselines</div>
+    <div class="pill">Side-by-side visibility</div>
   </div>
-  <div class="card in4" style="--c:var(--pink)">
+
+  <!-- Card 2 -->
+  <div class="card in3" style="--c:#E11D48">
     <div>
       <div class="num">02</div>
-      <h3>The "War Room Tax"</h3>
-      <p>Today, a high-severity outage pulls 15 senior engineers onto a 2-hour bridge call. The DB team blames the network; network blames the app. Datadog eliminates that tax by uniting all signals under one unified data model.</p>
+      <h3>End the "War Room" Tax</h3>
+      <p>Today, when an app slows down, 15 engineers get pulled into a 2-hour panic bridge call. The database team blames the network; the network blames the cloud. Datadog pinpoints the exact cause in seconds.</p>
     </div>
-    <div class="pill">MTTR from hours to mins</div>
+    <div class="pill">Outages solved in mins</div>
   </div>
-  <div class="card in5" style="--c:var(--teal)">
+
+  <!-- Card 3 -->
+  <div class="card in4" style="--c:#0D9488">
     <div>
       <div class="num">03</div>
-      <h3>Saudi Data Sovereignty</h3>
-      <p>NDMO Level 3, SDAIA PDPL, and SAMA CSF 3.3.14 require rigorous data classification. Our Sovereign Hybrid Edge keeps 100% of raw compliance logs on local AWS S3 in Riyadh, redacting citizen PII before telemetry egress.</p>
+      <h3>100% Saudi Data Protection</h3>
+      <p>Under SAMA, SDAIA PDPL, and NCA rules, customer data must be protected. Our In-Kingdom Sovereign Shield automatically scrubs citizen IDs and cards at the edge, keeping all raw records safe in Saudi Arabia.</p>
     </div>
-    <div class="pill">Zero-PII egress guarantee</div>
+    <div class="pill">SAMA & NCA compliant</div>
   </div>
-  <div class="card in6" style="--c:var(--amber)">
+
+  <!-- Card 4 -->
+  <div class="card in5" style="--c:#D97706">
     <div>
       <div class="num">04</div>
-      <h3>100% AWS EDP Drawdown</h3>
-      <p>Procurement is seamless. Because Datadog is an Elite AWS Marketplace Partner, every single dollar invested draws down 1:1 against your enterprise AWS committed cloud spend (EDP), speeding approval from months to days.</p>
+      <h3>Pay Using Your AWS Budget</h3>
+      <p>No new procurement headaches. Because Datadog is an Elite AWS Marketplace Partner, every dollar you spend counts 1:1 against your enterprise AWS committed discount program (EDP). Approvals in days, not months.</p>
     </div>
-    <div class="pill">1:1 Cloud spend credit</div>
+    <div class="pill">100% AWS EDP credit</div>
   </div>
 </div>
 
-<div class="bv in6">
-  <b>Strategic takeaway</b>
-  AWS Riyadh launch is an architectural migration, not just an infrastructure move. Datadog provides the bridge, the sovereign security envelope, and the financial drawdown to guarantee Day-1 success.
+<div class="interactive-bar in6">
+  <div id="simStatusText">
+    <b>Live Latency Simulation:</b> Legacy Overseas Cloud latency: <span style="color:#e11d48;font-weight:700">138ms</span> (Frankfurt/London).
+  </div>
+  <button class="sim-btn" id="btnSimLatency">⚡ Test: Switch to AWS Riyadh Region</button>
 </div>
+
 <script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnSimLatency');
+  const txt = document.getElementById('simStatusText');
+  let active = false;
+
+  btn.addEventListener('click', () => {
+    active = !active;
+    if(active) {
+      txt.innerHTML = '<b>✓ Connected to AWS Riyadh:</b> Latency dropped from 138ms to <span style="color:#059669;font-weight:800;font-size:14px">3.8ms</span>! Instant page loads for Saudi citizens with 100% local compliance.';
+      btn.textContent = '↺ Reset to Legacy Cloud';
+      btn.style.background = '#334155';
+    } else {
+      txt.innerHTML = '<b>Live Latency Simulation:</b> Legacy Overseas Cloud latency: <span style="color:#e11d48;font-weight:700">138ms</span> (Frankfurt/London).';
+      btn.textContent = '⚡ Test: Switch to AWS Riyadh Region';
+      btn.style.background = 'var(--purple)';
+    }
+  });
+})();
+</script>
 </body>
 </html>
