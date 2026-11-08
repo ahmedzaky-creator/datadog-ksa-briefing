@@ -73,11 +73,35 @@
   </div>
 </div>
 
-<div class="bv in6">
-  <b>Executive Commitment</b>
-  With Zero&One's local Riyadh engineering presence and Datadog's pre-built content, enterprise customers achieve full observability and SAMA compliance before cutting over production traffic to AWS Riyadh.
+</div>
+
+<div class="bv in6" id="phaseBanner">
+  <b>Executive Commitment:</b>
+  With Zero&One's local Riyadh engineering presence and Datadog's pre-built content, enterprise customers achieve full observability and SAMA compliance before cutting over production traffic to AWS Riyadh. Click a phase above to view milestone deliverables.
 </div>
 
 <script src="../js/dd.js"></script>
+<script>
+(function(){
+  const cards = document.querySelectorAll('.phase-card');
+  const banner = document.getElementById('phaseBanner');
+
+  const phaseDetails = [
+    "<b>Phase 1 Focus (Days 1–30):</b> Zero&One deploys Agent v7 DaemonSet on Amazon EKS in AWS Riyadh (me-central-2). 1,000+ turn-key integrations baselined against legacy on-premises datacenters.",
+    "<b>Phase 2 Focus (Days 31–60):</b> Unified Service Tagging (env, service, version) applied across all CI/CD pipelines. Vector Edge workers deployed for SDAIA PDPL PII redaction. Bits AI SRE trained on live telemetry.",
+    "<b>Phase 3 Focus (Days 61–90):</b> Long-term SAMA CSF 3.3.14 compliance logs routed to Flex Logs on Amazon S3 in Riyadh ($0.05/GB). Splunk and PagerDuty retired, releasing 51% in net TCO savings."
+  ];
+
+  cards.forEach((c, i) => {
+    c.style.cursor = 'pointer';
+    c.addEventListener('click', () => {
+      cards.forEach(x => { x.style.boxShadow = ''; x.style.borderColor = ''; });
+      c.style.boxShadow = '0 0 0 2px var(--c, var(--purple))';
+      c.style.borderColor = 'var(--c, var(--purple))';
+      banner.innerHTML = phaseDetails[i];
+    });
+  });
+})();
+</script>
 </body>
 </html>

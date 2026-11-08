@@ -79,11 +79,34 @@
   </div>
 </div>
 
-<div class="bv in6">
-  <b>The Single-Click Connection</b>
-  Click a failed mobile checkout in Session Replay, and Datadog opens the exact backend APM trace and database lock that caused the error. No other vendor does this natively.
+<div class="bv in6" id="demBanner">
+  <b>The Single-Click Connection:</b>
+  Click a failed mobile checkout in Session Replay, and Datadog opens the exact backend APM trace and database lock that caused the error. Click any offering above to inspect capabilities.
 </div>
 
 <script src="../js/dd.js"></script>
+<script>
+(function(){
+  const cards = document.querySelectorAll('.dem-card');
+  const banner = document.getElementById('demBanner');
+
+  const info = [
+    "<b>01 · Real User Monitoring:</b> Captures 100% of frontend browser and mobile sessions. Dissects Core Web Vitals (LCP: 1.1s, INP: 18ms) across stc, Mobily, and Zain 5G networks in Riyadh.",
+    "<b>02 · Session Replay:</b> Replays exact user actions with strict client-side DOM privacy masking. Exposes rage-clicks and dead buttons during mada and Apple Pay checkout flows.",
+    "<b>03 · Synthetic Monitoring:</b> Automated headless Chromium bots test Nafath SSO and payment gateways from Riyadh and Jeddah endpoints every 60s—preventing morning rush-hour outages.",
+    "<b>04 · Product Analytics:</b> Visualizes multi-step onboarding funnels, calculates dropout churn per localized step, and measures feature engagement across Vision 2030 digital portals."
+  ];
+
+  cards.forEach((c, idx) => {
+    c.style.cursor = 'pointer';
+    c.addEventListener('click', () => {
+      cards.forEach(x => { x.style.boxShadow = ''; x.style.borderColor = ''; });
+      c.style.boxShadow = '0 0 0 2px var(--c, var(--purple))';
+      c.style.borderColor = 'var(--c, var(--purple))';
+      banner.innerHTML = info[idx];
+    });
+  });
+})();
+</script>
 </body>
 </html>

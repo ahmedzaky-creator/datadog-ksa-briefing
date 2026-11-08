@@ -21,7 +21,17 @@
   <p class="sub in3">Plain Language: Moving to AWS Riyadh requires strict adherence to local banking and data protection laws. Datadog's architecture maps directly to every mandated control from SAMA, SDAIA, NDMO, and NCA.</p>
 </div>
 
-<table class="matrix-table in3">
+<div class="in3" style="display:flex;gap:8px;margin-top:12px;align-items:center">
+  <span style="font:600 10.5px var(--mono);color:var(--grey);text-transform:uppercase">Filter Framework:</span>
+  <button class="f-btn active" data-f="all" style="background:var(--purple);color:#fff;border:none;font:600 10.5px var(--mono);padding:4px 10px;border-radius:4px;cursor:pointer">All</button>
+  <button class="f-btn" data-f="ndmo" style="background:var(--bg);color:var(--char);border:1px solid var(--line);font:600 10.5px var(--mono);padding:4px 10px;border-radius:4px;cursor:pointer">NDMO</button>
+  <button class="f-btn" data-f="sdaia" style="background:var(--bg);color:var(--char);border:1px solid var(--line);font:600 10.5px var(--mono);padding:4px 10px;border-radius:4px;cursor:pointer">SDAIA PDPL</button>
+  <button class="f-btn" data-f="sama" style="background:var(--bg);color:var(--char);border:1px solid var(--line);font:600 10.5px var(--mono);padding:4px 10px;border-radius:4px;cursor:pointer">SAMA CSF</button>
+  <button class="f-btn" data-f="nca" style="background:var(--bg);color:var(--char);border:1px solid var(--line);font:600 10.5px var(--mono);padding:4px 10px;border-radius:4px;cursor:pointer">NCA ECC</button>
+  <button class="f-btn" data-f="cst" style="background:var(--bg);color:var(--char);border:1px solid var(--line);font:600 10.5px var(--mono);padding:4px 10px;border-radius:4px;cursor:pointer">CST Cloud</button>
+</div>
+
+<table class="matrix-table in3" id="compTable">
   <thead>
     <tr>
       <th style="width:22%">Regulator &amp; Framework</th>
@@ -31,7 +41,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr data-cat="ndmo">
       <td>
         <div class="reg-name">NDMO Classification</div>
         <div class="reg-cite">Royal Decree No. 59888</div>
@@ -40,7 +50,7 @@
       <td>Raw logs with citizen data cannot egress cross-border without minimization.</td>
       <td><span class="sol-tag">In-Kingdom Vector VRL</span> strips PII, reducing telemetry to Level 1/2.</td>
     </tr>
-    <tr>
+    <tr data-cat="sdaia">
       <td>
         <div class="reg-name">SDAIA PDPL</div>
         <div class="reg-cite">Royal Decree M/19 (Art. 19/29)</div>
@@ -49,7 +59,7 @@
       <td>National IDs, Iqamas, mobile numbers, and IBANs must be eliminated prior to egress.</td>
       <td><span class="sol-tag">Sensitive Data Scanner</span> + client-side RUM DOM masking at the device.</td>
     </tr>
-    <tr>
+    <tr data-cat="sama">
       <td>
         <div class="reg-name">SAMA CSF 3.3.14 &amp; 3.4.3</div>
         <div class="reg-cite">Event Logging &amp; Outsourcing</div>
@@ -58,7 +68,7 @@
       <td>Banks must retain auditable transaction trails within Kingdom boundaries.</td>
       <td><span class="sol-tag">Local AWS S3 In-Kingdom</span> + Datadog Cloud SIEM for real-time alerting.</td>
     </tr>
-    <tr>
+    <tr data-cat="nca">
       <td>
         <div class="reg-name">NCA ECC-2:2024 &amp; CCC</div>
         <div class="reg-cite">Subdomain 2-12 (Logs)</div>
@@ -67,7 +77,7 @@
       <td>High storage volume requires low-cost compliance archiving without indexer sprawl.</td>
       <td><span class="sol-tag">Flex Logs ($0.05/GB)</span> on local S3 in Riyadh for 18-month retention.</td>
     </tr>
-    <tr>
+    <tr data-cat="cst">
       <td>
         <div class="reg-name">CST Cloud Framework</div>
         <div class="reg-cite">CCRF Category C License</div>
@@ -85,5 +95,36 @@
 </div>
 
 <script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btns = document.querySelectorAll('.f-btn');
+  const rows = document.querySelectorAll('#compTable tbody tr');
+
+  btns.forEach(b => {
+    b.addEventListener('click', () => {
+      btns.forEach(x => {
+        x.classList.remove('active');
+        x.style.background = 'var(--bg)';
+        x.style.color = 'var(--char)';
+        x.style.border = '1px solid var(--line)';
+      });
+      b.classList.add('active');
+      b.style.background = 'var(--purple)';
+      b.style.color = '#fff';
+      b.style.border = 'none';
+
+      const f = b.getAttribute('data-f');
+      rows.forEach(r => {
+        if(f === 'all' || r.getAttribute('data-cat') === f){
+          r.style.display = '';
+          r.style.background = f === 'all' ? '' : 'var(--purple-ll)';
+        } else {
+          r.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>

@@ -73,11 +73,37 @@
   </div>
 </div>
 
-<div class="bv in6">
-  <b>National Digital Resilience</b>
-  Whether supporting pilgrims at the holy sites, securing digital banking transactions, or scaling national AI platforms, Datadog provides the reliable operational backbone for Vision 2030 digital infrastructure.
+</div>
+
+<div class="bv in6" id="sectorDetailBanner">
+  <b>National Digital Resilience:</b>
+  Click any of the 5 Saudi sectors above to inspect live architecture integration and SLA impact.
 </div>
 
 <script src="../js/dd.js"></script>
+<script>
+(function(){
+  const cards = document.querySelectorAll('.uc-card');
+  const banner = document.getElementById('sectorDetailBanner');
+
+  const sectorData = [
+    "<b>Fintech & Banking:</b> APM tags <code>mada-issuer:alrajhi</code> and <code>sarie-core</code>. Pinpoints interbank clearing timeouts in under 4 seconds, preserving 99.99% transaction success rate during peak salary cycles.",
+    "<b>Digital Government:</b> Synthetic monitors simulate citizen login via Nafath SSO every 60s from Riyadh and Jeddah. Cluster Agent scales EKS pods 15 minutes before 8:00 AM government rush hour.",
+    "<b>Hajj & Pilgrimage:</b> Nusuk Super-App mobile SDK buffers telemetry during cell tower drops in Mina & Arafat. Watchdog alerts on permit validation degradation before pilgrims reach the gates.",
+    "<b>National Telecom:</b> eBPF CNM monitors 5G UPF user plane packet latency at 0.5ms precision. Flex Logs stores 20 TB/mo CDR audit logs in AWS Riyadh S3 at $0.05/GB, saving $240k/yr.",
+    "<b>Sovereign AI:</b> Traces multi-step Bedrock ALLaM 34B agentic tool chains. NVIDIA DCGM tracks H100 GPU cluster memory saturation and thermal load in AWS Riyadh me-central-2."
+  ];
+
+  cards.forEach((c, idx) => {
+    c.style.cursor = 'pointer';
+    c.addEventListener('click', () => {
+      cards.forEach(x => { x.style.boxShadow = ''; x.style.borderColor = ''; });
+      c.style.boxShadow = '0 0 0 2px var(--c, var(--purple))';
+      c.style.borderColor = 'var(--c, var(--purple))';
+      banner.innerHTML = sectorData[idx];
+    });
+  });
+})();
+</script>
 </body>
 </html>

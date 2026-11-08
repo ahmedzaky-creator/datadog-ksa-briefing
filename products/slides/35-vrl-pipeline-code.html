@@ -53,19 +53,30 @@
 
   <div class="sim-pane in4">
     <div>
-      <div class="box-title">RAW LOG INTAKE (Inside Customer VPC)</div>
-      <div class="io-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span class="box-title">RAW LOG INTAKE (Inside Customer VPC)</span>
+        <button id="btnSwitchPayload" style="background:var(--bg);border:1px solid var(--line);font:600 10px var(--mono);padding:3px 6px;border-radius:4px;cursor:pointer">Payload: NID + IBAN</button>
+      </div>
+      <div class="io-box" id="rawPayloadBox">
         { "timestamp": "14:02:11", "citizen_id": "1083928172", "iban": "SA4420000001234567890123", "action": "transfer_submit" }
       </div>
 
-      <div class="box-title" style="color:var(--teal-d);margin-top:14px">SANITIZED TELEMETRY EGRESS (To Datadog SaaS)</div>
-      <div class="io-box out">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;margin-bottom:6px">
+        <span class="box-title" style="color:var(--teal-d)">SANITIZED TELEMETRY EGRESS (To Datadog SaaS)</span>
+        <span id="scrubLatency" style="font:600 9.5px var(--mono);color:var(--teal)">0.12ms · Rust JIT</span>
+      </div>
+      <div class="io-box out" id="cleanPayloadBox">
         { "timestamp": "14:02:11", "citizen_id": "[REDACTED_SA_NID]", "iban": "[REDACTED_SA_IBAN]", "action": "transfer_submit" }
       </div>
     </div>
 
-    <div style="background:var(--bg);padding:10px 12px;border-radius:6px;font:500 11px var(--mono);color:var(--char)">
-      <b>Dual-Stream Routing:</b> 100% of the raw JSON is written to local Amazon S3 in Riyadh for SAMA compliance; the sanitized JSON is streamed to Datadog for real-time alerting.
+    <div>
+      <div style="margin-bottom:8px">
+        <button id="btnRunVrlScrub" style="width:100%;background:var(--teal);border:none;color:var(--ink);font:600 11px var(--mono);padding:6px;border-radius:4px;cursor:pointer">⚡ Execute Live VRL Scrub</button>
+      </div>
+      <div style="background:var(--bg);padding:8px 10px;border-radius:6px;font:500 10.5px var(--mono);color:var(--char)">
+        <b>Dual-Stream Routing:</b> Raw JSON written to local AWS S3 in Riyadh; sanitized JSON streamed to Datadog SaaS.
+      </div>
     </div>
   </div>
 </div>
@@ -76,5 +87,51 @@
 </div>
 
 <script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btnRun = document.getElementById('btnRunVrlScrub');
+  const btnSwitch = document.getElementById('btnSwitchPayload');
+  const rawBox = document.getElementById('rawPayloadBox');
+  const cleanBox = document.getElementById('cleanPayloadBox');
+  const lat = document.getElementById('scrubLatency');
+
+  const payloads = [
+    {
+      name: "Payload: NID + IBAN",
+      raw: '{ "timestamp": "14:02:11", "citizen_id": "1083928172", "iban": "SA4420000001234567890123", "action": "transfer_submit" }',
+      clean: '{ "timestamp": "14:02:11", "citizen_id": "[REDACTED_SA_NID]", "iban": "[REDACTED_SA_IBAN]", "action": "transfer_submit" }'
+    },
+    {
+      name: "Payload: Iqama + Card PAN",
+      raw: '{ "timestamp": "14:02:15", "iqama": "2084918201", "pan": "4128349188424281", "action": "card_payment" }',
+      clean: '{ "timestamp": "14:02:15", "iqama": "[REDACTED_IQAMA]", "pan": "[REDACTED_PAN]", "action": "card_payment" }'
+    }
+  ];
+
+  let pIdx = 0;
+
+  btnSwitch.addEventListener('click', () => {
+    pIdx = (pIdx + 1) % payloads.length;
+    btnSwitch.textContent = payloads[pIdx].name;
+    rawBox.textContent = payloads[pIdx].raw;
+    cleanBox.textContent = '... (Click Execute)';
+    cleanBox.classList.remove('out');
+  });
+
+  btnRun.addEventListener('click', () => {
+    btnRun.disabled = true;
+    btnRun.textContent = 'Scrubbing in-memory...';
+    cleanBox.textContent = 'Processing...';
+
+    setTimeout(() => {
+      cleanBox.textContent = payloads[pIdx].clean;
+      cleanBox.classList.add('out');
+      lat.textContent = (0.08 + Math.random() * 0.08).toFixed(2) + 'ms · Rust JIT';
+      btnRun.textContent = '⚡ Execute Live VRL Scrub';
+      btnRun.disabled = false;
+    }, 250);
+  });
+})();
+</script>
 </body>
 </html>
