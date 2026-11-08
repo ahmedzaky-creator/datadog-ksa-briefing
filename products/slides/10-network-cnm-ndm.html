@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Cloud & Physical Network Monitoring</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1.05fr 1fr;gap:18px;margin-top:16px}
+  .net-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .net-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;border-left:3px solid var(--c,var(--purple));display:flex;flex-direction:column;justify-content:space-between}
+  .net-card .tag{color:var(--c,var(--purple));font:600 9.5px var(--mono);text-transform:uppercase}
+  .net-card h3{font-size:14px;font-weight:700;color:var(--ink);margin:3px 0 2px}
+  .net-card .price{font:700 16px/1 var(--mono);color:var(--ink);margin-bottom:4px}
+  .net-card .price span{font-size:10px;color:var(--grey);font-weight:400}
+  .net-card p{font-size:11px;color:var(--grey);line-height:1.35}
+  .net-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:18px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  #net-svg{width:100%;height:270px}
+</style>
+</head>
+<body class="soft" data-foot="Domain 1 · Network Monitoring Spectrum (CNM · NDM · NetFlow · Path)" data-who="sre,cio">
+<div class="z">
+  <div class="eyebrow in1">Domain 1 · Hybrid &amp; Cloud Network Visibility</div>
+  <h1 class="in2">Cloud &amp; physical networks: <span class="b">Air traffic control for every packet.</span></h1>
+  <p class="sub in3">Plain Language: When moving traffic to AWS Riyadh across AWS Direct Connect links, you need to know whether slowdowns are caused by physical fiber congestion in Riyadh, router buffer drops, or inter-AZ cloud latency.</p>
+</div>
+
+<div class="cols">
+  <div class="net-grid in3">
+    <div class="net-card" style="--c:var(--purple)">
+      <div>
+        <div class="tag">Kernel eBPF Telemetry</div>
+        <h3>Cloud Network (CNM)</h3>
+        <div class="price">$5.00 <span>/ host / mo</span></div>
+        <p>Inter-pod and cross-AZ traffic, latency, and TCP retransmits via eBPF.</p>
+      </div>
+    </div>
+
+    <div class="net-card" style="--c:var(--teal)">
+      <div>
+        <div class="tag">SNMP Hardware</div>
+        <h3>Device Mon. (NDM)</h3>
+        <div class="price">$7.00 <span>/ device / mo</span></div>
+        <p>SNMP polling for Cisco, Arista, and Palo Alto firewalls in Riyadh.</p>
+      </div>
+    </div>
+
+    <div class="net-card" style="--c:var(--amber)">
+      <div>
+        <div class="tag">Edge Flow</div>
+        <h3>NetFlow &amp; sFlow</h3>
+        <div class="price">$1.25 <span>/ 1M flows</span></div>
+        <p>Top talkers, bandwidth hogs, and DDoS detection across core links.</p>
+      </div>
+    </div>
+
+    <div class="net-card" style="--c:var(--pink)">
+      <div>
+        <div class="tag">Hop-by-Hop Trace</div>
+        <h3>Network Path</h3>
+        <div class="price">$5.00 <span>/ path / mo</span></div>
+        <p>Hop-by-hop latency testing across AWS Direct Connect links.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="net-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--lav)">AWS DIRECT CONNECT HYBRID PATH</span>
+        <span class="chip on" style="font-size:9px">RTT: 1.4ms (Healthy)</span>
+      </div>
+      <svg id="net-svg" viewBox="0 0 520 270"></svg>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:6px;font:500 10.5px var(--mono);color:rgba(255,255,255,.8)">
+      <b style="color:var(--teal)">Root Cause Isolation:</b> Network Path confirms Direct Connect transit is 1.4ms; latency spike was caused by database connection pool, not carrier fiber.
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Eliminating the "Network vs Application" War</b>
+  When an engineer blames "the network" for latency during AWS cutover, Network Path and CNM instantly reveal whether the issue was a 45ms carrier hop or an un-indexed SQL query inside the app.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('net-svg');
+
+  // Node 1: On-Prem DC Riyadh
+  const n1 = DD.el('g', {}, svg);
+  DD.el('rect', {x: 20, y: 100, width: 120, height: 70, rx: 8, fill: '#1F1533', stroke: '#A47CE8', 'stroke-width': 1.5}, n1);
+  DD.el('text', {x: 80, y: 128, fill: '#fff', 'text-anchor': 'middle', style: 'font:700 11px Inter,sans-serif'}, n1).textContent = 'On-Prem DC';
+  DD.el('text', {x: 80, y: 146, fill: '#C9B2F2', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, n1).textContent = 'Cisco Nexus NDM';
+
+  // Node 2: Direct Connect Gateway
+  const n2 = DD.el('g', {}, svg);
+  DD.el('rect', {x: 200, y: 100, width: 120, height: 70, rx: 8, fill: '#2A1250', stroke: '#FFB52E', 'stroke-width': 1.5}, n2);
+  DD.el('text', {x: 260, y: 128, fill: '#FFB52E', 'text-anchor': 'middle', style: 'font:700 11px Inter,sans-serif'}, n2).textContent = 'AWS DX Gateway';
+  DD.el('text', {x: 260, y: 146, fill: '#fff', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, n2).textContent = '10 Gbps (stc fiber)';
+
+  // Node 3: AWS Riyadh VPC & EKS
+  const n3 = DD.el('g', {}, svg);
+  DD.el('rect', {x: 380, y: 100, width: 120, height: 70, rx: 8, fill: '#140A24', stroke: '#2FD3B5', 'stroke-width': 1.5}, n3);
+  DD.el('text', {x: 440, y: 128, fill: '#2FD3B5', 'text-anchor': 'middle', style: 'font:700 11px Inter,sans-serif'}, n3).textContent = 'AWS me-central-2';
+  DD.el('text', {x: 440, y: 146, fill: '#C9B2F2', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, n3).textContent = 'CNM eBPF In-VPC';
+
+  // Connecting Paths
+  const p1 = DD.el('path', {d: 'M140,135 L200,135', class: 'flowpath'}, svg);
+  const p2 = DD.el('path', {d: 'M320,135 L380,135', class: 'flowpath'}, svg);
+
+  // Hop Labels
+  DD.el('text', {x: 170, y: 122, fill: '#2FD3B5', 'text-anchor': 'middle', style: 'font:600 10px JetBrains Mono,monospace'}, svg).textContent = '0.8ms';
+  DD.el('text', {x: 350, y: 122, fill: '#2FD3B5', 'text-anchor': 'middle', style: 'font:600 10px JetBrains Mono,monospace'}, svg).textContent = '0.6ms';
+
+  DD.flow(svg, [p1, p2], {n: 4, r: 3.5, color: '#2FD3B5', speed: .5, delay: .5});
+})();
+</script>
+</body>
+</html>

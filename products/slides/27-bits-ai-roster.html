@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Domain 6: The Bits AI 10-Agent Roster</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(2,1fr);gap:12px;margin-top:18px;height:420px}
+  .agent-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;border-top:3px solid var(--c,var(--purple));transition:transform .2s}
+  .agent-card:hover{transform:translateY(-2px);border-color:var(--c,var(--purple))}
+  .agent-card h4{font-size:14px;font-weight:700;color:var(--ink);margin:4px 0 2px}
+  .agent-card .tag{color:var(--c,var(--purple));font-size:9.5px}
+  .agent-card p{font-size:11.5px;color:var(--grey);line-height:1.4}
+  .agent-card .status{font:600 9.5px var(--mono);text-transform:uppercase;color:var(--teal-d);background:#E6FBF6;padding:2px 6px;border-radius:4px;align-self:flex-start;margin-top:6px}
+  .header-strip{position:absolute;right:64px;top:40px;display:flex;align-items:center;gap:10px}
+  .credit-pill{background:var(--purple-ll);border:1px solid var(--purple-l);border-radius:8px;padding:6px 12px;font:600 11.5px var(--mono);color:var(--purple)}
+</style>
+</head>
+<body class="soft" data-foot="Domain 6 · Autonomous AI Operations (Bits AI 10-Agent Roster)" data-who="sre,dev,cio,ciso">
+<div class="z">
+  <div class="eyebrow in1">Domain 6 · Autonomous Engineering Agents</div>
+  <h1 class="in2">The Bits AI roster: <span class="b">Ten specialized agents on shift.</span></h1>
+  <p class="sub in3">Plain Language: Rather than a generic chatbot that makes guesses, Bits AI is a team of 10 specialized autonomous agents that share a persistent memory of your Saudi cloud architecture and investigate incidents across all telemetry.</p>
+</div>
+
+<div class="header-strip in2">
+  <div class="credit-pill">AI Credits: $500 / pack of 500 (~4 credits/investigation)</div>
+</div>
+
+<div class="grid">
+  <div class="agent-card in2" style="--c:#632CA6">
+    <div>
+      <div class="tag">Autonomous RCA</div>
+      <h4>1. Bits AI SRE</h4>
+      <p>Forms and tests parallel hypotheses across metrics, traces, and logs. Isolates root cause in minutes.</p>
+    </div>
+    <div class="status">GA · 2,000+ Orgs</div>
+  </div>
+
+  <div class="agent-card in2" style="--c:#5AB8F2">
+    <div>
+      <div class="tag">IDE Assistant</div>
+      <h4>2. Bits Code</h4>
+      <p>Generates targeted code fixes and explains runtime stack traces directly inside developer IDEs.</p>
+    </div>
+    <div class="status">GA</div>
+  </div>
+
+  <div class="agent-card in3" style="--c:#2FD3B5">
+    <div>
+      <div class="tag">Conversational Ops</div>
+      <h4>3. Bits Chat</h4>
+      <p>Answers ad-hoc operational questions: "What changed in AWS Riyadh since 8 PM last night?"</p>
+    </div>
+    <div class="status">GA</div>
+  </div>
+
+  <div class="agent-card in3" style="--c:#FFB52E">
+    <div>
+      <div class="tag">Self-Tuning Alerts</div>
+      <h4>4. Bits Detection</h4>
+      <p>Analyzes metric seasonality and automatically eliminates false-positive alert thresholds.</p>
+    </div>
+    <div class="status">GA</div>
+  </div>
+
+  <div class="agent-card in3" style="--c:#F2668B">
+    <div>
+      <div class="tag">Safe Action</div>
+      <h4>5. Bits Remediation</h4>
+      <p>Drafts automated rollbacks, scaling adjustments, and fix PRs for one-click human approval.</p>
+    </div>
+    <div class="status">GA</div>
+  </div>
+
+  <div class="agent-card in4" style="--c:#A47CE8">
+    <div>
+      <div class="tag">Canary Guard</div>
+      <h4>6. Bits Release</h4>
+      <p>Evaluates progressive canary rollouts in EKS, warning of error rate regressions before full cutover.</p>
+    </div>
+    <div class="status">GA</div>
+  </div>
+
+  <div class="agent-card in4" style="--c:#1F6FA8">
+    <div>
+      <div class="tag">Quality Auto</div>
+      <h4>7. Bits Testing</h4>
+      <p>Generates synthetic API scripts and edge-case unit tests derived from real production failure modes.</p>
+    </div>
+    <div class="status">GA</div>
+  </div>
+
+  <div class="agent-card in5" style="--c:#B0284F">
+    <div>
+      <div class="tag">SOC Automation</div>
+      <h4>8. Bits Security</h4>
+      <p>Triages Cloud SIEM alerts, investigates IP reputation, and maps threat actor lateral movement.</p>
+    </div>
+    <div class="status">GA</div>
+  </div>
+
+  <div class="agent-card in5" style="--c:#007A3D">
+    <div>
+      <div class="tag">Custom Workflows</div>
+      <h4>9. Agent Builder</h4>
+      <p>Allows platform teams to assemble custom autonomous agents using company-specific SOPs and runbooks.</p>
+    </div>
+    <div class="status">GA</div>
+  </div>
+
+  <div class="agent-card in6" style="--c:#4B1F82">
+    <div>
+      <div class="tag">Persistent Graph</div>
+      <h4>10. Bits Memories</h4>
+      <p>Shared environment memory retaining past post-mortems, recurring bugs, and service dependencies.</p>
+    </div>
+    <div class="status">Enterprise GA</div>
+  </div>
+</div>
+
+<div class="bv in6" id="agentDetailBar" style="margin-top:12px;padding:8px 14px;font-size:12px">
+  <b>Bits AI Orchestration:</b> All 10 agents collaborate over a shared memory graph with zero human handoff needed. Click any agent above to inspect capabilities.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const cards = document.querySelectorAll('.agent-card');
+  const bar = document.getElementById('agentDetailBar');
+
+  const details = [
+    "Bits AI SRE: Analyzes 10M spans & metrics in parallel. Evaluates hypothesis trees across Riyadh AZs in under 3 mins.",
+    "Bits Code: Generates verified unit tests and PR fixes directly inside VS Code and Cursor, referencing live telemetry.",
+    "Bits Chat: Natural language query engine over unified tags (e.g., 'Compare p99 latency before and after the 14:00 deploy').",
+    "Bits Detection: Dynamically calculates seasonal metrics to suppress alerts on expected traffic patterns like Ramadan nights.",
+    "Bits Remediation: Dispatches automated rollbacks to AWS Riyadh EKS clusters with 1-click human-in-the-loop confirmation.",
+    "Bits Release: Assesses canary deployments against error budgets before traffic cutover to prevent widespread outages.",
+    "Bits Testing: Converts real production edge-case traces into automated Synthetic API tests to prevent regression.",
+    "Bits Security: Triages Cloud SIEM signals, checks MITRE ATT&CK techniques, and quarantines compromised instances.",
+    "Bits Agent Builder: Enables enterprise SRE teams to script multi-step recovery runbooks using low-code orchestration.",
+    "Bits Memories: Persistent semantic memory storing previous incident post-mortems, architectural dependencies, and team ownership."
+  ];
+
+  cards.forEach((c, idx) => {
+    c.style.cursor = 'pointer';
+    c.addEventListener('click', () => {
+      cards.forEach(x => { x.style.boxShadow = ''; x.style.borderColor = ''; });
+      c.style.boxShadow = '0 0 0 2px var(--c, var(--purple))';
+      c.style.borderColor = 'var(--c, var(--purple))';
+      bar.innerHTML = '<b style="color:var(--c, var(--purple))">Active Agent Focus:</b> ' + details[idx];
+    });
+  });
+})();
+</script>
+</body>
+</html>

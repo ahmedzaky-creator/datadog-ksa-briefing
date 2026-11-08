@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Domain 4: Digital Experience Monitoring (DEM)</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px}
+  .dem-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;height:380px;border-top:3px solid var(--c,var(--purple))}
+  .dem-card .num{font:700 16px var(--mono);color:var(--c,var(--purple));margin-bottom:6px}
+  .dem-card h3{font-size:17px;font-weight:700;color:var(--ink);line-height:1.25}
+  .dem-card .price{font:600 12px var(--mono);color:var(--c,var(--purple));margin:8px 0;background:var(--bg);padding:4px 8px;border-radius:4px}
+  .dem-card p{font-size:12.5px;color:var(--grey);line-height:1.45}
+  .dem-card .sub-feats{font:400 11px var(--mono);color:var(--char);margin-top:8px;border-top:1px solid var(--line);padding-top:8px}
+</style>
+</head>
+<body class="soft" data-foot="Domain 4 · Digital Experience Monitoring (7 Offerings)" data-who="digital,dev,exec">
+<div class="z">
+  <div class="eyebrow in1">Domain 4 · Front-End, Mobile &amp; User Experience</div>
+  <h1 class="in2">Digital Experience Monitoring: <span class="b">Through the eyes of your users.</span></h1>
+  <p class="sub in3">Plain Language: Backend server dashboards can show all green while users are rage-clicking on a frozen checkout screen. DEM monitors the real, client-side experience of every Saudi citizen on web and mobile devices.</p>
+</div>
+
+<div class="grid">
+  <div class="dem-card in2" style="--c:#FFB52E">
+    <div>
+      <div class="num">01 · RUM</div>
+      <h3>Real User Monitoring</h3>
+      <div class="price">$1.50 / $2.20 per 1k sessions</div>
+      <p>Measures actual frontend performance: Core Web Vitals (LCP, FID, CLS), mobile crashes, and network latency across stc, Mobily, and Zain.</p>
+    </div>
+    <div class="sub-feats">
+      • iOS &amp; Android Native SDKs<br>
+      • Frustration signals (Rage clicks)<br>
+      • Automatic APM trace correlation
+    </div>
+  </div>
+
+  <div class="dem-card in3" style="--c:#F2668B">
+    <div>
+      <div class="num">02 · Replay</div>
+      <h3>Session Replay</h3>
+      <div class="price">$24.00 per 1k replays</div>
+      <p>Watch pixel-perfect video recordings of user sessions. Diagnoses exactly why a citizen dropped out of a mada payment or government visa portal.</p>
+    </div>
+    <div class="sub-feats">
+      • Client-side DOM privacy masking<br>
+      • Zero PII leakage guarantee<br>
+      • Replay tied directly to console errors
+    </div>
+  </div>
+
+  <div class="dem-card in4" style="--c:#5AB8F2">
+    <div>
+      <div class="num">03 · Synthetics</div>
+      <h3>Synthetic Monitoring</h3>
+      <div class="price">$5/10k API · $12/1k Browser</div>
+      <p>Simulates citizen login and payment flows 24x7 from private testing endpoints in Riyadh and Jeddah before actual users encounter an issue.</p>
+    </div>
+    <div class="sub-feats">
+      • Multi-step browser checkout runs<br>
+      • SSL &amp; DNS certificate expiry alerts<br>
+      • Nafath SSO authentication checks
+    </div>
+  </div>
+
+  <div class="dem-card in5" style="--c:#2FD3B5">
+    <div>
+      <div class="num">04 · Analytics</div>
+      <h3>Product Analytics</h3>
+      <div class="price">$0.60 per 1k sessions</div>
+      <p>Tracks conversion funnels, onboarding retention heatmaps, and feature engagement without deploying third-party marketing trackers.</p>
+    </div>
+    <div class="sub-feats">
+      • Funnel dropout step attribution<br>
+      • Feature flag impact analysis<br>
+      • Correlates latency with revenue loss
+    </div>
+  </div>
+</div>
+
+<div class="bv in6">
+  <b>The Single-Click Connection</b>
+  Click a failed mobile checkout in Session Replay, and Datadog opens the exact backend APM trace and database lock that caused the error. No other vendor does this natively.
+</div>
+
+<script src="../js/dd.js"></script>
+</body>
+</html>

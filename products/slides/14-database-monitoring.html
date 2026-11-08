@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Database Monitoring (DBM) for Amazon RDS</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .db-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .query-table{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .q-row{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:8px 12px;display:grid;grid-template-columns:1fr 80px 70px;align-items:center}
+  .q-sql{font:500 11px var(--mono);color:var(--lav);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .q-time{font:600 11px var(--mono);color:var(--amber);text-align:right}
+  .q-wait{font:500 10px var(--mono);color:var(--teal);text-align:right}
+  .q-row.hot{border-color:var(--pink);background:rgba(242,102,139,.08)}
+  .q-row.hot .q-time{color:var(--pink)}
+</style>
+</head>
+<body class="soft" data-foot="Domain 2 · Database Monitoring (DBM) for Amazon RDS & Aurora" data-who="dev,sre,cio">
+<div class="z">
+  <div class="eyebrow in1">Domain 2 · Managed Database Intelligence</div>
+  <h1 class="in2">Database Monitoring: <span class="b">Ending the DBA vs developer war.</span></h1>
+  <p class="sub in3">Plain Language: When an app slows down, developers usually blame the database, and DBAs blame bad application queries. DBM brings full transparency by showing exact query execution plans, wait states, and row lock times.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">Zero-Overhead Read-Only Connection</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Deep RDS &amp; Aurora Visibility</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Connects remotely to Amazon RDS PostgreSQL, Aurora MySQL, SQL Server, and Oracle. Captures normalized query metrics without installing software on the managed database engine.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
+        <b>Billed Meter:</b> <b>$70.00</b> / database host / month<br>
+        • Includes 200 normalized queries per DB host<br>
+        • Full execution explain plans &amp; schema locks
+      </div>
+      <ul style="list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:12.5px;color:var(--char);display:flex;align-items:center;gap:6px">✓ Pinpoints sequential table scans missing an index</li>
+        <li style="font-size:12.5px;color:var(--char);display:flex;align-items:center;gap:6px">✓ Tracks lock contention and connection pool limits</li>
+        <li style="font-size:12.5px;color:var(--char);display:flex;align-items:center;gap:6px">✓ Joins SQL queries to upstream APM microservices</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="db-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--lav)">AWS RIYADH · aurora-pg-prod-cluster</span>
+        <span class="chip on" style="font-size:9px">Explain Plans Active</span>
+      </div>
+
+      <div class="query-table" id="qTable">
+        <div class="q-row hot" id="qRowHot">
+          <div class="q-sql" id="qSql">SELECT * FROM accounts WHERE iban = $1 FOR UPDATE</div>
+          <div class="q-time" id="qTime">1,240ms</div>
+          <div class="q-wait" id="qWait">RowLock</div>
+        </div>
+        <div class="q-row">
+          <div class="q-sql">SELECT balance FROM ledgers WHERE user_id = $1</div>
+          <div class="q-time">14ms</div>
+          <div class="q-wait">DiskRead</div>
+        </div>
+        <div class="q-row">
+          <div class="q-sql">INSERT INTO transaction_audit (tx_id, amount...)</div>
+          <div class="q-time">8ms</div>
+          <div class="q-wait">WALWrite</div>
+        </div>
+        <div class="q-row">
+          <div class="q-sql">UPDATE orders SET status = $1 WHERE id = $2</div>
+          <div class="q-time">12ms</div>
+          <div class="q-wait">ClientRead</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8)">
+      <div id="planText"><b style="color:var(--pink)">Explain Plan Recommendation:</b> <code>SELECT FOR UPDATE</code> on <code>accounts</code> held an exclusive lock for 1,240ms due to sequential table scan. Adding index on <code>iban</code> cuts query duration to 3ms.</div>
+      <div style="margin-top:8px">
+        <button id="btnIdx" style="background:var(--lav);border:none;color:var(--ink);font:600 11px var(--mono);padding:5px 12px;border-radius:4px;cursor:pointer;transition:all .2s">⚡ Simulate DBA Adding Index on IBAN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Eliminating War Rooms in Banking</b>
+  During payroll credit cycles, database lock contention can paralyze mada payments. DBM identifies the blocking transaction in 5 seconds without waiting for a DBA emergency ticket.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnIdx');
+  const row = document.getElementById('qRowHot');
+  const time = document.getElementById('qTime');
+  const wait = document.getElementById('qWait');
+  const plan = document.getElementById('planText');
+  let fixed = false;
+
+  btn.addEventListener('click', () => {
+    fixed = !fixed;
+    if(fixed){
+      row.classList.remove('hot');
+      row.style.background = 'rgba(47,211,181,.1)';
+      row.style.borderColor = 'var(--teal)';
+      time.textContent = '2.8ms';
+      time.style.color = 'var(--teal)';
+      wait.textContent = 'IndexScan';
+      wait.style.color = 'var(--teal)';
+      plan.innerHTML = '<b style="color:var(--teal)">✓ Index Applied:</b> B-Tree index <code>idx_accounts_iban</code> active. Execution plan shifted from sequential scan to index seek. Lock contention resolved!';
+      btn.textContent = '↺ Reset to Unindexed State';
+      btn.style.background = 'rgba(255,255,255,.2)';
+      btn.style.color = '#fff';
+    } else {
+      row.classList.add('hot');
+      row.style.background = '';
+      row.style.borderColor = '';
+      time.textContent = '1,240ms';
+      time.style.color = '';
+      wait.textContent = 'RowLock';
+      wait.style.color = '';
+      plan.innerHTML = '<b style="color:var(--pink)">Explain Plan Recommendation:</b> <code>SELECT FOR UPDATE</code> on <code>accounts</code> held an exclusive lock for 1,240ms due to sequential table scan. Adding index on <code>iban</code> cuts query duration to 3ms.';
+      btn.textContent = '⚡ Simulate DBA Adding Index on IBAN';
+      btn.style.background = 'var(--lav)';
+      btn.style.color = 'var(--ink)';
+    }
+  });
+})();
+</script>
+</body>
+</html>

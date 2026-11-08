@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Application, Code & AI Security</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+  .appsec-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px;border-top:4px solid var(--c,var(--pink))}
+  .appsec-card h3{font-size:18px;font-weight:700;color:var(--ink);margin:4px 0}
+  .appsec-card .price{font:700 20px/1 var(--mono);color:var(--c,var(--pink));margin:8px 0}
+  .appsec-card .price span{font-size:11.5px;color:var(--grey);font-weight:400}
+  .appsec-card p{font-size:12.5px;color:var(--grey);line-height:1.45}
+  .feat-list{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:6px}
+  .feat-list li{font-size:12px;color:var(--char);display:flex;align-items:center;gap:6px}
+  .feat-list li::before{content:'✓';color:var(--c,var(--pink));font-weight:700}
+  .badge-row{background:var(--bg);padding:8px 10px;border-radius:6px;font:500 11px var(--mono);color:var(--char);margin-top:10px}
+</style>
+</head>
+<body class="soft" data-foot="Domain 5 · Application & Code Security (AAP · SAST · SCA · AI Guard)" data-who="dev,ciso,sre">
+<div class="z">
+  <div class="eyebrow in1">Domain 5 · Shift-Left &amp; Runtime Self-Protection</div>
+  <h1 class="in2">App, code &amp; AI protection: <span class="b">Security inside the runtime.</span></h1>
+  <p class="sub in3">Plain Language: Traditional firewalls sit at the perimeter and guess what traffic means. Datadog inspects code as it is written in CI/CD, blocks hackers inside the application runtime, and stops prompt injection on AI models.</p>
+</div>
+
+<div class="grid">
+  <div class="appsec-card in2" style="--c:var(--pink)">
+    <div>
+      <div class="tag">Runtime Self-Protection (RASP)</div>
+      <h3>App &amp; API Protection (AAP)</h3>
+      <div class="price">$12.00 <span>/ APM host / month</span></div>
+      <p>Embedded inside the application runtime via Sqreen technology. Blocks attacks with zero signature maintenance or tuning.</p>
+      <div class="badge-row">
+        <b>OWASP Top 10 Protection:</b><br>
+        • SQL Injection (SQLi) blocking<br>
+        • Server-Side Request Forgery (SSRF)<br>
+        • Zero-day exploit neutralization
+      </div>
+      <ul class="feat-list">
+        <li>Zero latency impact (<1ms)</li>
+        <li>Blocks malicious payloads at execution</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="appsec-card in3" style="--c:#A47CE8">
+    <div>
+      <div class="tag">Shift-Left SAST &amp; SCA</div>
+      <h3>Code Security (CI/CD)</h3>
+      <div class="price">$8.00 <span>/ active committer / month</span></div>
+      <p>Scans source code repositories in GitHub Actions, GitLab, and Jenkins before bad code ever reaches AWS Riyadh.</p>
+      <div class="badge-row">
+        <b>Vulnerability Scanning:</b><br>
+        • Open-source package CVEs (SCA)<br>
+        • Static code security flaws (SAST)<br>
+        • Hardcoded API key &amp; secret leak detection
+      </div>
+      <ul class="feat-list">
+        <li>Blocks pull requests failing security tests</li>
+        <li>Automated developer remediation advice</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="appsec-card in4" style="--c:var(--teal)">
+    <div>
+      <div class="tag">LLM &amp; GenAI Defense</div>
+      <h3>AI Guard</h3>
+      <div class="price">$0.05 <span>/ 1,000 scanned requests</span></div>
+      <p>Runtime guardrail inspection for enterprise LLMs on Amazon Bedrock or sovereign Arabic models like ALLaM 34B.</p>
+      <div class="badge-row">
+        <b>Real-Time AI Guardrails:</b><br>
+        • Prompt injection &amp; jailbreak blocking<br>
+        • Citizen PII leak interception<br>
+        • Toxic &amp; hallucinated output filtering
+      </div>
+      <ul class="feat-list">
+        <li>Supports Arabic &amp; English prompts</li>
+        <li>Protects RAG agentic workflows</li>
+      <div style="margin-top:10px;text-align:center">
+        <button id="btnTestAttack" style="width:100%;background:var(--pink);border:none;color:#fff;font:600 10.5px var(--mono);padding:6px;border-radius:4px;cursor:pointer">⚡ Test Runtime Attack Block</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bv in5" id="bvAppSec">
+  <b>Comprehensive DevSecOps</b>
+  From the developer's first Git commit to the live Kubernetes pod and GenAI prompt, Datadog provides end-to-end security without adding friction to deployment pipelines.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnTestAttack');
+  const bv = document.getElementById('bvAppSec');
+  let blocked = false;
+
+  btn.addEventListener('click', () => {
+    blocked = !blocked;
+    if(blocked){
+      bv.innerHTML = '<b style="color:var(--teal)">✓ Attacks Blocked:</b> (1) AAP blocked SQLi <code>\' OR 1=1 --</code> in 0.1ms at execution. (2) AI Guard blocked Arabic prompt jailbreak <code>تجاهل التعليمات السابقة</code> in 0.3ms. Zero application downtime.';
+      bv.style.borderColor = 'var(--teal)';
+      bv.style.background = 'rgba(47,211,181,.1)';
+      btn.textContent = '↺ Reset Demo';
+      btn.style.background = 'rgba(0,0,0,.3)';
+    } else {
+      bv.innerHTML = '<b>Comprehensive DevSecOps</b> From the developer\'s first Git commit to the live Kubernetes pod and GenAI prompt, Datadog provides end-to-end security without adding friction to deployment pipelines.';
+      bv.style.borderColor = '';
+      bv.style.background = '';
+      btn.textContent = '⚡ Test Runtime Attack Block';
+      btn.style.background = 'var(--pink)';
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Session Replay with DOM Masking</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .rep-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .mock-screen{background:#1F1533;border-radius:8px;padding:14px;border:1px solid rgba(255,255,255,.1)}
+  .mock-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:8px 12px;font:500 11px var(--mono);color:rgba(255,255,255,.5);margin-top:6px;display:flex;justify-content:space-between}
+  .mock-input.masked{border-color:var(--teal);background:rgba(47,211,181,.08);color:var(--teal)}
+</style>
+</head>
+<body class="soft" data-foot="Domain 4 · Session Replay & Client-Side Privacy Masking" data-who="digital,ciso,dev">
+<div class="z">
+  <div class="eyebrow in1">Domain 4 · Visual User Journey Reconstruction</div>
+  <h1 class="in2">Session Replay: <span class="b">Seeing friction with zero PII exposure.</span></h1>
+  <p class="sub in3">Plain Language: When a customer complains that the checkout button failed, Session Replay lets your team watch a video-like replay of what happened—while client-side privacy masking automatically obscures all personal and banking data.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">Client-Side Privacy Enforcement</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Visual Playback without PII Leaks</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Session Replay records DOM mutation events—not actual video screen scraping. All sensitive text, credit cards, and form inputs are masked directly in the user's browser before transmission.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
+        <b>Billed Pricing Meter:</b> <b>$24.00</b> / 1,000 replay sessions<br>
+        • Privacy modes: <code>mask-all</code>, <code>mask-user-input</code><br>
+        • Automatic rage click and dead click detection
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--char)">
+      <b>SDAIA PDPL Compliance:</b> Guarantees zero Saudi citizen personal data leaves the consumer device unmasked.
+    </div>
+  </div>
+
+  <div class="rep-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font:600 11px var(--mono);color:var(--lav)">VISUAL REPLAY SIMULATOR · SAUDI BANK APP</span>
+        <span class="chip ga" id="maskChip" style="font-size:9px">DOM Masking: Strict (PDPL)</span>
+      </div>
+
+      <div class="mock-screen">
+        <div style="font:600 12px Inter,sans-serif;color:#fff;margin-bottom:8px">mada Quick Checkout</div>
+        
+        <div style="font:400 10px var(--mono);color:rgba(255,255,255,.6)">Cardholder Name</div>
+        <div class="mock-input masked" id="fName"><span id="tName">████████ █████</span><span id="bName">[MASKED]</span></div>
+
+        <div style="font:400 10px var(--mono);color:rgba(255,255,255,.6);margin-top:8px">mada Card Number / PAN</div>
+        <div class="mock-input masked" id="fPan"><span id="tPan">•••• •••• •••• 4281</span><span id="bPan">[PCI-DSS SAFE]</span></div>
+
+        <div style="font:400 10px var(--mono);color:rgba(255,255,255,.6);margin-top:8px">Citizen National ID</div>
+        <div class="mock-input masked" id="fNid"><span id="tNid">10████████</span><span id="bNid">[PDPL PROTECTED]</span></div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8);display:flex;justify-content:space-between;align-items:center">
+      <div id="replayNote">
+        <b style="color:var(--teal)">Client-Side Security:</b> Data is masked in memory before leaving user's browser.
+      </div>
+      <button id="btnToggleMask" style="background:var(--pink);border:none;color:#fff;font:600 10.5px var(--mono);padding:5px 10px;border-radius:4px;cursor:pointer">👁 Unmask (Test Dev Mode)</button>
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Support &amp; Engineering Alignment</b>
+  Customer support no longer needs to ask users "which browser were you using and what did you see?". Engineers watch the exact session replay and fix the bug in minutes.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnToggleMask');
+  const chip = document.getElementById('maskChip');
+  const fName = document.getElementById('fName'), tName = document.getElementById('tName'), bName = document.getElementById('bName');
+  const fPan = document.getElementById('fPan'), tPan = document.getElementById('tPan'), bPan = document.getElementById('bPan');
+  const fNid = document.getElementById('fNid'), tNid = document.getElementById('tNid'), bNid = document.getElementById('bNid');
+  const note = document.getElementById('replayNote');
+  let unmasked = false;
+
+  btn.addEventListener('click', () => {
+    unmasked = !unmasked;
+    if(unmasked){
+      chip.textContent = 'DOM Masking: Disabled ⚠️';
+      chip.className = 'chip hot';
+      [fName, fPan, fNid].forEach(el => {
+        el.classList.remove('masked');
+        el.style.borderColor = 'var(--pink)';
+        el.style.background = 'rgba(242,102,139,.1)';
+        el.style.color = '#fff';
+      });
+      tName.textContent = 'Ahmed Al-Otaibi';
+      bName.textContent = '[RAW LEAKED]';
+      bName.style.color = 'var(--pink)';
+      tPan.textContent = '4128 3491 8842 4281';
+      bPan.textContent = '[PCI VIOLATION]';
+      bPan.style.color = 'var(--pink)';
+      tNid.textContent = '1089241830';
+      bNid.textContent = '[PDPL PENALTY]';
+      bNid.style.color = 'var(--pink)';
+      note.innerHTML = '<b style="color:var(--pink)">⚠️ Violation Risk:</b> Without Datadog SDK DOM masking, raw citizen identifiers would be captured in replays.';
+      btn.textContent = '🛡 Re-enable Strict Masking';
+      btn.style.background = 'var(--teal)';
+      btn.style.color = 'var(--ink)';
+    } else {
+      chip.textContent = 'DOM Masking: Strict (PDPL)';
+      chip.className = 'chip ga';
+      [fName, fPan, fNid].forEach(el => {
+        el.classList.add('masked');
+        el.style.borderColor = '';
+        el.style.background = '';
+        el.style.color = '';
+      });
+      tName.textContent = '████████ █████';
+      bName.textContent = '[MASKED]';
+      bName.style.color = '';
+      tPan.textContent = '•••• •••• •••• 4281';
+      bPan.textContent = '[PCI-DSS SAFE]';
+      bPan.style.color = '';
+      tNid.textContent = '10████████';
+      bNid.textContent = '[PDPL PROTECTED]';
+      bNid.style.color = '';
+      note.innerHTML = '<b style="color:var(--teal)">Client-Side Security:</b> Data is masked in memory before leaving user\'s browser.';
+      btn.textContent = '👁 Unmask (Test Dev Mode)';
+      btn.style.background = 'var(--pink)';
+      btn.style.color = '#fff';
+    }
+  });
+})();
+</script>
+</body>
+</html>

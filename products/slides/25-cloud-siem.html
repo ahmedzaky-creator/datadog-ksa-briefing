@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Cloud SIEM: Modernizing the SOC</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1.15fr 1fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .siem-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .sec-signal{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;margin-top:10px}
+  .sec-signal.crit{border-color:var(--pink);background:rgba(242,102,139,.08)}
+  .sec-signal .sig-title{font:650 12px var(--mono);color:var(--pink);display:flex;justify-content:space-between}
+  .sec-signal p{font-size:11.5px;color:rgba(255,255,255,.8);line-height:1.4;margin-top:4px}
+  .comp-table{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;font:500 11px var(--mono)}
+  .c-cell{background:var(--bg);padding:8px 10px;border-radius:6px;color:var(--char)}
+  .c-cell.good{background:var(--purple-ll);color:var(--purple);font-weight:600}
+</style>
+</head>
+<body class="soft" data-foot="Domain 5 · Cloud SIEM & Security Analytics (SAMA CSF 3.3.14)" data-who="ciso,sre,exec">
+<div class="z">
+  <div class="eyebrow in1">Domain 5 · Next-Generation Security Operations</div>
+  <h1 class="in2">Cloud SIEM: <span class="b">Modern security analytics at $0.20/GB.</span></h1>
+  <p class="sub in3">Plain Language: Traditional SIEMs like Splunk or ArcSight drown SOC analysts in millions of false alarms and charge millions in licensing. Datadog Cloud SIEM applies 800+ curated detection rules in real time, catching threats in seconds.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">Real-Time Threat Detection</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Turn-Key 24x7 SOC Monitoring</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Analyzes AWS CloudTrail, VPC Flow Logs, Okta, and application logs in real time. Automatically correlates signals to isolate attacker lateral movement.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:10px">
+        <b>Billed Pricing Meter:</b> <b>$0.20</b> / GB analyzed ($4.00 / 1M security events)<br>
+        • Satisfies <b>SAMA CSF 3.3.14</b> centralized automated correlation<br>
+        • 800+ out-of-the-box curated detection rules
+      </div>
+      <div class="comp-table">
+        <div class="c-cell">Splunk: Heavy indexing infra + SPL</div>
+        <div class="c-cell good">Datadog: SaaS-native, zero hardware</div>
+        <div class="c-cell">Splunk: Siloed from APM &amp; DevOps</div>
+        <div class="c-cell good">Datadog: Security on the same data model</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="siem-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--pink)">SECURITY SIGNAL · ATTACKER LATERAL MOVEMENT</span>
+        <span class="chip on" style="font-size:9px">CRITICAL</span>
+      </div>
+
+      <div class="sec-signal crit" id="sig1">
+        <div class="sig-title"><span>AWS IAM Privilege Escalation</span><span>03:14:22</span></div>
+        <p>Unusual <code>AttachUserPolicy</code> API call executed from unrecognized IP in AWS CloudTrail for role <code>eks-admin-role</code>.</p>
+      </div>
+
+      <div class="sec-signal" id="sig2">
+        <div class="sig-title" style="color:var(--lav)"><span>Correlated eBPF Process Telemetry</span><span>03:14:28</span></div>
+        <p>Target EC2 instance spawned unexpected interactive shell: <code>/bin/bash -i >& /dev/tcp/...</code> within 6 seconds of IAM policy change.</p>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8);display:flex;justify-content:space-between;align-items:center">
+      <div id="siemNote">
+        <b style="color:var(--teal)">Bits Security:</b> Correlation score 99.4%. Multi-signal attack path isolated.
+      </div>
+      <button id="btnContain" style="background:var(--pink);border:none;color:#fff;font:600 10.5px var(--mono);padding:5px 10px;border-radius:4px;cursor:pointer">🛡 1-Click Containment</button>
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>SAMA Mandate Alignment</b>
+  SAMA CSF Subdomain 3.3.14 mandates centralized, automated event correlation. Datadog Cloud SIEM satisfies this requirement on Day 1 without months of custom rule development.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnContain');
+  const sig1 = document.getElementById('sig1');
+  const sig2 = document.getElementById('sig2');
+  const note = document.getElementById('siemNote');
+  let contained = false;
+
+  btn.addEventListener('click', () => {
+    contained = !contained;
+    if(contained){
+      sig1.style.borderColor = 'var(--teal)';
+      sig1.style.background = 'rgba(47,211,181,.08)';
+      sig2.style.borderColor = 'var(--teal)';
+      sig2.style.background = 'rgba(47,211,181,.08)';
+      note.innerHTML = '<b style="color:var(--teal)">✓ Auto-Contained:</b> Compromised IAM key revoked; target pod network-isolated via AWS Security Group API.';
+      btn.textContent = '↺ Reset Incident State';
+      btn.style.background = 'rgba(255,255,255,.2)';
+    } else {
+      sig1.style.borderColor = 'var(--pink)';
+      sig1.style.background = 'rgba(242,102,139,.08)';
+      sig2.style.borderColor = 'rgba(255,255,255,.1)';
+      sig2.style.background = 'rgba(255,255,255,.04)';
+      note.innerHTML = '<b style="color:var(--teal)">Bits Security:</b> Correlation score 99.4%. Multi-signal attack path isolated.';
+      btn.textContent = '🛡 1-Click Containment';
+      btn.style.background = 'var(--pink)';
+    }
+  });
+})();
+</script>
+</body>
+</html>

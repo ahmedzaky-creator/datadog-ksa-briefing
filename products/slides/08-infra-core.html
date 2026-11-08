@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Domain 1: Infrastructure Monitoring</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1.05fr 1fr;gap:18px;margin-top:16px}
+  .tier-stack{display:flex;flex-direction:column;gap:12px}
+  .tier-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 18px;border-left:4px solid var(--c,var(--purple));position:relative}
+  .tier-box .price{font:700 24px/1 var(--mono);color:var(--c,var(--purple));margin:4px 0}
+  .tier-box .price span{font-size:11px;color:var(--grey);font-weight:400}
+  .tier-box h3{font-size:16.5px;font-weight:700;color:var(--ink)}
+  .tier-box p{font-size:12px;color:var(--grey);line-height:1.4;margin-top:3px}
+  .allot{background:var(--bg);padding:6px 10px;border-radius:6px;font:500 10.5px var(--mono);color:var(--char);margin-top:8px}
+  .mon-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:18px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  #wave-svg{width:100%;height:150px}
+  .proc-table{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:8px 10px;font:500 10.5px var(--mono)}
+  .proc-row{display:flex;justify-content:space-between;color:rgba(255,255,255,.8);padding:3px 0}
+  .proc-row.warn{color:var(--amber);font-weight:600}
+</style>
+</head>
+<body class="soft" data-foot="Domain 1 · Infrastructure Monitoring (13 Offerings)" data-who="cio,sre,finops">
+<div class="z">
+  <div class="eyebrow in1">Domain 1 · Infrastructure &amp; Cloud Systems</div>
+  <h1 class="in2">Infrastructure Pro &amp; Enterprise: <span class="b">The multi-cloud heartbeat.</span></h1>
+  <p class="sub in3">Plain Language: Like the vital signs monitor in a hospital ICU, it tracks CPU, memory, and disk across every on-prem server and AWS Riyadh instance in real time so you know when a node is in distress.</p>
+</div>
+
+<div class="cols">
+  <div class="tier-stack in3">
+    <div class="tier-box" style="--c:var(--purple)">
+      <div class="tag">Standard Workloads</div>
+      <h3>Infrastructure Pro</h3>
+      <div class="price">$15 <span>/ host / month (annual commit)</span></div>
+      <p>Full-stack metrics across Linux, Windows, VMware, and AWS EC2 with 1,000+ integrations.</p>
+      <div class="allot">
+        <b>Allotment:</b> 100 custom metrics · 500 events · 5 containers / host pooled
+      </div>
+    </div>
+
+    <div class="tier-box in4" style="--c:var(--teal)">
+      <div class="tag">Mission-Critical Production</div>
+      <h3>Infrastructure Enterprise</h3>
+      <div class="price">$23 <span>/ host / month (annual commit)</span></div>
+      <p>Adds Watchdog ML anomaly detection, live processes at 2s resolution, and double pooled allotments.</p>
+      <div class="allot">
+        <b>Allotment:</b> 200 custom metrics · 1,000 events · 10 containers / host pooled
+      </div>
+    </div>
+  </div>
+
+  <div class="mon-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--lav)">WATCHDOG ML · LIVE ANOMALY CORRIDOR</span>
+        <span class="chip on" style="font-size:9px">2s Resolution</span>
+      </div>
+
+      <svg id="wave-svg" viewBox="0 0 500 150">
+        <!-- Confidence Band (Expected Corridor) -->
+        <path d="M 0,110 Q 70,100 140,105 T 280,100 T 360,95 T 440,90 L 440,130 L 360,135 L 280,130 L 140,135 L 0,130 Z" fill="rgba(164,124,232,.12)"/>
+        <!-- Metric Line -->
+        <path d="M 0,120 Q 70,115 140,120 T 280,115 T 350,110 L 375,35 L 400,45 L 430,40 L 460,115 L 500,118" fill="none" stroke="var(--teal)" stroke-width="2.5" class="draw"/>
+        <!-- Outlier Marker -->
+        <circle cx="375" cy="35" r="5" fill="#F2668B">
+          <animate attributeName="r" values="4;8;4" dur="1.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="1;.4;1" dur="1.2s" repeatCount="indefinite"/>
+        </circle>
+        <rect x="300" y="8" width="165" height="22" rx="4" fill="#B0284F"/>
+        <text x="382" y="23" fill="#fff" text-anchor="middle" style="font:600 9.5px JetBrains Mono,monospace">Watchdog ML: Anomaly (88%)</text>
+      </svg>
+
+      <div style="font:600 10px var(--mono);color:rgba(255,255,255,.5);margin-top:6px;text-transform:uppercase">Live Processes (/proc at 2-second scrape)</div>
+      <div class="proc-table" style="margin-top:4px">
+        <div class="proc-row warn"><span>java -jar checkout.jar</span><span>PID: 4120</span><span>CPU: 78.4%</span></div>
+        <div class="proc-row"><span>envoy-proxy (ingress)</span><span>PID: 882</span><span>CPU: 4.1%</span></div>
+        <div class="proc-row"><span>datadog-agent (system-probe)</span><span>PID: 104</span><span>CPU: 0.8%</span></div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:6px;font:500 10.5px var(--mono);color:rgba(255,255,255,.8)">
+      <b style="color:var(--teal)">Root Cause in 2s:</b> Watchdog detected an anomaly outside seasonal bounds and isolated PID 4120 immediately.
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>AWS Riyadh Cutover Advantage</b>
+  Install the agent on existing on-prem datacenters today and on new EC2 nodes in me-central-2 next month. You get immediate side-by-side performance baselines to prove the migration succeeded.
+</div>
+
+<script src="../js/dd.js"></script>
+</body>
+</html>

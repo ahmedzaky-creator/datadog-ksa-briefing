@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Domain 7: Sovereign AI & LLM Observability</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .llm-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .chain-step{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .c-node{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}
+  .c-node .title{font:600 11.5px var(--mono);color:var(--lav)}
+  .c-node .meta{font:500 10.5px var(--mono);color:var(--teal)}
+  .guard-node{border-color:var(--teal);background:rgba(47,211,181,.08)}
+</style>
+</head>
+<body class="soft" data-foot="Domain 7 · Sovereign AI & LLM Observability (Amazon Bedrock & ALLaM 34B)" data-who="cio,dev,ciso">
+<div class="z">
+  <div class="eyebrow in1">Domain 7 · GenAI, Agentic Chains &amp; Model Safety</div>
+  <h1 class="in2">Sovereign AI observability: <span class="b">Tracing Bedrock &amp; ALLaM 34B.</span></h1>
+  <p class="sub in3">Plain Language: When enterprise copilots answer citizen inquiries or automate banking transfers, you must trace every multi-step tool call, control token costs on Amazon Bedrock, and block adversarial prompt injections.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">LLM Observability &amp; AI Guard</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Full-Stack GenAI Visibility</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Traces multi-step autonomous agent workflows from user prompt, through vector database retrieval (RAG), to model completion. Controls token consumption and evaluates response accuracy.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
+        <b>Billed Pricing Meters:</b><br>
+        • <b>Agent Observability:</b> 40k spans free; $160 per 100k spans<br>
+        • <b>AI Guard:</b> $0.05 / 1,000 scanned LLM requests
+      </div>
+      <p style="font-size:12px;color:var(--char);margin-top:10px">
+        <b>Saudi Sovereign AI Support:</b> Full tracing and guardrail support for SDAIA's <b>ALLaM 34B</b>, HUMAIN ONE, and models hosted on AWS Bedrock in Riyadh.
+      </p>
+    </div>
+  </div>
+
+  <div class="llm-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--teal)">AGENTIC TOOL-CALLING TRACE · ALLaM 34B</span>
+        <span class="chip on" style="font-size:9px">Total Tokens: <span data-count="1420">1,420</span></span>
+      </div>
+
+      <div class="chain-step" id="chainStep">
+        <div class="c-node guard-node" id="cn1">
+          <span class="title">1. AI Guard (Input Inspection)</span>
+          <span class="meta" id="cm1" style="color:var(--teal)">Saudi PII Scrubbed ✓</span>
+        </div>
+        <div class="c-node" id="cn2">
+          <span class="title">2. RAG Retrieval (OpenSearch Vector)</span>
+          <span class="meta" id="cm2">38ms · Cosine: 0.92</span>
+        </div>
+        <div class="c-node" id="cn3">
+          <span class="title">3. Tool: check_permit_status(nusuk_id)</span>
+          <span class="meta" id="cm3">145ms · Status: Valid</span>
+        </div>
+        <div class="c-node" id="cn4">
+          <span class="title">4. ALLaM 34B Completion</span>
+          <span class="meta" id="cm4">412ms · 320 Tokens</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8);display:flex;justify-content:space-between;align-items:center">
+      <div id="llmTraceResult">
+        <b style="color:var(--amber)">Trace Duration:</b> 595ms · Zero prompt leak · Bedrock Riyadh
+      </div>
+      <button id="btnRunLlmTrace" style="background:var(--teal);border:none;color:var(--ink);font:600 10.5px var(--mono);padding:5px 10px;border-radius:4px;cursor:pointer">▶ Execute Agent</button>
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Why not Standalone Tools (LangSmith)?</b>
+  Niche LLM tools create another data silo. Datadog connects AI model performance directly to your backend microservices and underlying GPU hardware in AWS Riyadh.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnRunLlmTrace');
+  const res = document.getElementById('llmTraceResult');
+  const [c1, c2, c3, c4] = [document.getElementById('cn1'), document.getElementById('cn2'), document.getElementById('cn3'), document.getElementById('cn4')];
+  const [m1, m2, m3, m4] = [document.getElementById('cm1'), document.getElementById('cm2'), document.getElementById('cm3'), document.getElementById('cm4')];
+
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    btn.textContent = 'Tracing...';
+    [c1, c2, c3, c4].forEach(c => c.style.opacity = '0.4');
+
+    setTimeout(() => {
+      c1.style.opacity = '1';
+      m1.textContent = 'PII Checked (0.2ms) ✓';
+      setTimeout(() => {
+        c2.style.opacity = '1';
+        m2.textContent = '38ms (Cosine: 0.94) ✓';
+        setTimeout(() => {
+          c3.style.opacity = '1';
+          m3.textContent = '145ms (Permit Valid) ✓';
+          setTimeout(() => {
+            c4.style.opacity = '1';
+            m4.textContent = '390ms (312 Tokens) ✓';
+            res.innerHTML = '<b style="color:var(--teal)">Response Generated:</b> "تم التحقق من تصريح الحج بنجاح: تصريحك سارٍ ورقم المجموعة 14."';
+            btn.textContent = '↺ Retrace LLM';
+            btn.disabled = false;
+          }, 300);
+        }, 250);
+      }, 200);
+    }, 150);
+  });
+})();
+</script>
+</body>
+</html>

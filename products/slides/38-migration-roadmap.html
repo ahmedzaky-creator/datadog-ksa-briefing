@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>30-60-90 Day Migration Roadmap</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+  .phase-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px;border-top:4px solid var(--c,var(--purple))}
+  .phase-card .days{font:700 24px/1 var(--mono);color:var(--c,var(--purple));margin-bottom:6px}
+  .phase-card h3{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px}
+  .phase-card p{font-size:13px;color:var(--grey);line-height:1.45}
+  .tasks{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:6px}
+  .tasks li{font-size:12px;color:var(--char);display:flex;align-items:center;gap:6px}
+  .tasks li::before{content:'▸';color:var(--c,var(--purple));font-weight:700}
+  .kpi-box{background:var(--bg);border-radius:6px;padding:10px 12px;font:600 11.5px var(--mono);color:var(--c,var(--purple));margin-top:12px}
+  .partner-strip{position:absolute;right:64px;top:40px;display:flex;align-items:center;gap:10px}
+  .p-pill{background:#fff;border:1px solid var(--line);padding:6px 12px;border-radius:6px;font:600 11px var(--mono);color:var(--char)}
+</style>
+</head>
+<body class="soft" data-foot="Path to Value · 30-60-90 Day Implementation Blueprint" data-who="cio,exec,sre,ciso">
+<div class="z">
+  <div class="eyebrow in1">Structured Path to Production Value</div>
+  <h1 class="in2">30-60-90 Day plan: <span class="b">De-risking AWS Riyadh go-live.</span></h1>
+  <p class="sub in3">Plain Language: Moving to the cloud shouldn't mean months of chaotic tool configuration. Here is the proven phased roadmap to establish Day-1 baselines, eliminate war rooms, and retire legacy licenses.</p>
+</div>
+
+<div class="partner-strip in2">
+  <div class="p-pill">Local Partner: <b>Zero&amp;One</b> (Riyadh Advanced Tier)</div>
+</div>
+
+<div class="grid">
+  <div class="phase-card in3" style="--c:var(--purple)">
+    <div>
+      <div class="days">Days 1 – 30</div>
+      <h3>Baseline &amp; Landing Zone</h3>
+      <p>Establish side-by-side baselines on existing on-prem systems and deploy the Agent DaemonSet across new Amazon EKS clusters in Riyadh.</p>
+      <ul class="tasks">
+        <li>Deploy Agent v7 on core VMs &amp; EKS nodes</li>
+        <li>Enable 1,000+ turn-key integrations</li>
+        <li>Activate Single-Step APM for zero-code tracing</li>
+      </ul>
+    </div>
+    <div class="kpi-box">KPI: 100% hybrid estate baselined</div>
+  </div>
+
+  <div class="phase-card in4" style="--c:var(--teal)">
+    <div>
+      <div class="days">Days 31 – 60</div>
+      <h3>Unified Tags &amp; Bits AI</h3>
+      <p>Standardize tags across all microservices, define business SLOs on payment journeys, and put Bits AI SRE into the active incident flow.</p>
+      <ul class="tasks">
+        <li>Apply <code>env</code>, <code>service</code>, and <code>version</code> tags everywhere</li>
+        <li>Deploy Vector Edge workers for PII scrubbing</li>
+        <li>Configure Datadog On-Call &amp; Bits AI RCA</li>
+      </ul>
+    </div>
+    <div class="kpi-box">KPI: MTTR drops from 2h to &lt;5 mins</div>
+  </div>
+
+  <div class="phase-card in5" style="--c:var(--amber)">
+    <div>
+      <div class="days">Days 61 – 90</div>
+      <h3>S3 Tiers &amp; Tool Retirement</h3>
+      <p>Route compliance logs to Flex Logs on Amazon S3 in Riyadh, turn on Cloud SIEM for SAMA audits, and decommission legacy point tools.</p>
+      <ul class="tasks">
+        <li>Enable 18-month S3 Flex Logs retention</li>
+        <li>Activate Cloud SIEM 800+ security rules</li>
+        <li>Retire Splunk, PagerDuty &amp; APM point tools</li>
+      </ul>
+    </div>
+    <div class="kpi-box">KPI: 51% TCO savings + EDP drawdown</div>
+  </div>
+</div>
+
+<div class="bv in6">
+  <b>Executive Commitment</b>
+  With Zero&One's local Riyadh engineering presence and Datadog's pre-built content, enterprise customers achieve full observability and SAMA compliance before cutting over production traffic to AWS Riyadh.
+</div>
+
+<script src="../js/dd.js"></script>
+</body>
+</html>

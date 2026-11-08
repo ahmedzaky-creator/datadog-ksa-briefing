@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Synthetic Monitoring: Proactive Testing</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .syn-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .step-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .s-step{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between}
+  .s-step .s-name{font:500 11.5px var(--mono);color:#fff}
+  .s-step .s-time{font:600 11px var(--mono);color:var(--teal)}
+  .s-step.fail{border-color:var(--pink);background:rgba(242,102,139,.1)}
+  .s-step.fail .s-time{color:var(--pink)}
+</style>
+</head>
+<body class="soft" data-foot="Domain 4 · Synthetic Monitoring from Riyadh & Jeddah Endpoints" data-who="sre,dev,cio">
+<div class="z">
+  <div class="eyebrow in1">Domain 4 · Proactive Multi-Step User Simulations</div>
+  <h1 class="in2">Synthetic Monitoring: <span class="b">Catching failures before citizens do.</span></h1>
+  <p class="sub in3">Plain Language: Don't wait for your CEO to call you because citizen login is broken on Monday morning. Synthetic monitoring runs automated browser bots every 60 seconds from Riyadh and Jeddah to test critical journeys 24x7.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">Headless Chromium &amp; API Tests</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">End-to-End Journey Verification</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Executes multi-step browser user flows (login with Nafath, search catalog, add to cart, submit mada payment) and validates API responses across public and private VPC locations.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
+        <b>Billed Pricing Meters:</b><br>
+        • <b>API Tests:</b> $5.00 / 10,000 runs (HTTP, SSL, DNS, TCP, gRPC)<br>
+        • <b>Browser Tests:</b> $12.00 / 1,000 runs (Headless Chromium simulations)
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--char)">
+      <b>SLA &amp; Certificate Guard:</b> Alerts on SSL certificate expiry 30 days ahead and warns when third-party partner APIs degrade.
+    </div>
+  </div>
+
+  <div class="syn-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--lav)">SCHEDULED SIMULATION · RIYADH ENDPOINT</span>
+        <span class="chip on" id="synStatusChip" style="font-size:9px">Active Heartbeat</span>
+      </div>
+
+      <div class="step-list" id="stepList">
+        <div class="s-step" id="st1">
+          <span class="s-name">1. Navigate to /login (portal.gov.sa)</span>
+          <span class="s-time" id="tm1">142ms ✓</span>
+        </div>
+        <div class="s-step" id="st2">
+          <span class="s-name">2. Click 'Authenticate with Nafath'</span>
+          <span class="s-time" id="tm2">88ms ✓</span>
+        </div>
+        <div class="s-step" id="st3">
+          <span class="s-name">3. Validate OAuth2 Token Exchange</span>
+          <span class="s-time" id="tm3">210ms ✓</span>
+        </div>
+        <div class="s-step fail" id="st4">
+          <span class="s-name">4. Post Payment to Gateway (mada)</span>
+          <span class="s-time" id="tm4">5,200ms ✗ TIMEOUT</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8);display:flex;justify-content:space-between;align-items:center">
+      <div id="synAlertText">
+        <b style="color:var(--pink)">Alert:</b> Step 4 failed at 04:15 AM (Payment timeout).
+      </div>
+      <button id="btnRunSyn" style="background:var(--teal);border:none;color:var(--ink);font:600 10.5px var(--mono);padding:5px 10px;border-radius:4px;cursor:pointer">▶ Run Live Test</button>
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Executive Peace of Mind</b>
+  You never have to wonder whether your critical citizen-facing services are functioning properly. Synthetic tests provide a continuous heartbeat check visible to everyone in the company.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnRunSyn');
+  const chip = document.getElementById('synStatusChip');
+  const alertText = document.getElementById('synAlertText');
+  const st1 = document.getElementById('st1'), tm1 = document.getElementById('tm1');
+  const st2 = document.getElementById('st2'), tm2 = document.getElementById('tm2');
+  const st3 = document.getElementById('st3'), tm3 = document.getElementById('tm3');
+  const st4 = document.getElementById('st4'), tm4 = document.getElementById('tm4');
+
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    btn.textContent = 'Running...';
+    chip.textContent = 'Testing in Progress...';
+    chip.className = 'chip warn';
+    tm1.textContent = '...';
+    tm2.textContent = '...';
+    tm3.textContent = '...';
+    tm4.textContent = '...';
+    st4.classList.remove('fail');
+
+    setTimeout(() => {
+      tm1.textContent = '112ms ✓';
+      setTimeout(() => {
+        tm2.textContent = '74ms ✓';
+        setTimeout(() => {
+          tm3.textContent = '185ms ✓';
+          setTimeout(() => {
+            tm4.textContent = '48ms ✓';
+            st4.style.borderColor = 'var(--teal)';
+            st4.style.background = 'rgba(47,211,181,.1)';
+            tm4.style.color = 'var(--teal)';
+            chip.textContent = 'All 4 Checks Passed ✓';
+            chip.className = 'chip ga';
+            alertText.innerHTML = '<b style="color:var(--teal)">✓ Synthetic Pass:</b> Complete journey passed in 419ms from Riyadh endpoint.';
+            btn.textContent = '↺ Retest Flow';
+            btn.disabled = false;
+          }, 350);
+        }, 300);
+      }, 250);
+    }, 200);
+  });
+})();
+</script>
+</body>
+</html>

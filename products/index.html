@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datadog for AWS Riyadh · Master Product & Solutions Showcase</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bar:48px;--p:#632CA6;--pl:#A47CE8;--bg:#140A24;--panel:#1D1233;--line:rgba(255,255,255,.1);--txt:rgba(255,255,255,.85);--dim:rgba(255,255,255,.45)}
+  html,body{width:100%;height:100vh;overflow:hidden;background:var(--bg);color:var(--txt);font-family:Inter,-apple-system,sans-serif}
+  body.presenting{--bar:0px}
+
+  #stage{position:absolute;left:0;top:0;right:0;bottom:var(--bar)}
+  #wrap{position:absolute;width:1280px;height:720px;transform-origin:top left;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  #frame{position:absolute;inset:0;width:1280px;height:720px;border:0;display:block;background:#fff}
+  #fade{position:absolute;inset:0;background:var(--bg);opacity:0;transition:opacity .16s ease;pointer-events:none;z-index:6}
+  #overlay{position:absolute;inset:0;z-index:8;pointer-events:none}
+  #overlay.active{pointer-events:auto;cursor:crosshair}
+  #canvas{position:absolute;inset:0;width:1280px;height:720px;z-index:9;pointer-events:none}
+  #laser{position:absolute;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,rgba(255,60,90,.95) 0%,rgba(255,60,90,.4) 55%,transparent 75%);box-shadow:0 0 24px rgba(255,60,90,.55);display:none;transform:translate(-50%,-50%);z-index:10;pointer-events:none}
+
+  /* bottom bar */
+  #bar{position:fixed;left:0;right:0;bottom:0;height:var(--bar);display:flex;white-space:nowrap;overflow:hidden;align-items:center;gap:6px;padding:0 14px;background:#100820;border-top:1px solid var(--line);z-index:20;font:500 12px 'JetBrains Mono',monospace;transition:opacity .25s}
+  body.presenting #bar{opacity:0;pointer-events:none}
+  #bar .brand{display:flex;align-items:center;gap:8px;font:700 13px Inter,sans-serif;color:#fff;margin-right:10px}
+  #bar .brand i{width:16px;height:16px;border-radius:4px;background:var(--p);display:block}
+  #bar button{background:none;border:1px solid transparent;color:var(--dim);font:inherit;padding:6px 9px;border-radius:6px;cursor:pointer}
+  #bar button:hover{color:#fff;border-color:var(--line)}
+  #bar button.on{color:#fff;background:rgba(164,124,232,.18);border-color:rgba(164,124,232,.5)}
+  #count{color:var(--dim);min-width:64px;text-align:center}
+  #timer{color:var(--dim);min-width:52px;text-align:center;cursor:pointer}
+  #timer.run{color:#2FD3B5}
+  #bar .sp{flex:1}
+  @media (max-width:1000px){#bar .brand span,#den,#bar .sp+button~button:not(#bNext):not(#bPrev){font-size:11px}#bar .brand b{display:none}#bar button{padding:6px 6px}}
+  @media (max-width:820px){#den,#bDenM,#bDenP,#bLaser,#bDraw{display:none}}
+  #prog{position:fixed;left:0;bottom:var(--bar);height:2px;background:var(--pl);transition:width .3s ease;z-index:21}
+  body.presenting #prog{opacity:.6}
+
+  /* notes drawer */
+  #notes{position:fixed;left:0;right:0;bottom:var(--bar);height:0;background:var(--panel);border-top:1px solid var(--line);overflow:auto;z-index:15;transition:height .25s ease;padding:0 28px}
+  body.notes #notes{height:34vh;padding:18px 28px}
+  body.notes #stage{bottom:calc(var(--bar) + 34vh)}
+  .ntxt{font-size:14.5px;line-height:1.6;color:var(--txt);max-width:1100px}
+  .ntxt li{margin:0 0 6px 18px}
+  .ntxt .src{display:block;margin-top:10px;font:400 11.5px 'JetBrains Mono',monospace;color:var(--dim)}
+
+  /* presenter view */
+  #pv{display:none;position:fixed;inset:0;z-index:30;background:var(--bg);grid-template-columns:1.55fr 1fr;grid-template-rows:auto 1fr;gap:18px;padding:18px}
+  body.pv #pv{display:grid}
+  #pv .cur,#pv .side{position:relative}
+  #pv .cur{grid-row:1/3}
+  #pv .lbl{font:600 11px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:8px;display:flex;justify-content:space-between}
+  .mini{position:relative;overflow:hidden;background:#fff;border-radius:6px}
+  .mini iframe{position:absolute;left:0;top:0;width:1280px;height:720px;border:0;transform-origin:top left;pointer-events:none}
+  #pvClock{font:600 44px 'JetBrains Mono',monospace;color:#fff;letter-spacing:-1px}
+  #pvNotes{overflow:auto;background:var(--panel);border-radius:8px;padding:18px 20px;max-height:calc(100vh - 380px)}
+  #pvNotes .ntxt{font-size:16px}
+
+  /* overview grid */
+  #grid{display:none;position:fixed;inset:0;z-index:40;background:rgba(14,6,26,.97);overflow:auto;padding:28px}
+  body.grid #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(256px,1fr));gap:18px;align-content:start}
+  #grid .cell{cursor:pointer}
+  #grid .cell .mini{border:2px solid transparent}
+  #grid .cell.cur .mini{border-color:var(--pl)}
+  #grid .cell span{display:block;margin-top:6px;font:500 11px 'JetBrains Mono',monospace;color:var(--dim)}
+
+  /* help + toast */
+  #help{display:none;position:fixed;inset:0;z-index:50;background:rgba(14,6,26,.85);align-items:center;justify-content:center}
+  body.help #help{display:flex}
+  #help .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 32px;display:grid;grid-template-columns:auto 1fr;gap:9px 22px;font-size:14px}
+  #help kbd{font:600 12px 'JetBrains Mono',monospace;color:#fff;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:5px;padding:3px 8px;justify-self:start}
+  #help h3{grid-column:1/3;font-size:15px;color:#fff;margin-bottom:6px}
+  #toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:rgba(29,18,51,.95);border:1px solid var(--line);border-radius:8px;padding:7px 16px;font:600 11px 'JetBrains Mono',monospace;letter-spacing:.06em;color:var(--txt);opacity:0;transition:opacity .2s;z-index:60;pointer-events:none}
+  #toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="wrap">
+    <iframe id="frame" title="slide"></iframe>
+    <div id="fade"></div>
+    <canvas id="canvas" width="2560" height="1440"></canvas>
+    <div id="overlay"></div>
+    <div id="laser"></div>
+  </div>
+</div>
+<div id="prog"></div>
+<div id="notes"><div class="ntxt" id="notesTxt"></div></div>
+
+<div id="bar">
+  <span class="brand"><i></i><b>AWS Riyadh · Product Catalog</b></span>
+  <a href="../#1" style="text-decoration:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;font:600 11px Inter,sans-serif;padding:4px 8px;border-radius:6px;margin-left:6px;display:inline-flex;align-items:center;gap:4px" title="Back to Competitive Briefing">← <span>Competitive Briefing (34 slides)</span></a>
+  <button id="bPrev" title="Previous (←)">←</button>
+  <span id="count">1 / 38</span>
+  <button id="bNext" title="Next (→)">→</button>
+  <span class="sp"></span>
+  <button id="bDenM" title="Less detail (−)">−</button>
+  <span id="den" style="color:var(--dim)">density 3</span>
+  <button id="bDenP" title="More detail (+)">+</button>
+  <button id="bGrid" title="Overview (G)">grid</button>
+  <button id="bNotes" title="Notes (N)">notes</button>
+  <button id="bPv" title="Presenter view (P)">presenter</button>
+  <button id="bLaser" title="Laser (L)">laser</button>
+  <button id="bDraw" title="Draw (D)">draw</button>
+  <span id="timer" title="Timer (T, R to reset)">00:00</span>
+  <button id="bFs" title="Fullscreen (F)">⤢</button>
+  <button id="bHelp" title="Shortcuts (?)">?</button>
+</div>
+
+<div id="pv">
+  <div class="cur"><div class="lbl"><span id="pvCount"></span><span>current</span></div><div class="mini" id="pvCurBox"></div></div>
+  <div class="side">
+    <div class="lbl"><span>next</span><span id="pvClock">00:00</span></div>
+    <div class="mini" id="pvNextBox"><iframe id="pvNext" title="next slide" tabindex="-1"></iframe></div>
+  </div>
+  <div class="side"><div class="lbl"><span>notes</span><span>P / Esc to exit</span></div><div id="pvNotes"><div class="ntxt" id="pvNotesTxt"></div></div></div>
+</div>
+
+<div id="grid"></div>
+<div id="help"><div class="box">
+  <h3>Shortcuts</h3>
+  <kbd>→ / Space / PgDn</kbd><span>Next step or slide</span>
+  <kbd>← / PgUp</kbd><span>Previous</span>
+  <kbd>Home / End</kbd><span>First / last slide</span>
+  <kbd>G</kbd><span>Overview grid</span>
+  <kbd>N</kbd><span>Speaker notes drawer</span>
+  <kbd>P</kbd><span>Presenter view (current, next, notes, clock)</span>
+  <kbd>L</kbd><span>Laser pointer</span>
+  <kbd>D</kbd><span>Draw · C clears</span>
+  <kbd>T / R</kbd><span>Start-pause timer / reset</span>
+  <kbd>+ / −</kbd><span>Slide density (1 = stage … 5 = detail)</span>
+  <kbd>F</kbd><span>Fullscreen</span>
+  <kbd>H</kbd><span>Hide bar (clean presenting)</span>
+  <kbd>Esc</kbd><span>Close panels and tools</span>
+</div></div>
+<div id="toast"></div>
+
+<script>
+const SLIDES = [
+  '01-title.html',
+  '02-aws-riyadh-moment.html',
+  '03-persona-navigator.html',
+  '04-platform-architecture.html',
+  '05-tagging-moat.html',
+  '06-storage-engines.html',
+  '07-catalog-master-matrix.html',
+  '08-infra-core.html',
+  '09-containers-eks.html',
+  '10-network-cnm-ndm.html',
+  '11-gpu-monitoring.html',
+  '12-apm-tracing.html',
+  '13-continuous-profiler.html',
+  '14-database-monitoring.html',
+  '15-data-streams-monitoring.html',
+  '16-logs-architecture.html',
+  '17-flex-logs.html',
+  '18-observability-pipelines.html',
+  '19-byoc-cloudprem.html',
+  '20-digital-experience-dem.html',
+  '21-rum-mobile.html',
+  '22-session-replay.html',
+  '23-synthetic-monitoring.html',
+  '24-cloud-security-csm.html',
+  '25-cloud-siem.html',
+  '26-app-sec-code-security.html',
+  '27-bits-ai-roster.html',
+  '28-bits-sre-investigation.html',
+  '29-mcp-server.html',
+  '30-sovereign-ai-llm-obs.html',
+  '31-software-delivery-service-mgmt.html',
+  '32-finops-ccm.html',
+  '33-saudi-compliance-matrix.html',
+  '34-architectural-blueprints.html',
+  '35-vrl-pipeline-code.html',
+  '36-sizing-calculator.html',
+  '37-saudi-use-cases.html',
+  '38-migration-roadmap.html'
+];
+
+const TITLES = [
+  'Title: Datadog for AWS Riyadh',
+  'The AWS Riyadh Moment',
+  'Persona Value Navigator',
+  'Agent v7 & eBPF Kernel Architecture',
+  'Unified Service Tagging Moat',
+  'Storage Engines: Husky & Monocle',
+  'Master Catalog Matrix (9 Domains)',
+  'Domain 1: Infra Pro & Enterprise',
+  'Domain 1: EKS & Containers',
+  'Domain 1: Cloud & Physical Network',
+  'Domain 1: GPU Hardware Telemetry',
+  'Domain 2: APM & Distributed Tracing',
+  'Domain 2: Continuous Profiler',
+  'Domain 2: Database Monitoring (DBM)',
+  'Domain 2: Data Streams Monitoring',
+  'Domain 3: Log Ingestion & Indexing',
+  'Domain 3: Flex Logs on Amazon S3',
+  'Domain 3: Observability Pipelines',
+  'Domain 3: BYOC Logs & CloudPrem',
+  'Domain 4: Digital Experience (DEM)',
+  'Domain 4: Real User Monitoring (RUM)',
+  'Domain 4: Session Replay & DOM Mask',
+  'Domain 4: Synthetic Monitoring',
+  'Domain 5: Cloud Security (CSM)',
+  'Domain 5: Cloud SIEM vs Legacy',
+  'Domain 5: App, Code & AI Security',
+  'Domain 6: Bits AI 10-Agent Roster',
+  'Domain 6: Bits AI SRE Investigation',
+  'Domain 6: Model Context Protocol (MCP)',
+  'Domain 7: Sovereign AI & Bedrock/ALLaM',
+  'Domains 8 & 9: CI/CD & Incident Mgmt',
+  'FinOps: Cloud Cost & EDP Drawdown',
+  'Saudi Compliance Master Matrix',
+  'The 4 KSA Architectural Blueprints',
+  'Production Vector VRL Scrubbing',
+  'Master Unit Economics & Calculator',
+  '5 Saudi Enterprise Walkthroughs',
+  '30-60-90 Day Migration Roadmap'
+];
+
+/* Speaker notes: Field talk tracks, regulatory citations & engineering proofs */
+const NOTES = {
+'01-title.html': `- Welcome. Amazon Web Services is launching its $5.3B Cloud Infrastructure Region in Riyadh next month (me-central-2) across 3 Availability Zones.
+- Every major Saudi bank, government agency, and telecom operator is actively preparing migration cutovers.
+- The deck structure: An exhaustive breakdown of Datadog's 30+ products across 9 operational domains, technical mechanics, pricing formulas, and Saudi sovereign compliance blueprints.`,
+
+'02-aws-riyadh-moment.html': `- Executive talk track: Moving to AWS Riyadh is the most significant digital transformation in Saudi Arabia this decade.
+- But migrations introduce four severe operational challenges:
+  1. The Dual-Run Risk: Organizations will run hybrid estates (on-prem Riyadh/Jeddah + AWS) for 6 to 18 months. You must baseline performance side-by-side.
+  2. The War Room Tax: Today, an outage pulls 15 senior engineers onto a 2-hour bridge. DB blames the network; network blames the app. Datadog eliminates that tax.
+  3. Saudi Sovereignty: NDMO Level 3 and SAMA CSF 3.3.14/3.4.3 require in-Kingdom log retention and zero-PII cross-border egress.
+  4. 100% AWS EDP Drawdown: Every dollar invested draws down 1:1 against your enterprise AWS committed cloud spend via Marketplace.`,
+
+'03-persona-navigator.html': `- Tailor the conversation to every persona in the room:
+- Executives & CFO: Tool consolidation, 100% AWS EDP drawdown, brand reputation defense.
+- CIO / CTO: Migration velocity, hybrid on-prem to cloud visibility, zero blind spots across AZs.
+- CISO / Compliance: SAMA CSF 3.3.14 event correlation, NCA ECC 18-month retention, zero-PII egress via Vector.
+- SRE & Platform: EKS container visibility, eBPF syscalls, Bits AI autonomous RCA in 3 minutes.
+- Developers: Single-step tracing, flame graphs, line-of-code profiling, IDE MCP integration.
+- Digital & Product: Core Web Vitals, mobile carrier latency across stc/Mobily/Zain, checkout drop-off replay.
+- FinOps: Multi-tenant container spend allocation joined directly to engineering service tags.`,
+
+'04-platform-architecture.html': `- Under the hood: The Datadog v7 agent replaces 8 disparate vendor agents with one unified daemon.
+- System-probe hooks directly into the Linux kernel via eBPF with <1% CPU overhead.
+- Captures TCP/UDP network flows, automatic HTTP/gRPC RED metrics, and runtime syscall threats without modifying application code or container images.
+- All telemetry egresses via a single outbound TLS 443 stream with Snappy in-memory compression. Zero inbound firewall ports required.`,
+
+'05-tagging-moat.html': `- The architectural moat: Unified Service Tagging (env, service, version).
+- Simple airport luggage barcode analogy: When you check a bag in Riyadh, the barcode follows it everywhere.
+- In Datadog, env, service, and version are stamped at the agent level.
+- Automatically joins metrics, traces, logs, RUM sessions, security signals, and AWS cloud costs without manual ETL or complex join queries.
+- Watchdog ML can pinpoint: "Service orders-api version v2.4 in env:prod-riyadh is throwing pool errors."`,
+
+'06-storage-engines.html': `- Architecture depth: Why Datadog storage economics beat legacy tools.
+- Husky Engine: Columnar object storage engine storing logs, traces, and security events as Parquet on S3. Decouples compute from storage completely, enabling SQL search without indexing penalties.
+- Monocle TSDB: Rust-based time-series engine delivering sub-second queries across millions of metric series.
+- Metric Name Pricing: Opt-in model charging $100/mo per metric name with 1,000,000 distinct tag permutations included—neutralizing container cardinality explosions.`,
+
+'07-catalog-master-matrix.html': `- Platform breadth overview: 9 operational domains, 30+ core products, 56 distinct priced offerings, 122 price lines.
+- The 9 domains: (1) Infrastructure & Systems, (2) APM & Code, (3) Logs & Pipelines, (4) Digital Experience, (5) Cloud Security, (6) Autonomous AI, (7) Sovereign AI, (8) Software Delivery, (9) Service Management & Cost.
+- Every product shares the same agent, the same data model, and the same UI. Adding a product is a configuration switch, not a new deployment project.`,
+
+'08-infra-core.html': `- Domain 1: Infrastructure Monitoring Pro ($15/host) vs Enterprise ($23/host).
+- Pro includes 1,000+ turn-key integrations, 100 custom metrics, 500 events, and 5 containers pooled per host.
+- Enterprise adds Live Processes (/proc at 2s resolution), Watchdog ML anomaly detection, Outlier alerts, and doubles allotments (200 metrics, 1,000 events, 10 containers).
+- AWS Riyadh Go-Live Fit: Deploy on existing VMware/Nutanix datacenters today, and on new EC2 nodes in me-central-2 next month for immediate side-by-side migration baselines.`,
+
+'09-containers-eks.html': `- Amazon EKS Container Observability: Ephemeral containers in AWS Riyadh spin up and terminate in seconds.
+- The Cluster Agent runs as an external metrics provider, auto-scaling EKS pods based on actual business demand (payment queue depth, TPS) rather than blunt CPU.
+- Live Containers view provides real-time cgroup inspection, memory limits, and OOM kill warnings.
+- Meter: $1/container/mo pro-rated at $0.002/hour. Host pooling absorbs container churn (250 Enterprise hosts pool 2,500 containers free).
+- Kubernetes Autoscaling add-on is $2/node/month.`,
+
+'10-network-cnm-ndm.html': `- Network observability across hybrid architectures:
+- Cloud Network Monitoring (CNM, $5/host or $2.50 w/ APM): eBPF kernel socket monitoring for inter-pod, inter-AZ, and cross-VPC latency and TCP retransmits.
+- Network Device Monitoring (NDM, $7/device): SNMP polling and trap ingestion for physical routers, switches, and firewalls in Riyadh datacenters.
+- NetFlow ($1.25/1M flow records): Edge flow analysis across sFlow, IPFIX, NetFlow v5/v9.
+- Network Path ($5/test): Hop-by-hop latency tracing across AWS Direct Connect links between on-prem and me-central-2.`,
+
+'11-gpu-monitoring.html': `- GPU Monitoring ($10/accelerator/month): Direct integration with NVIDIA DCGM (Data Center GPU Manager).
+- Unifies hardware metrics for AWS EC2 P5 (H100), G5 (A10G), and on-prem DGX clusters.
+- Captures Tensor Core utilization, VRAM allocation, NVLink interconnect bandwidth, and PCIe thermal limits.
+- Essential for sovereign Arabic AI training (ALLaM 34B, HUMAIN ONE). Flags GPU idling caused by PyTorch data loader I/O bottlenecks.`,
+
+'12-apm-tracing.html': `- Domain 2: APM & Distributed Tracing ($31/host/month).
+- Single-Step APM (SSI): Automatically injects tracing bytecode at Kubernetes admission level without touching developer Dockerfiles.
+- Generous Pooled Allotments: Includes 150 GB trace ingestion and 1,000,000 indexed spans per host pooled account-wide.
+- Continuous Profiler is included free ($0 add-on) within the $31 bundle.
+- Generates end-to-end trace waterfalls from mobile client to exact SQL query, RED metrics, and service maps.`,
+
+'13-continuous-profiler.html': `- Continuous Profiler: Always-on production code profiling with <1% CPU overhead.
+- APM tells you which service took 800ms; Continuous Profiler tells you the exact line of Java, Go, or Python code that consumed 70% of CPU.
+- Surfaces Java GC pauses, synchronized thread lock contention, and regex catastrophic backtracking.
+- FinOps impact: Fix the offending line of code before scaling up expensive AWS EC2 instances.`,
+
+'14-database-monitoring.html': `- Database Monitoring (DBM, $70/DB host/month): Deep visibility into Amazon RDS PostgreSQL, Aurora MySQL, SQL Server, and Oracle.
+- Connects via standard read-only monitoring user without installing agents on the managed database engine.
+- Captures normalized query metrics, execution explain plans, wait states (locks, I/O waits), and missing index recommendations.
+- Eliminates DBA vs developer finger-pointing during critical payroll and salary payment rushes.`,
+
+'15-data-streams-monitoring.html': `- Data Streams Monitoring (DSM, Free with APM or $7.50/host standalone).
+- Asynchronous messaging fabrics: Kafka, Amazon MSK, Amazon SQS, RabbitMQ, and Kinesis.
+- If a consumer lags by 10,000 messages, HTTP API shows 200 OK, but customers never receive their confirmation SMS or OTP.
+- DSM maps the entire pipeline, measures end-to-end message latency, and flags stuck consumer groups instantly.`,
+
+'16-logs-architecture.html': `- Domain 3: Log Management & "Logging Without Limits".
+- The legacy dilemma: Splunk forces you to either pay millions to index 100% of logs, or drop debug logs and fly blind during 3 AM outages.
+- Datadog decouples ingestion from indexing:
+  1. Ingest 100% of logs at $0.10/GB for real-time alerting, metrics generation, and PII scrubbing.
+  2. Index only 10–20% of high-value operational logs in active search tiers (15-Day at $1.70/1M events; 30-Day at $2.50/1M events).`,
+
+'17-flex-logs.html': `- Flex Logs: Long-Term Storage on AWS S3 ($0.05/GB/month for 15-month retention; $0.15/GB/mo for 5-year compliance).
+- Backed by the Husky columnar engine; writes compressed Parquet files directly to customer S3 buckets in Riyadh.
+- Decoupled serverless compute queries logs via SQL without rehydration or warming up clusters.
+- Satisfies SAMA CSF 3.3.14 (12–15 month event logging) and NCA ECC 18-month CNI rules at a 96% storage cost collapse compared to Splunk indexers.`,
+
+'18-observability-pipelines.html': `- Observability Pipelines (Vector Edge, $0.10/GB processed): High-speed stream processor cluster deployed in customer VPC in Riyadh or on-prem.
+- Written in Rust; processes >250 MB/s per core with <150MB memory footprint.
+- Production Vector Remap Language (VRL) script scrubs Saudi National IDs, Iqamas, mobile numbers, and IBANs before any telemetry egresses.
+- Forks streams: 100% raw encrypted logs written to local Riyadh S3; sanitized metrics stream to Datadog SaaS.`,
+
+'19-byoc-cloudprem.html': `- Bring Your Own Cloud (BYOC) Logs / CloudPrem (Quickwit engine):
+- Designed for Tier-1 Saudi Banks and National Government Platforms (NDMO Level 3).
+- 100% of logs remain stored and indexed inside the customer's own AWS Riyadh account on encrypted S3.
+- A stateless query worker in the VPC executes federated searches over TLS; search results render dynamically in the Datadog SaaS web browser.
+- Zero raw log records ever leave Saudi Arabia.`,
+
+'20-digital-experience-dem.html': `- Domain 4: Digital Experience Monitoring (DEM).
+- 4 Interconnected Pillars: Real User Monitoring (RUM), Session Replay, Synthetic Monitoring, Product Analytics.
+- Front-end visibility through the eyes of Saudi citizens.
+- The Unification Moat: Click a failed mobile tap in Session Replay, and Datadog opens the exact backend APM span, database lock, and error log in 1 click.`,
+
+'21-rum-mobile.html': `- Real User Monitoring (RUM - Measure $1.50/1k sessions; Investigate $2.20/1k sessions).
+- Native SDKs for iOS, Android, Flutter, React Native, and web browsers.
+- Measures Google Core Web Vitals (LCP, INP, CLS) and user frustration metrics (Rage Clicks).
+- Regional Carrier Visibility: Compares mobile checkout latency and error rates across stc, Mobily, and Zain cellular networks in Saudi Arabia.`,
+
+'22-session-replay.html': `- Session Replay ($24.00 per 1,000 recorded replays):
+- Pixel-perfect visual playback of user sessions to diagnose checkout drop-offs and broken buttons.
+- Strict Client-Side DOM Masking: Input fields, credit card PANs, citizen National IDs, and phone numbers are masked inside the user's device before recording packets are transmitted.
+- 100% compliant with SDAIA PDPL cross-border transfer rules. Zero PII leaves the consumer device.`,
+
+'23-synthetic-monitoring.html': `- Synthetic Monitoring ($5.00/10k API tests; $12.00/1k Browser tests).
+- Proactive 24x7 automated user flow simulations running from private and public testing points in Riyadh and Jeddah.
+- Tests Nafath SSO authentication, mada checkout transactions, and partner APIs every 60 seconds before real users are impacted.
+- Alerts on SSL certificate expiry 30 days in advance.`,
+
+'24-cloud-security-csm.html': `- Domain 5: Cloud Security Management (CSM).
+- DevSecOps on one platform: The same agent collecting performance telemetry also monitors security signals.
+- CSM Posture (CSPM, $7.50/resource/mo): Automated cloud configuration auditing against CIS benchmarks, SAMA CSF, and NCA ECC/CCC controls.
+- CSM Threats (CWPP, $15.00/host/mo): Kernel eBPF real-time syscall threat detection, privilege escalation, container escape, and file tampering.`,
+
+'25-cloud-siem.html': `- Cloud SIEM ($0.20/GB analyzed or $4.00/1M events):
+- Real-time security analytics analyzing AWS CloudTrail, VPC Flow Logs, Okta, and application logs.
+- Over 800 out-of-the-box, curated detection rules with automated MITRE ATT&CK correlation.
+- Satisfies SAMA CSF 3.3.14 centralized event correlation mandate without months of SPL rule writing.
+- Bits Security Analyst automates alert triage, IP reputation checks, and containment runbooks.`,
+
+'26-app-sec-code-security.html': `- Shift-Left & Runtime Application Protection:
+- App & API Protection (AAP / RASP, $12.00/APM host/mo): Embedded via Sqreen; blocks OWASP Top 10 attacks (SQLi, SSRF, command injection) inside the runtime with zero latency impact.
+- Code Security (SAST/SCA, $8.00/committer/mo): Scans Git repositories in CI/CD for open-source CVEs, software licenses, and hardcoded secrets.
+- AI Guard ($0.05/1k requests): Real-time prompt injection defense and Arabic PII redaction for LLM applications.`,
+
+'27-bits-ai-roster.html': `- Domain 6: Autonomous AI & The Bits AI Roster.
+- Not a generic chatbot wrapper! An integrated team of 10 specialized autonomous engineering agents sharing a persistent memory of your cloud estate.
+- The 10 Agents: SRE, Code, Chat, Detection, Remediation, Release, Testing, Security Analyst, Agent Builder, Memories.
+- Commercial Meter: AI Credits model ($500 per pack of 500 credits, ~4 credits per automated SRE investigation).`,
+
+'28-bits-sre-investigation.html': `- Bits AI SRE in Action: Step-by-step incident investigation walkthrough.
+- Advance steps with right arrow:
+  * Step 1: Alert fires; Bits forms 4 parallel hypotheses.
+  * Step 2: APM & metrics rule out RDS CPU and Direct Connect latency.
+  * Step 3: Logs confirm connection pool timeout.
+  * Step 4: Root cause confirmed—deploy v2.4.1 reduced maxPoolSize from 50 to 5.
+  * Step 5: Automated remediation proposed—1-click rollback and fix PR drafted. MTTR drops from 2 hours to 3 minutes.`,
+
+'29-mcp-server.html': `- Datadog Model Context Protocol (MCP) Server (GA March 2026).
+- Connects Datadog directly into developer AI coding environments (Claude Code, Cursor, Codex).
+- Tool calls grew 4x quarter-over-quarter in Q1 and Q2 FY26.
+- Developers ask in natural language in their terminal: "Why did payment errors jump?" Claude queries Datadog metrics, finds the offending line of code, and generates the fix PR.`,
+
+'30-sovereign-ai-llm-obs.html': `- Domain 7: Sovereign AI & LLM Observability.
+- Monitoring enterprise GenAI on Amazon Bedrock, ALLaM 34B, and HUMAIN agent networks in AWS Riyadh.
+- Traces multi-step agent tool calls, token consumption, step latency, and RAG retrieval cosine similarity.
+- AI Guard ($0.05/1k requests): Real-time prompt injection defense and Arabic citizen PII redaction.
+- Connects mobile RUM -> backend APM -> Bedrock LLM trace -> NVIDIA H100 GPU metrics on one screen.`,
+
+'31-software-delivery-service-mgmt.html': `- Domains 8 & 9: Software Delivery & Incident Management.
+- CI Pipeline Visibility ($8/committer/mo): DORA metrics, flaky test detection, and automated quality gates in GitHub Actions/GitLab.
+- Datadog On-Call ($20/seat): Modern PagerDuty replacement with regional SMS and phone escalation in Saudi Arabia.
+- Incident Management ($30/seat) & Workflow Automation ($10/100 runs): Automated war rooms, timelines, and low-code auto-remediation runbooks.`,
+
+'32-finops-ccm.html': `- FinOps & Cloud Cost Management ($7.50 per $1k cloud spend analyzed).
+- Ingests AWS Cost & Usage Reports (CUR); allocates multi-tenant EKS node spend down to exact microservices and engineering teams.
+- Flags unattached EBS volumes and idle compute instances in AWS Riyadh.
+- 100% AWS EDP Drawdown: Every dollar invested in Datadog via AWS Marketplace retires your enterprise AWS committed cloud spend 1:1.`,
+
+'33-saudi-compliance-matrix.html': `- The Master Saudi Regulatory Matrix:
+- NDMO Data Classification (Royal Decree 59888): Level 3 Confidentiality protected via in-Kingdom Vector VRL scrubbing.
+- SDAIA PDPL (Royal Decree M/19 Articles 19 & 29): PII cross-border restrictions satisfied via Sensitive Data Scanner and client-side RUM DOM masking.
+- SAMA CSF 3.3.14 & 3.4.3: 12-15 month local event logging on AWS S3 in Riyadh + Cloud SIEM real-time correlation.
+- NCA ECC-2:2024 & CCC-1:2020: 18-month CNI log retention in Flex Logs ($0.05/GB).
+- CST Cloud Computing Regulatory Framework: Class C Service Provider standards in AWS sovereign data centers.`,
+
+'34-architectural-blueprints.html': `- The 4 Saudi Deployment Blueprints:
+- Blueprint 1: Sovereign Hybrid Edge (Recommended for Banking & Government) -> Vector in VPC + local S3 in Riyadh for 18-mo retention + sanitized telemetry to SaaS.
+- Blueprint 2: BYOC Logs / CloudPrem -> 100% logs stored and indexed in customer AWS Riyadh account via Quickwit.
+- Blueprint 3: Dedicated KSA Site -> me1.datadoghq.com multi-tenant control plane in AWS Riyadh.
+- Blueprint 4: Pure SaaS + Scanner -> for startups and consumer e-commerce.`,
+
+'35-vrl-pipeline-code.html': `- Production Vector Remap Language (VRL) Script:
+- Displays the exact, production-ready script deployed on Vector workers in AWS Riyadh.
+- Rigorous regex patterns scrubbing Saudi National IDs (starts with 1), resident Iqamas (starts with 2), mobile numbers (+9665...), and IBANs (SA...).
+- High-speed in-memory JIT execution (>250 MB/s per core). 100% raw logs flow to local encrypted S3; sanitized logs flow to Datadog SaaS.`,
+
+'36-sizing-calculator.html': `- Worked Sizing Model for Saudi Enterprise on AWS Riyadh:
+- Footprint: 250 Hosts, 150 APM Hosts, 50 RDS DBs, 15 TB raw logs, 500k RUM sessions.
+- Commercial Winning Formula: APM pooled allowance absorbs 20 TB of traces and 120M indexed spans ($0 overage!).
+- Total Datadog ACV: $315,000 / year.
+- Legacy Splunk + Dynatrace TCO: $650,000 / year.
+- Delivers a 51% net TCO reduction while meeting SAMA CSF 3.3.14. Interactive sliders recalculate spend in real time.`,
+
+'37-saudi-use-cases.html': `- 5 Saudi Industry Enterprise Walkthroughs:
+1. Fintech & Banking: mada and SARIE payment decline isolation during salary days.
+2. Digital Government: Nafath SSO and Absher morning authentication surges across 530+ agencies.
+3. Hajj & Umrah: Nusuk super-app handling 2.5M pilgrims in Mina cellular congestion.
+4. National Telecom: 5G Core User Plane Functions (UPF) latency & CST CDR retention in Flex Logs.
+5. Sovereign AI: ALLaM 34B multi-step agent tracing & NVIDIA H100 GPU optimization.`,
+
+'38-migration-roadmap.html': `- The 30-60-90 Day Migration Plan for AWS Riyadh:
+- Days 1-30: Baseline existing on-prem systems and deploy Agent v7 on new EKS clusters in Riyadh; enable 1,000+ turn-key integrations.
+- Days 31-60: Enforce Unified Service Tagging, set payment SLOs, put Bits AI SRE into active incident flow. MTTR drops to <5 mins.
+- Days 61-90: Route compliance logs to Flex Logs on local S3, activate Cloud SIEM, retire legacy Splunk/APM tools, and lock in 51% TCO savings via 100% AWS EDP drawdown.
+- Local Riyadh Delivery Partner: Zero&One (Advanced Tier Partner with Riyadh office).`
+};
+
+/* Shell logic matching datadog-preso */
+const $ = s => document.querySelector(s);
+const frame = $('#frame'), wrap = $('#wrap'), stage = $('#stage');
+let idx = 0, step = 0, steps = 0, density = 3, tool = null;
+
+const url = i => 'slides/' + SLIDES[i];
+function layout(){
+  if (document.body.classList.contains('pv')) {
+    const box = $('#pvCurBox'), w = box.clientWidth; box.style.height = (w * 720 / 1280) + 'px';
+    const r = box.getBoundingClientRect(), s = w / 1280;
+    wrap.style.position = 'fixed'; wrap.style.left = r.left + 'px'; wrap.style.top = r.top + 'px'; wrap.style.transform = `scale(${s})`; wrap.style.zIndex = 31;
+    const nb = $('#pvNextBox'), nw = nb.clientWidth; nb.style.height = (nw * 720 / 1280) + 'px'; $('#pvNext').style.transform = `scale(${nw / 1280})`;
+    return;
+  }
+  wrap.style.position = 'absolute'; wrap.style.zIndex = '';
+  const W = stage.clientWidth, H = stage.clientHeight, pad = document.body.classList.contains('presenting') ? 0 : 24;
+  const s = Math.min((W - pad * 2) / 1280, (H - pad * 2) / 720);
+  wrap.style.transform = `scale(${s})`; wrap.style.left = ((W - 1280 * s) / 2) + 'px'; wrap.style.top = ((H - 720 * s) / 2) + 'px';
+}
+window.addEventListener('resize', layout);
+
+function notesHTML(i){
+  const raw = NOTES[SLIDES[i]] || '';
+  const lines = raw.split('\n'), items = lines.filter(l => l.startsWith('- ')).map(l => `<li>${l.slice(2)}</li>`).join('');
+  const src = lines.filter(l => l.startsWith('Sources:')).map(l => `<span class="src">${l}</span>`).join('');
+  return `<ul>${items}</ul>${src}`;
+}
+
+function go(i, atEnd){
+  i = Math.max(0, Math.min(SLIDES.length - 1, i));
+  const changed = i !== idx || !frame.src;
+  idx = i; step = 0; steps = 0; pendingEnd = !!atEnd;
+  if (changed) {
+    $('#fade').style.opacity = 1;
+    setTimeout(() => { frame.src = url(i); }, 150);
+  }
+  if (!changed) post({type: 'step', i: 0});
+  clearDraw();
+  history.replaceState(null, '', '#' + (i + 1));
+  $('#count').textContent = `${i + 1} / ${SLIDES.length}`;
+  $('#pvCount').textContent = `${i + 1} / ${SLIDES.length} · ${TITLES[i]}`;
+  $('#prog').style.width = ((i + 1) / SLIDES.length * 100) + '%';
+  $('#notesTxt').innerHTML = $('#pvNotesTxt').innerHTML = notesHTML(i);
+  if (document.body.classList.contains('pv')) { const n = $('#pvNext'), nu = i + 1 < SLIDES.length ? url(i + 1) : 'about:blank'; if (!n.src.endsWith(nu)) n.src = nu; }
+  document.querySelectorAll('#grid .cell').forEach((c, k) => c.classList.toggle('cur', k === i));
+}
+let pendingEnd = false;
+frame.addEventListener('load', () => { $('#fade').style.opacity = 0; post({type: 'density', v: density}); });
+function post(m){ try { frame.contentWindow.postMessage(m, '*'); } catch(e){} }
+
+window.addEventListener('message', e => {
+  const m = e.data || {};
+  if (e.source !== frame.contentWindow) return;
+  if (m.type === 'ready') { steps = m.steps || 0; step = pendingEnd ? steps : 0; post({type: 'density', v: density}); post({type: 'step', i: step}); }
+  if (m.type === 'goto') { const j = SLIDES.indexOf(m.file); if (j >= 0) go(j); }
+  if (m.type === 'key') onKey({key: m.key, shiftKey: m.shift, metaKey: m.meta, preventDefault(){}});
+});
+
+const next = () => { if (step < steps) { step++; post({type: 'step', i: step}); } else if (idx < SLIDES.length - 1) go(idx + 1); };
+const prev = () => { if (step > 0) { step--; post({type: 'step', i: step}); } else if (idx > 0) go(idx - 1, true); };
+
+/* density */
+function setDensity(v){ density = Math.max(1, Math.min(5, v)); $('#den').textContent = 'density ' + density; post({type: 'density', v: density}); toast('density ' + density); }
+
+/* toast */
+let tt; function toast(t){ const e = $('#toast'); e.textContent = t; e.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('show'), 1100); }
+
+/* panels */
+const toggle = (cls, on) => { document.body.classList.toggle(cls, on); setTimeout(layout, 260); layout(); };
+function buildGrid(){
+  const g = $('#grid'); if (g.childElementCount) return;
+  SLIDES.forEach((s, i) => {
+    const c = document.createElement('div'); c.className = 'cell';
+    c.innerHTML = `<div class="mini" style="aspect-ratio:16/9"><iframe tabindex="-1" loading="lazy" src="${url(i)}"></iframe></div><span>${i + 1} · ${TITLES[i]}</span>`;
+    c.onclick = () => { toggle('grid', false); go(i); };
+    g.appendChild(c);
+  });
+  requestAnimationFrame(() => g.querySelectorAll('.mini').forEach(m => m.firstChild.style.transform = `scale(${m.clientWidth / 1280})`));
+}
+function togglePV(){
+  const on = !document.body.classList.contains('pv');
+  document.body.classList.toggle('pv', on);
+  if (on) { const n = $('#pvNext'); n.src = idx + 1 < SLIDES.length ? url(idx + 1) : 'about:blank'; }
+  $('#bPv').classList.toggle('on', on);
+  layout();
+}
+
+/* timer */
+let tStart = 0, tAcc = 0, tRun = false;
+const fmtT = ms => { const s = Math.floor(ms / 1000); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+setInterval(() => { const ms = tAcc + (tRun ? Date.now() - tStart : 0); $('#timer').textContent = $('#pvClock').textContent = fmtT(ms); }, 250);
+function timerToggle(){ if (tRun) { tAcc += Date.now() - tStart; tRun = false; } else { tStart = Date.now(); tRun = true; } $('#timer').classList.toggle('run', tRun); toast(tRun ? 'timer running' : 'timer paused'); }
+function timerReset(){ tAcc = 0; tStart = Date.now(); toast('timer reset'); }
+
+/* laser + draw */
+const ov = $('#overlay'), laser = $('#laser'), cv = $('#canvas'), ctx = cv.getContext('2d');
+ctx.scale(2, 2); ctx.lineCap = ctx.lineJoin = 'round';
+function setTool(t){
+  tool = tool === t ? null : t;
+  ov.classList.toggle('active', !!tool); laser.style.display = 'none';
+  $('#bLaser').classList.toggle('on', tool === 'laser'); $('#bDraw').classList.toggle('on', tool === 'draw');
+  toast(tool ? tool + ' on' : 'pointer');
+}
+const local = e => { const r = wrap.getBoundingClientRect(), s = r.width / 1280; return [(e.clientX - r.left) / s, (e.clientY - r.top) / s]; };
+let drawing = false;
+ov.addEventListener('pointermove', e => {
+  const [x, y] = local(e);
+  if (tool === 'laser') { laser.style.display = 'block'; laser.style.left = x + 'px'; laser.style.top = y + 'px'; }
+  if (tool === 'draw' && drawing) { ctx.lineTo(x, y); ctx.stroke(); }
+});
+ov.addEventListener('pointerleave', () => laser.style.display = 'none');
+ov.addEventListener('pointerdown', e => { if (tool !== 'draw') return; drawing = true; const [x, y] = local(e); ctx.strokeStyle = '#F2668B'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, y); });
+window.addEventListener('pointerup', () => drawing = false);
+function clearDraw(){ ctx.clearRect(0, 0, 1280, 720); }
+
+/* keys */
+function onKey(e){
+  const k = e.key;
+  if (e.metaKey) return;
+  if (document.body.classList.contains('help') && k !== '?') { toggle('help', false); return; }
+  if (['ArrowRight', ' ', 'PageDown', 'ArrowDown', 'Enter'].includes(k)) { e.preventDefault(); next(); }
+  else if (['ArrowLeft', 'PageUp', 'ArrowUp', 'Backspace'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k === 'Home') go(0);
+  else if (k === 'End') go(SLIDES.length - 1);
+  else if (k === 'g' || k === 'G') { buildGrid(); toggle('grid'); }
+  else if (k === 'n' || k === 'N') { toggle('notes'); $('#bNotes').classList.toggle('on', document.body.classList.contains('notes')); }
+  else if (k === 'p' || k === 'P') togglePV();
+  else if (k === 'l' || k === 'L') setTool('laser');
+  else if (k === 'd' || k === 'D') setTool('draw');
+  else if (k === 'c' || k === 'C') clearDraw();
+  else if (k === 't' || k === 'T') timerToggle();
+  else if (k === 'r' || k === 'R') timerReset();
+  else if (k === '+' || k === '=') setDensity(density + 1);
+  else if (k === '-' || k === '_') setDensity(density - 1);
+  else if (k === 'f' || k === 'F') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
+  else if (k === 'h' || k === 'H') toggle('presenting');
+  else if (k === '?') toggle('help');
+  else if (k === 'Escape') { ['grid', 'help', 'notes'].forEach(c => document.body.classList.remove(c)); if (document.body.classList.contains('pv')) togglePV(); if (tool) setTool(tool); document.body.classList.remove('presenting'); layout(); }
+  else if (/^[1-9]$/.test(k) && e.shiftKey) go(+k - 1);
+}
+document.addEventListener('keydown', onKey);
+document.addEventListener('fullscreenchange', () => { document.body.classList.toggle('presenting', !!document.fullscreenElement); setTimeout(layout, 50); });
+
+/* buttons */
+$('#bPrev').onclick = prev; $('#bNext').onclick = next;
+$('#bDenM').onclick = () => setDensity(density - 1); $('#bDenP').onclick = () => setDensity(density + 1);
+$('#bGrid').onclick = () => { buildGrid(); toggle('grid'); };
+$('#bNotes').onclick = () => onKey({key: 'n', preventDefault(){}});
+$('#bPv').onclick = togglePV;
+$('#bLaser').onclick = () => setTool('laser'); $('#bDraw').onclick = () => setTool('draw');
+$('#timer').onclick = timerToggle;
+$('#bFs').onclick = () => onKey({key: 'f', preventDefault(){}});
+$('#bHelp').onclick = () => toggle('help');
+document.querySelectorAll('#bar button').forEach(b => b.addEventListener('mouseup', () => b.blur()));
+
+layout();
+go(Math.max(0, (parseInt(location.hash.slice(1)) || 1) - 1));
+</script>
+</body>
+</html>

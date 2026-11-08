@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Storage Engine Internals</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1.05fr 1fr;gap:18px;margin-top:16px}
+  .engine-stack{display:flex;flex-direction:column;gap:12px}
+  .engine-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 18px;border-left:4px solid var(--c,var(--purple));position:relative}
+  .engine-box .h-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+  .engine-box .badge{font:600 10px var(--mono);text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--bg);color:var(--c,var(--purple))}
+  .engine-box h3{font-size:17px;font-weight:700;color:var(--ink)}
+  .engine-box p{font-size:12px;color:var(--grey);line-height:1.4;margin-top:4px}
+  .feats{list-style:none;margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+  .feats li{font-size:11px;color:var(--char);display:flex;align-items:center;gap:6px}
+  .feats li::before{content:'✓';color:var(--c,var(--purple));font-weight:700}
+  .vis-pane{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:18px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  #storage-svg{width:100%;height:270px}
+</style>
+</head>
+<body class="soft" data-foot="Storage Engine Internals · Husky & Monocle Engines" data-who="cio,sre,finops">
+<div class="z">
+  <div class="eyebrow in1">Decoupled Compute &amp; Storage Architecture</div>
+  <h1 class="in2">Husky &amp; Monocle: <span class="b">Next-gen storage economics.</span></h1>
+  <p class="sub in3">Legacy observability tools couple compute instances to disk storage—forcing you to pay for expensive clusters just to retain logs. Datadog built its own distributed columnar engines to decouple queries from raw storage.</p>
+</div>
+
+<div class="cols">
+  <div class="engine-stack in3">
+    <div class="engine-box" style="--c:var(--teal)">
+      <div class="h-top"><span class="badge">Columnar Object Store</span><span class="mono" style="font-size:11px">Parquet on S3</span></div>
+      <h3>Husky Engine (Flex Logs &amp; Events)</h3>
+      <p>Datadog's purpose-built columnar analytics engine backing Flex Logs, traces, and security events. Data is compressed into Parquet chunks directly on cloud object storage.</p>
+      <ul class="feats">
+        <li>Zero Cluster Sizing</li>
+        <li>15-Mo SAMA Retention</li>
+        <li>Decoupled SQL Compute</li>
+        <li>Zero Rehydration Wait</li>
+      </ul>
+    </div>
+
+    <div class="engine-box in4" style="--c:var(--purple)">
+      <div class="h-top"><span class="badge">Rust High-Speed TSDB</span><span class="mono" style="font-size:11px">Sub-Second Latency</span></div>
+      <h3>Monocle Engine (Infinite Cardinality)</h3>
+      <p>High-performance metadata and Time-Series Database written in Rust. Handles millions of concurrent metric queries without slowing down dashboards during incidents.</p>
+      <ul class="feats">
+        <li>Sub-Second Aggregations</li>
+        <li>1M Cardinality per Metric</li>
+        <li>Metrics Without Limits</li>
+        <li>Zero Pod Churn Explosions</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="vis-pane in4">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font:600 11px var(--mono);color:var(--lav)">DUAL-ENGINE STORAGE PIPELINE</span>
+      <span class="chip on" style="font-size:9px">Zero Clustered Hot Disks</span>
+    </div>
+
+    <svg id="storage-svg" viewBox="0 0 520 270"></svg>
+
+    <div style="font:500 11px var(--mono);color:rgba(255,255,255,.75);border-top:1px solid rgba(255,255,255,.1);padding-top:6px">
+      <b style="color:var(--teal)">Economic Result:</b> Retain 100% of logs on local S3 in Riyadh at $0.05/GB while querying metrics in sub-seconds.
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Why it matters for AWS Riyadh</b>
+  You retain all audit and compliance logs directly on Amazon S3 in Riyadh under Husky storage, while querying metrics and traces in real time via Monocle. Maximum performance at minimum cost.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('storage-svg');
+
+  // Intake Stream Hub
+  const inG = DD.el('g', {}, svg);
+  DD.el('rect', {x: 15, y: 100, width: 110, height: 70, rx: 8, fill: '#1F1533', stroke: '#A47CE8', 'stroke-width': 1.5}, inG);
+  DD.el('text', {x: 70, y: 130, fill: '#fff', 'text-anchor': 'middle', style: 'font:650 11px Inter,sans-serif'}, inG).textContent = 'Telemetry Intake';
+  DD.el('text', {x: 70, y: 148, fill: '#C9B2F2', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, inG).textContent = 'Snappy TLS 443';
+
+  // Upper Node: Monocle Rust TSDB
+  const mG = DD.el('g', {}, svg);
+  DD.el('rect', {x: 185, y: 35, width: 160, height: 65, rx: 8, fill: '#632CA6', stroke: '#A47CE8', 'stroke-width': 1}, mG);
+  DD.el('text', {x: 265, y: 62, fill: '#fff', 'text-anchor': 'middle', style: 'font:700 12px Inter,sans-serif'}, mG).textContent = 'Monocle Rust TSDB';
+  DD.el('text', {x: 265, y: 80, fill: '#C9B2F2', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, mG).textContent = 'Real-Time Metrics (<1s)';
+
+  // Lower Node: Husky Columnar S3
+  const hG = DD.el('g', {}, svg);
+  DD.el('rect', {x: 185, y: 165, width: 160, height: 65, rx: 8, fill: '#140A24', stroke: '#2FD3B5', 'stroke-width': 1.5}, hG);
+  DD.el('text', {x: 265, y: 192, fill: '#2FD3B5', 'text-anchor': 'middle', style: 'font:700 12px Inter,sans-serif'}, hG).textContent = 'Husky Columnar Engine';
+  DD.el('text', {x: 265, y: 210, fill: 'rgba(255,255,255,.7)', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, hG).textContent = 'S3 Parquet ($0.05/GB)';
+
+  // Right Node: Unified Query & Dashboard UI
+  const qG = DD.el('g', {}, svg);
+  DD.el('rect', {x: 400, y: 85, width: 105, height: 100, rx: 10, fill: '#2A1250', stroke: '#FFB52E', 'stroke-width': 1.5}, qG);
+  DD.el('text', {x: 452, y: 122, fill: '#FFB52E', 'text-anchor': 'middle', style: 'font:700 12px Inter,sans-serif'}, qG).textContent = 'Unified UI';
+  DD.el('text', {x: 452, y: 140, fill: '#fff', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, qG).textContent = 'Single Pane';
+  DD.el('text', {x: 452, y: 156, fill: 'rgba(255,255,255,.6)', 'text-anchor': 'middle', style: 'font:400 8.5px JetBrains Mono,monospace'}, qG).textContent = 'No Silos';
+
+  // Connecting Paths
+  const pM = DD.el('path', {d: 'M125,125 C150,125 150,65 185,65', class: 'flowpath'}, svg);
+  const pH = DD.el('path', {d: 'M125,145 C150,145 150,200 185,200', class: 'flowpath'}, svg);
+  const pOutM = DD.el('path', {d: 'M345,65 C375,65 375,120 400,120', class: 'flowpath'}, svg);
+  const pOutH = DD.el('path', {d: 'M345,200 C375,200 375,150 400,150', class: 'flowpath'}, svg);
+
+  DD.flow(svg, [pM], {n: 3, r: 3, color: '#A47CE8', speed: .4, delay: .4});
+  DD.flow(svg, [pH], {n: 3, r: 3, color: '#2FD3B5', speed: .4, delay: .5});
+  DD.flow(svg, [pOutM, pOutH], {n: 2, r: 3, color: ['#A47CE8', '#2FD3B5'], speed: .35, delay: .9});
+})();
+</script>
+</body>
+</html>

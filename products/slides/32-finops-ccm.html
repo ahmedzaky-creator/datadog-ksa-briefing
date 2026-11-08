@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>FinOps & Cloud Cost Management (CCM)</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .cost-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .cost-row{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.04);border-radius:6px;padding:10px 14px;margin-bottom:8px}
+  .cost-row .team{font:600 12px var(--mono);color:#fff}
+  .cost-row .spend{font:700 15px var(--mono);color:var(--teal)}
+  .cost-row .delta{font:500 10.5px var(--mono);color:var(--amber)}
+  .edp-box{background:rgba(255,181,46,.1);border:1px solid var(--amber);border-radius:8px;padding:12px;margin-top:10px}
+  .edp-box b{color:var(--amber);font:600 11px var(--mono);display:block;margin-bottom:4px}
+</style>
+</head>
+<body class="soft" data-foot="FinOps & Cloud Cost Management · 100% AWS EDP Drawdown" data-who="finops,cio,exec">
+<div class="z">
+  <div class="eyebrow in1">FinOps &amp; Cloud Economics</div>
+  <h1 class="in2">Cloud cost management: <span class="b">Joining AWS spend with engineering tags.</span></h1>
+  <p class="sub in3">Plain Language: When your monthly AWS Riyadh bill arrives with a $50,000 increase, finance doesn't know who caused it. Datadog joins your AWS bill directly with Kubernetes pods and service tags, showing the exact team and deployment responsible.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">Container Cost Allocation</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Unit Economics per Microservice</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Ingests AWS Cost &amp; Usage Reports (CUR). Automatically allocates shared multi-tenant Amazon EKS compute and network spend down to individual services, namespaces, and teams.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:10px">
+        <b>Billed Pricing Meter:</b> <b>$7.50</b> per $1,000 of cloud spend analyzed<br>
+        • Correlates code deployments directly with cost spikes<br>
+        • Surfaces idle EBS volumes and over-provisioned nodes
+      </div>
+      <div class="edp-box">
+        <b>100% AWS EDP COMMITMENT DRAWDOWN:</b>
+        Purchase Datadog through the AWS Marketplace to retire your committed cloud spend 1:1, accelerating executive sign-off without separate legal procurement cycles.
+      </div>
+    </div>
+  </div>
+
+  <div class="cost-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font:600 11px var(--mono);color:var(--lav)">AWS RIYADH SPEND ATTRIBUTION BY SERVICE</span>
+        <span class="chip on" style="font-size:9px">CUR Sync: Hourly</span>
+      </div>
+
+      <div class="cost-row">
+        <div>
+          <div class="team">service:payment-gateway</div>
+          <div class="delta">+34% after deploy v2.4</div>
+        </div>
+        <div class="spend">$18,420 / mo</div>
+      </div>
+
+      <div class="cost-row">
+        <div>
+          <div class="team">service:citizen-auth-sso</div>
+          <div class="delta">Autoscaling HPA stable</div>
+        </div>
+        <div class="spend">$9,240 / mo</div>
+      </div>
+
+      <div class="cost-row">
+        <div>
+          <div class="team">service:hajj-geo-map</div>
+          <div class="delta">CloudFront cache hit: 94%</div>
+        </div>
+        <div class="spend">$4,180 / mo</div>
+      </div>
+
+      <div class="cost-row" id="wasteRow">
+        <div>
+          <div class="team" id="wasteTitle">service:unallocated-idle</div>
+          <div class="delta" id="wasteDelta" style="color:var(--pink)">Unattached EBS Volumes (Riyadh)</div>
+        </div>
+        <div class="spend" id="wasteSpend" style="color:var(--pink)">$1,850 / mo WASTE</div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8);display:flex;justify-content:space-between;align-items:center">
+      <div id="finopsRec">
+        <b style="color:var(--teal)">FinOps Recommendation:</b> 4 unattached EBS volumes in Riyadh costing $1,850/mo.
+      </div>
+      <button id="btnCleanEbs" style="background:var(--teal);border:none;color:var(--ink);font:600 10.5px var(--mono);padding:5px 10px;border-radius:4px;cursor:pointer">⚡ Terminate Idle Volumes</button>
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>CFO Value</b>
+  Engineers see cost data in the same console where they deploy code. FinOps shifts from an awkward end-of-month confrontation into daily engineering self-governance.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnCleanEbs');
+  const row = document.getElementById('wasteRow');
+  const title = document.getElementById('wasteTitle');
+  const delta = document.getElementById('wasteDelta');
+  const spend = document.getElementById('wasteSpend');
+  const rec = document.getElementById('finopsRec');
+  let cleaned = false;
+
+  btn.addEventListener('click', () => {
+    cleaned = !cleaned;
+    if(cleaned){
+      row.style.background = 'rgba(47,211,181,.1)';
+      title.textContent = 'service:unallocated-idle (Terminated)';
+      delta.textContent = 'Cleanup action executed via AWS API';
+      delta.style.color = 'var(--teal)';
+      spend.textContent = '$0 / mo (SAVED)';
+      spend.style.color = 'var(--teal)';
+      rec.innerHTML = '<b style="color:var(--teal)">✓ Budget Reclaimed:</b> $1,850/month ($22,200/year) savings realized. AWS invoice updated.';
+      btn.textContent = '↺ Undo Action';
+      btn.style.background = 'rgba(255,255,255,.2)';
+      btn.style.color = '#fff';
+    } else {
+      row.style.background = '';
+      title.textContent = 'service:unallocated-idle';
+      delta.textContent = 'Unattached EBS Volumes (Riyadh)';
+      delta.style.color = 'var(--pink)';
+      spend.textContent = '$1,850 / mo WASTE';
+      spend.style.color = 'var(--pink)';
+      rec.innerHTML = '<b style="color:var(--teal)">FinOps Recommendation:</b> 4 unattached EBS volumes in Riyadh costing $1,850/mo.';
+      btn.textContent = '⚡ Terminate Idle Volumes';
+      btn.style.background = 'var(--teal)';
+      btn.style.color = 'var(--ink)';
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Unified Service Tagging Moat</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .tags-box{display:flex;gap:14px;margin-top:18px}
+  .tag-card{flex:1;background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;border-top:4px solid var(--c,var(--purple))}
+  .tag-card .code{font:700 16px var(--mono);color:var(--c,var(--purple));margin-bottom:6px}
+  .tag-card .desc{font-size:12.5px;color:var(--char);line-height:1.4}
+  .tag-card .ex{font:500 11px var(--mono);color:var(--grey);background:var(--bg);padding:4px 8px;border-radius:4px;margin-top:8px}
+  #web{position:absolute;left:64px;right:64px;top:260px;height:300px}
+</style>
+</head>
+<body class="soft" data-foot="Core Architectural Moat · Unified Service Tagging" data-who="cio,sre,dev,finops">
+<div class="z">
+  <div class="eyebrow in1">The Connective Tissue of the Entire Platform</div>
+  <h1 class="in2">Unified Service Tagging: <span class="b">The three magic tags.</span></h1>
+  <p class="sub in3">Like a barcode on airline luggage, you tag telemetry once with <code>env</code>, <code>service</code>, and <code>version</code>. The platform automatically joins metrics, traces, logs, user sessions, security signals, and cloud costs—without custom query code.</p>
+</div>
+
+<div class="tags-box in3">
+  <div class="tag-card" style="--c:var(--purple)">
+    <div class="code">env</div>
+    <div class="desc">Where the software runs. Separates prod from staging and isolates AWS Riyadh from on-prem datacenters.</div>
+    <div class="ex">env:prod-riyadh-az1</div>
+  </div>
+  <div class="tag-card" style="--c:var(--teal)">
+    <div class="code">service</div>
+    <div class="desc">What business function the code performs. Defines microservice boundaries and operational ownership.</div>
+    <div class="ex">service:mada-payment-gw</div>
+  </div>
+  <div class="tag-card" style="--c:var(--amber)">
+    <div class="code">version</div>
+    <div class="desc">Which exact build is running. Flags regression culprits the instant a new deployment lands.</div>
+    <div class="ex">version:v2.4.1-rc3</div>
+  </div>
+</div>
+
+<svg id="web" viewBox="0 0 1152 300"></svg>
+
+<div class="bv in5">
+  <b>The Architectural Moat</b>
+  When a monitor fires, Watchdog ML doesn't say "something is slow"—it pinpoints: <code>service:mada-payment-gw</code> version <code>v2.4.1</code> in <code>env:prod-riyadh</code> is throwing connection pool errors.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('web');
+  
+  // Center node: The Three Magic Tags
+  const cx = 576, cy = 150;
+  
+  // 6 Satellite Telemetry Domains
+  const sats = [
+    {x: 140, y: 50, t: 'System Metrics', s: 'CPU, RAM, Disk I/O', c: 'var(--purple)'},
+    {x: 140, y: 150, t: 'APM Distributed Traces', s: 'Flame graphs, p99 latency', c: 'var(--sky)'},
+    {x: 140, y: 250, t: 'Raw & Flex Logs', s: 'SAMA CSF 15-mo audit logs', c: 'var(--teal)'},
+    {x: 1012, y: 50, t: 'RUM User Sessions', s: 'Checkout clicks & Core Vitals', c: 'var(--amber)'},
+    {x: 1012, y: 150, t: 'Cloud Security Signals', s: 'eBPF syscall threats & SIEM', c: 'var(--pink)'},
+    {x: 1012, y: 250, t: 'Cloud Cost (FinOps)', s: 'AWS Riyadh spend by service', c: 'var(--green)'}
+  ];
+
+  const paths = [];
+  sats.forEach(s => {
+    const isLeft = s.x < cx;
+    const sx = isLeft ? s.x + 110 : s.x - 110;
+    const d = `M${sx},${s.y} C${(sx + cx)/2},${s.y} ${(sx + cx)/2},${cy} ${cx + (isLeft ? -100 : 100)},${cy}`;
+    const p = DD.el('path', {d, class: 'flowpath'}, svg);
+    paths.push(p);
+
+    // Satellite box
+    const g = DD.el('g', {}, svg);
+    DD.el('rect', {x: s.x - 110, y: s.y - 32, width: 220, height: 64, rx: 8, fill: '#fff', stroke: s.c, 'stroke-width': 1.5}, g);
+    DD.el('text', {x: s.x, y: s.y - 6, fill: 'var(--ink)', 'text-anchor': 'middle', style: 'font:650 13px Inter,sans-serif'}, g).textContent = s.t;
+    DD.el('text', {x: s.x, y: s.y + 16, fill: 'var(--grey)', 'text-anchor': 'middle', style: 'font:400 10.5px JetBrains Mono,monospace'}, g).textContent = s.s;
+  });
+
+  // Center Core
+  const cg = DD.el('g', {}, svg);
+  DD.el('rect', {x: cx - 110, y: cy - 45, width: 220, height: 90, rx: 12, fill: '#170B2B', stroke: '#A47CE8', 'stroke-width': 2}, cg);
+  DD.el('text', {x: cx, y: cy - 14, fill: '#A47CE8', 'text-anchor': 'middle', style: 'font:600 11px JetBrains Mono,monospace;letter-spacing:.08em'}, cg).textContent = 'ONE DATA MODEL';
+  DD.el('text', {x: cx, y: cy + 12, fill: '#fff', 'text-anchor': 'middle', style: 'font:700 17px Inter,sans-serif'}, cg).textContent = 'Unified Tags Hub';
+  DD.el('text', {x: cx, y: cy + 30, fill: 'rgba(255,255,255,.6)', 'text-anchor': 'middle', style: 'font:400 10.5px JetBrains Mono,monospace'}, cg).textContent = 'env · service · version';
+
+  DD.flow(svg, paths, {n: 3, r: 3, color: ['#632CA6', '#5AB8F2', '#2FD3B5', '#FFB52E', '#F2668B', '#28A745'], speed: .35, delay: .6});
+})();
+</script>
+</body>
+</html>

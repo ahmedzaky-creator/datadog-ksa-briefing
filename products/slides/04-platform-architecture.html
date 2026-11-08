@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Agent v7 & eBPF Kernel Architecture</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  #arch{position:absolute;left:64px;top:200px;width:1152px;height:340px}
+  .legend{position:absolute;left:64px;right:64px;top:555px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .legend div{font-size:12.5px;line-height:1.45;color:var(--char);border-top:2px solid var(--c);padding-top:8px}
+  .legend b{color:var(--ink);font-family:var(--sans)}
+  html[data-density="1"] .legend{display:none}
+</style>
+</head>
+<body class="soft" data-foot="Agent v7 Architecture · Linux eBPF Kernel Subsystems" data-who="sre,dev,cio">
+<div class="z">
+  <div class="eyebrow in1">The Foundation Under Every Product</div>
+  <h1 class="in2">One agent. <span class="b">Kernel-level eBPF. Zero code changes.</span></h1>
+  <p class="sub in3">Rather than installing 8 separate vendor daemons, the Datadog v7 agent hooks directly into the Linux kernel via eBPF. It observes every system call, network flow, and pod lifecycle event with under 1% CPU overhead.</p>
+</div>
+
+<svg id="arch" viewBox="0 0 1152 340"></svg>
+
+<div class="legend">
+  <div style="--c:var(--purple)" data-d="6">
+    <b>System-Probe &amp; eBPF:</b> Hooks socket events, TCP handshakes, and process executions directly in kernel space without bytecode modification.
+  </div>
+  <div style="--c:var(--teal)" data-d="7">
+    <b>Autodiscovery &amp; Dynamic Tracing:</b> Detects new EKS pods instantly, injects Single-Step APM bytecode, and scrapes container metrics.
+  </div>
+  <div style="--c:var(--amber)" data-d="8">
+    <b>Single Secure TLS 443 Egress:</b> Batches, compresses, and forwards all telemetry streams via one outbound tunnel, simplifying firewall rules.
+  </div>
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('arch');
+  
+  // Background zones: Kernel Space (bottom) and User Space (top)
+  const kZone = DD.el('rect', {x: 20, y: 190, width: 720, height: 130, rx: 10, fill: '#170B2B', stroke: 'rgba(255,255,255,.1)'}, svg);
+  DD.el('text', {x: 35, y: 215, fill: '#A47CE8', style: 'font:600 11px JetBrains Mono,monospace;letter-spacing:.06em'}, svg).textContent = 'LINUX KERNEL SPACE (eBPF HOOKS · <1% OVERHEAD)';
+  
+  const uZone = DD.el('rect', {x: 20, y: 20, width: 720, height: 150, rx: 10, fill: '#fff', stroke: 'var(--line)', 'stroke-width': 1.5}, svg);
+  DD.el('text', {x: 35, y: 45, fill: '#6E6784', style: 'font:600 11px JetBrains Mono,monospace;letter-spacing:.06em'}, svg).textContent = 'USER SPACE DAEMON · DATADOG AGENT v7.x CONTAINER / POD';
+
+  // Kernel eBPF Programs
+  const ebpfModules = [
+    {x: 40, y: 235, w: 150, t: 'Network Tracer', s: 'TCP/UDP Flows & RTT'},
+    {x: 210, y: 235, w: 150, t: 'USM eBPF Tracer', s: 'HTTP/gRPC Auto-RED'},
+    {x: 380, y: 235, w: 150, t: 'CWS Security Probe', s: 'Syscall & Privilege Audit'},
+    {x: 550, y: 235, w: 165, t: 'OOM & cgroup Monitor', s: 'Memory limits & Throttle'}
+  ];
+  ebpfModules.forEach(m => {
+    const g = DD.el('g', {}, svg);
+    DD.el('rect', {x: m.x, y: m.y, width: m.w, height: 65, rx: 6, fill: '#2A1250', stroke: '#A47CE8', 'stroke-width': 1}, g);
+    DD.el('text', {x: m.x + 12, y: m.y + 26, fill: '#fff', style: 'font:600 12px Inter,sans-serif'}, g).textContent = m.t;
+    DD.el('text', {x: m.x + 12, y: m.y + 46, fill: '#C9B2F2', style: 'font:400 10px JetBrains Mono,monospace'}, g).textContent = m.s;
+  });
+
+  // User Space Daemons
+  const userDaemons = [
+    {x: 40, y: 65, w: 125, t: 'Core Collector', s: '1,000+ Integrations'},
+    {x: 180, y: 65, w: 125, t: 'Trace Agent', s: 'APM & Flame Graphs'},
+    {x: 320, y: 65, w: 125, t: 'Process Agent', s: 'Live /proc (2s)'},
+    {x: 460, y: 65, w: 125, t: 'Security Agent', s: 'NCA & CIS Rules'},
+    {x: 600, y: 65, w: 125, t: 'Cluster Agent', s: 'EKS HPA & Admission'}
+  ];
+  userDaemons.forEach(d => {
+    const g = DD.el('g', {}, svg);
+    DD.el('rect', {x: d.x, y: d.y, width: d.w, height: 80, rx: 6, fill: 'var(--bg)', stroke: 'var(--line)'}, g);
+    DD.el('text', {x: d.x + 10, y: d.y + 28, fill: 'var(--ink)', style: 'font:650 12px Inter,sans-serif'}, g).textContent = d.t;
+    DD.el('text', {x: d.x + 10, y: d.y + 50, fill: 'var(--grey)', style: 'font:400 10px JetBrains Mono,monospace'}, g).textContent = d.s;
+  });
+
+  // Egress Gateway (Right box)
+  const egBox = DD.el('rect', {x: 820, y: 50, width: 300, height: 230, rx: 12, fill: '#140A24', stroke: '#2FD3B5', 'stroke-width': 1.5}, svg);
+  DD.el('text', {x: 840, y: 85, fill: '#2FD3B5', style: 'font:600 13px JetBrains Mono,monospace;letter-spacing:.05em'}, svg).textContent = 'SINGLE OUTBOUND STREAM';
+  DD.el('text', {x: 840, y: 115, fill: '#fff', style: 'font:700 18px Inter,sans-serif'}, svg).textContent = 'TLS Port 443 Forwarder';
+  DD.el('text', {x: 840, y: 145, fill: 'rgba(255,255,255,.7)', style: 'font:400 12px Inter,sans-serif'}, svg).textContent = '• Snappy in-memory compression';
+  DD.el('text', {x: 840, y: 170, fill: 'rgba(255,255,255,.7)', style: 'font:400 12px Inter,sans-serif'}, svg).textContent = '• Zero inbound ports required';
+  DD.el('text', {x: 840, y: 195, fill: 'rgba(255,255,255,.7)', style: 'font:400 12px Inter,sans-serif'}, svg).textContent = '• Routes to In-Kingdom Vector Edge';
+  DD.el('text', {x: 840, y: 220, fill: 'rgba(255,255,255,.7)', style: 'font:400 12px Inter,sans-serif'}, svg).textContent = '• Strict proxy & VPC endpoint support';
+
+  // Connecting Paths
+  const pKernelToUser = DD.el('path', {d: 'M380,235 L380,145', class: 'flowpath'}, svg);
+  const pUserToEgress = DD.el('path', {d: 'M740,110 L820,110', class: 'flowpath'}, svg);
+  
+  DD.flow(svg, [pKernelToUser], {n: 4, r: 3, color: '#A47CE8', speed: .4, delay: .5});
+  DD.flow(svg, [pUserToEgress], {n: 5, r: 3.5, color: '#2FD3B5', speed: .45, delay: .8});
+})();
+</script>
+</body>
+</html>

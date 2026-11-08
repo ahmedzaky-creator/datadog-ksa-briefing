@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Bits AI SRE Live Investigation Walkthrough</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  body{padding:40px 56px}
+  .top{display:flex;justify-content:space-between;align-items:flex-end}
+  h1{font-size:32px;letter-spacing:-1px;margin-top:6px}
+  .app{position:absolute;left:56px;right:56px;top:122px;bottom:54px;border-radius:12px;background:#120725;border:1px solid rgba(255,255,255,.1);display:grid;grid-template-columns:1fr 1.15fr;overflow:hidden}
+  .pane{padding:18px 20px;position:relative}
+  .pane+.pane{border-left:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+  .ph{font:600 10px var(--mono);letter-spacing:.08em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between}
+  .alert{border:1px solid rgba(242,102,139,.5);background:rgba(242,102,139,.1);border-radius:8px;padding:12px 14px;color:#fff;font-size:13px}
+  .alert b{color:var(--pink);font:600 11px var(--mono);display:block;margin-bottom:4px}
+  .hyp{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+  .h{display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 12px;font-size:12.5px;color:rgba(255,255,255,.85);transition:all .3s}
+  .h i{width:13px;height:13px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:var(--lav);animation:spin 1s linear infinite}
+  .h .s{font:600 10px var(--mono);color:rgba(255,255,255,.4)}
+  .h.no{opacity:.35;text-decoration:line-through}
+  .h.no i{animation:none;border-color:rgba(255,255,255,.2)}
+  .h.yes{border-color:var(--teal);background:rgba(47,211,181,.08)}
+  .h.yes i{animation:none;border-color:var(--teal);background:var(--teal)}
+  .h.yes .s{color:var(--teal)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .ev{display:flex;flex-direction:column;gap:8px}
+  .e{border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:10px 12px;font-size:12.5px;color:rgba(255,255,255,.85)}
+  .e .k{font:600 10px var(--mono);color:var(--lav);margin-bottom:4px;display:block}
+  .e code{font:500 11px var(--mono);color:var(--amber)}
+  .rc{border:1px solid var(--teal);background:rgba(47,211,181,.08)}
+  .rc .k{color:var(--teal)}
+  .fix{border:1px solid var(--violet);background:rgba(164,124,232,.12)}
+  .btns{display:flex;gap:8px;margin-top:8px}
+  .btns span{font:600 11px var(--mono);padding:5px 10px;border-radius:5px;background:var(--violet);color:var(--ink);cursor:pointer}
+  .btns span+span{background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff}
+  .clock{font:600 11.5px var(--mono);color:var(--amber)}
+</style>
+</head>
+<body class="ink" data-foot="Interactive Walkthrough · Press → to advance steps" data-who="sre,dev,cio">
+<div class="top z">
+  <div>
+    <div class="eyebrow in1">Bits AI SRE · Autonomous Investigation Simulation</div>
+    <h1 class="in2">Parallel hypotheses to verified root cause in <span class="b">under 3 minutes.</span></h1>
+  </div>
+</div>
+
+<div class="app in3">
+  <div class="pane">
+    <div class="ph"><span>Incident Monitor</span><span class="clock" id="clk">03:14:02 UTC</span></div>
+    <div class="alert">
+      <b>P1 · MONITOR TRIGGERED</b>
+      mada-checkout p99 latency &gt; 2.5s · env:prod-riyadh · az:me-central-2a
+    </div>
+    <div class="hyp">
+      <div class="h" id="h1" data-step="1"><i></i><span>Amazon RDS database CPU exhaustion</span><span class="s">testing</span></div>
+      <div class="h" id="h2" data-step="1"><i></i><span>AWS Direct Connect hybrid link latency</span><span class="s">testing</span></div>
+      <div class="h" id="h3" data-step="1"><i></i><span>Recent deployment to checkout microservice</span><span class="s">testing</span></div>
+      <div class="h" id="h4" data-step="1"><i></i><span>Kubernetes node memory pressure in EKS</span><span class="s">testing</span></div>
+    </div>
+  </div>
+
+  <div class="pane">
+    <div class="ph"><span>Evidence Graph &amp; Synthesis</span><span>Unified Tags Context</span></div>
+    <div class="ev">
+      <div class="e" data-step="2">
+        <span class="k">STEP 1 · APM &amp; METRICS (03:14:15)</span>
+        RDS CPU is normal (14%); Direct Connect latency is 1.8ms. Latency jumped immediately at 03:10 following deployment <code>v2.4.1</code>.
+      </div>
+      <div class="e" data-step="3">
+        <span class="k">STEP 2 · LOG TELEMETRY (03:14:28)</span>
+        <code>HikariPool-1 - Connection is not available, request timed out after 30000ms (active: 5, idle: 0, waiting: 84)</code>
+      </div>
+      <div class="e rc" data-step="4">
+        <span class="k">STEP 3 · ROOT CAUSE CONFIRMED · HIGH CONFIDENCE</span>
+        Deployment <code>v2.4.1</code> committed an accidental config change: <code>maxPoolSize: 5</code> (was 50). All 5 connections saturated during evening peak traffic.
+      </div>
+      <div class="e fix" data-step="5">
+        <span class="k">STEP 4 · AUTONOMOUS REMEDIATION PROPOSED</span>
+        Roll back checkout pod to <code>v2.4.0</code> in AWS Riyadh EKS, then dispatch GitHub PR restoring pool to 50.
+        <div class="btns"><span>1-Click Rollback</span><span>Open Fix PR</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const clk = document.getElementById('clk'), t0 = 3 * 3600 + 14 * 60 + 2;
+  setInterval(() => {
+    const s = t0 + Math.floor(performance.now() / 1000);
+    clk.textContent = [s / 3600 | 0, (s / 60 | 0) % 60, s % 60].map(v => String(v).padStart(2, '0')).join(':') + ' UTC';
+  }, 500);
+
+  const set = (id, cls, txt) => {
+    const e = document.getElementById(id);
+    e.classList.remove('no', 'yes');
+    if (cls) e.classList.add(cls);
+    e.querySelector('.s').textContent = txt;
+  };
+
+  DD.onStep = i => {
+    set('h1', i >= 2 ? 'no' : '', i >= 2 ? 'ruled out (14% CPU)' : 'testing');
+    set('h2', i >= 2 ? 'no' : '', i >= 2 ? 'ruled out (1.8ms)' : 'testing');
+    set('h4', i >= 3 ? 'no' : '', i >= 3 ? 'ruled out (normal)' : 'testing');
+    set('h3', i >= 4 ? 'yes' : '', i >= 4 ? 'CONFIRMED (v2.4.1)' : 'testing');
+  };
+})();
+</script>
+</body>
+</html>

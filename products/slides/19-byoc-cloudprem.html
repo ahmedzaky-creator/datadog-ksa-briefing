@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>BYOC Logs & CloudPrem</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .arch-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  #byoc-svg{width:100%;height:230px}
+</style>
+</head>
+<body class="soft" data-foot="Domain 3 · Datadog BYOC Logs / CloudPrem Architecture" data-who="ciso,cio,exec">
+<div class="z">
+  <div class="eyebrow in1">Domain 3 · Zero-Egress Federated Search</div>
+  <h1 class="in2">BYOC Logs &amp; CloudPrem: <span class="b">Logs stay 100% in Saudi Arabia.</span></h1>
+  <p class="sub in3">Plain Language: For regulated entities like national banks and defense platforms where not a single byte of log data is permitted to leave the country, Bring Your Own Cloud (BYOC) Logs stores and indexes 100% of telemetry in your own AWS Riyadh account.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">Quickwit-Powered Federated Query</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Unified SaaS UI, Local Data Storage</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Datadog's CloudPrem architecture runs a stateless query worker inside your VPC. Ingested logs are stored in your private AWS S3 bucket in Riyadh with customer-managed KMS encryption keys.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
+        <b>Architecture Blueprint:</b><br>
+        • <b>100% In-Kingdom Storage:</b> Zero logs leave Saudi Arabia<br>
+        • <b>Federated Search:</b> UI dispatches query over TLS; results render in browser<br>
+        • <b>Customer KMS Keys:</b> Complete cryptographic sovereignty
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--char)">
+      <b>NDMO Level 3 &amp; SAMA 3.4.3:</b> The ultimate compliance architecture for sovereign banking and government agencies.
+    </div>
+  </div>
+
+  <div class="arch-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--teal)">FEDERATED IN-KINGDOM QUERY FLOW</span>
+        <span class="chip on" style="font-size:9px">Zero Data Egress</span>
+      </div>
+      <svg id="byoc-svg" viewBox="0 0 540 230"></svg>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8)">
+      <b style="color:var(--teal)">Sovereignty Guarantee:</b> Raw log records reside on local Amazon S3 in Riyadh. When an analyst clicks "Search", the query runs locally, sending only aggregated results to the UI session.
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>The Best of Both Worlds</b>
+  You get Datadog's world-class search UI, alert monitors, and correlation features—while satisfying the most conservative data residency requirements of SAMA and SDAIA.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('byoc-svg');
+
+  // Customer Account Boundary (KSA)
+  const bBox = DD.el('rect', {x: 10, y: 15, width: 340, height: 200, rx: 8, fill: 'rgba(47,211,181,.05)', stroke: '#2FD3B5', 'stroke-width': 1.5, 'stroke-dasharray': '5 4'}, svg);
+  DD.el('text', {x: 25, y: 35, fill: '#2FD3B5', style: 'font:600 10px JetBrains Mono,monospace'}, svg).textContent = 'CUSTOMER AWS RIYADH (me-central-2)';
+
+  // Local S3 Bucket
+  const s3 = DD.el('rect', {x: 30, y: 55, width: 140, height: 65, rx: 6, fill: '#1F1533', stroke: '#FFB52E'}, svg);
+  DD.el('text', {x: 100, y: 82, fill: '#FFB52E', 'text-anchor': 'middle', style: 'font:650 11px Inter,sans-serif'}, svg).textContent = 'Local AWS S3';
+  DD.el('text', {x: 100, y: 100, fill: '#fff', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, svg).textContent = '100% Logs Stored';
+
+  // Stateless Quickwit Query Node
+  const qw = DD.el('rect', {x: 30, y: 135, width: 140, height: 65, rx: 6, fill: '#632CA6'}, svg);
+  DD.el('text', {x: 100, y: 162, fill: '#fff', 'text-anchor': 'middle', style: 'font:650 11px Inter,sans-serif'}, svg).textContent = 'Query Engine';
+  DD.el('text', {x: 100, y: 180, fill: '#C9B2F2', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, svg).textContent = 'Stateless In-VPC';
+
+  // Datadog Web UI
+  const ui = DD.el('rect', {x: 390, y: 65, width: 135, height: 110, rx: 8, fill: '#170B2B', stroke: '#A47CE8', 'stroke-width': 1.5}, svg);
+  DD.el('text', {x: 457, y: 100, fill: '#A47CE8', 'text-anchor': 'middle', style: 'font:600 11px JetBrains Mono,monospace'}, svg).textContent = 'DATADOG UI';
+  DD.el('text', {x: 457, y: 124, fill: '#fff', 'text-anchor': 'middle', style: 'font:650 13px Inter,sans-serif'}, svg).textContent = 'Web Console';
+  DD.el('text', {x: 457, y: 144, fill: 'rgba(255,255,255,.6)', 'text-anchor': 'middle', style: 'font:400 9.5px JetBrains Mono,monospace'}, svg).textContent = 'Browser Render';
+
+  const p1 = DD.el('path', {d: 'M390,110 L170,165', class: 'flowpath'}, svg);
+  const p2 = DD.el('path', {d: 'M100,120 L100,135', class: 'flowpath'}, svg);
+  const p3 = DD.el('path', {d: 'M170,165 L390,130', class: 'flowpath'}, svg);
+
+  DD.flow(svg, [p1], {n: 3, r: 3, color: '#A47CE8', speed: .4, delay: .5});
+  DD.flow(svg, [p3], {n: 3, r: 3, color: '#2FD3B5', speed: .4, delay: .8});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>5 Saudi Enterprise Sector Walkthroughs</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:20px;height:410px}
+  .uc-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;border-top:4px solid var(--c,var(--purple));transition:transform .2s}
+  .uc-card:hover{transform:translateY(-2px);border-color:var(--c,var(--purple))}
+  .uc-card .sec-tag{font:600 10px var(--mono);text-transform:uppercase;color:var(--c,var(--purple))}
+  .uc-card h3{font-size:15px;font-weight:700;color:var(--ink);margin:6px 0 4px;line-height:1.25}
+  .uc-card p{font-size:11.5px;color:var(--grey);line-height:1.45}
+  .uc-card .prod-box{background:var(--bg);padding:6px 8px;border-radius:4px;font:500 10px var(--mono);color:var(--char);margin-top:8px}
+</style>
+</head>
+<body class="soft" data-foot="Sector Solutions · 5 Saudi Enterprise Walkthroughs" data-who="cio,exec,sre,ciso">
+<div class="z">
+  <div class="eyebrow in1">Proven Field Blueprints Across Key Saudi Industries</div>
+  <h1 class="in2">Five national sectors: <span class="b">Solving mission-critical challenges.</span></h1>
+  <p class="sub in3">Plain Language: Observability must solve real, high-stakes operational pain points. Here is how Datadog protects revenue and reliability across the Kingdom's most critical digital services.</p>
+</div>
+
+<div class="grid">
+  <div class="uc-card in2" style="--c:#632CA6">
+    <div>
+      <div class="sec-tag">Fintech &amp; Banking</div>
+      <h3>mada &amp; SARIE Payments</h3>
+      <p><b>Pain:</b> Intermittent 3DS payment declines during end-of-month salary rush. A 2% decline rate costs millions in merchant churn.</p>
+      <p style="margin-top:6px"><b>Datadog:</b> APM tags every transaction with card issuer bank. Discovers issuer timeout in 4 seconds.</p>
+    </div>
+    <div class="prod-box">APM · DBM · Cloud SIEM · DSM</div>
+  </div>
+
+  <div class="uc-card in3" style="--c:#5AB8F2">
+    <div>
+      <div class="sec-tag">Digital Government</div>
+      <h3>Nafath SSO &amp; Absher</h3>
+      <p><b>Pain:</b> 8:00 AM morning login surges across 530+ government agencies. A slow authentication service looks like a failure everywhere.</p>
+      <p style="margin-top:6px"><b>Datadog:</b> Synthetic bots test login every 60s; Cluster Agent auto-scales EKS pods ahead of spikes.</p>
+    </div>
+    <div class="prod-box">Synthetics · HPA · EKS Agent</div>
+  </div>
+
+  <div class="uc-card in4" style="--c:#2FD3B5">
+    <div>
+      <div class="sec-tag">Hajj &amp; Pilgrimage</div>
+      <h3>Nusuk Super-App</h3>
+      <p><b>Pain:</b> 2.5 million international pilgrims in Mina and Arafat. Sudden cell tower congestion and multilingual device crashes.</p>
+      <p style="margin-top:6px"><b>Datadog:</b> Mobile SDK tracks offline request queues; Watchdog detects permit service degradation early.</p>
+    </div>
+    <div class="prod-box">Mobile RUM · CloudFront · Watchdog</div>
+  </div>
+
+  <div class="uc-card in5" style="--c:#FFB52E">
+    <div>
+      <div class="sec-tag">National Telecom</div>
+      <h3>5G Core &amp; eSIMs</h3>
+      <p><b>Pain:</b> Sub-5ms SLA across User Plane Functions (UPF). Retaining billions of CDR logs for CST compliance on legacy SIEMs is unaffordable.</p>
+      <p style="margin-top:6px"><b>Datadog:</b> eBPF CNM inspects packet latency; Flex Logs retains CDRs on S3 at $0.05/GB.</p>
+    </div>
+    <div class="prod-box">CNM eBPF · Flex Logs · Pipelines</div>
+  </div>
+
+  <div class="uc-card in6" style="--c:#F2668B">
+    <div>
+      <div class="sec-tag">Sovereign AI</div>
+      <h3>ALLaM 34B &amp; GPUs</h3>
+      <p><b>Pain:</b> Autonomous agent loops hanging, high token costs on Bedrock, and idle H100 GPU clusters in AWS Riyadh.</p>
+      <p style="margin-top:6px"><b>Datadog:</b> LLM Observability traces tool calls; AI Guard scrubs citizen IDs; DCGM tracks GPU memory.</p>
+    </div>
+    <div class="prod-box">LLM Obs · AI Guard · GPU DCGM</div>
+  </div>
+</div>
+
+<div class="bv in6">
+  <b>National Digital Resilience</b>
+  Whether supporting pilgrims at the holy sites, securing digital banking transactions, or scaling national AI platforms, Datadog provides the reliable operational backbone for Vision 2030 digital infrastructure.
+</div>
+
+<script src="../js/dd.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Datadog Model Context Protocol (MCP) Server</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1.2fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .term-vis{background:#0D051A;border-radius:12px;border:1px solid rgba(255,255,255,.15);padding:18px;display:flex;flex-direction:column;justify-content:space-between;height:380px;font:500 11px/1.55 var(--mono)}
+  .prompt-line{color:#2FD3B5;margin-bottom:8px}
+  .tool-call{color:#A47CE8;background:rgba(164,124,232,.1);padding:4px 8px;border-radius:4px;margin:6px 0;display:inline-block}
+  .term-out{color:rgba(255,255,255,.8);margin-bottom:8px}
+  .fix-code{color:#FFB52E;background:rgba(255,255,255,.05);padding:8px;border-radius:6px;border-left:3px solid var(--amber)}
+</style>
+</head>
+<body class="soft" data-foot="Domain 6 · Datadog MCP Server for Developer IDE Toolchains" data-who="dev,cio">
+<div class="z">
+  <div class="eyebrow in1">Domain 6 · AI Developer Toolchain Integration</div>
+  <h1 class="in2">MCP server: <span class="b">Observability inside your AI coding agent.</span></h1>
+  <p class="sub in3">Plain Language: Modern software developers write code inside AI agents like Claude Code and Cursor. Datadog's Model Context Protocol (MCP) server gives those AI coding assistants direct eyes into live production metrics and traces in AWS Riyadh.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">GA March 2026 · Anthropic &amp; Cursor Standard</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Connecting Telemetry to the IDE</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Developers no longer copy-paste stack traces between a web browser and their terminal. Through the Model Context Protocol, the AI agent queries Datadog APIs directly to diagnose errors, inspect traces, and write verified regression tests.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
+        <b>Adoption Momentum:</b><br>
+        • MCP tool calls grew <b>4× quarter-over-quarter</b> in Q1 &amp; Q2 FY26<br>
+        • Supports Claude Code, Cursor, GitHub Copilot, Codex
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--char)">
+      <b>Velocity Impact:</b> Fix bug -> verify in Datadog -> run unit test -> commit Git PR in under 60 seconds without leaving the terminal.
+    </div>
+  </div>
+
+  <div class="term-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:8px;margin-bottom:10px">
+        <span style="color:var(--lav)">CLAUDE CODE + DATADOG MCP SERVER</span>
+        <span style="color:rgba(255,255,255,.4)">terminal · zsh</span>
+      </div>
+
+      <div class="prompt-line">&gt; claude "Why did mada payment errors spike after the 2 PM deploy in AWS Riyadh?"</div>
+      
+      <div class="tool-call">&#9656; datadog:query_metrics(service="mada-gw", metric="trace.errors", env="prod-riyadh")</div>
+      <div class="tool-call">&#9656; datadog:get_active_incident(incident_id="INC-412")</div>
+
+      <div class="term-out">
+        Datadog reports error rate spiked from 0.01% to 14.8% at 14:02. Stack traces show <code>HikariPoolTimeoutException</code> in <code>PaymentController.java:84</code>.
+      </div>
+
+      <div class="fix-code">
+        // Claude proposes the exact fix:<br>
+        - config.setMaximumPoolSize(5);<br>
+        + config.setMaximumPoolSize(50); // Restored production capacity
+      </div>
+    </div>
+
+    <div style="color:var(--teal);font-size:11px;border-top:1px solid rgba(255,255,255,.1);padding-top:8px;display:flex;justify-content:space-between;align-items:center">
+      <span id="mcpStatus">✔ Fix applied and regression test generated. Ready to commit.</span>
+      <button id="btnRunMcp" style="background:var(--lav);border:none;color:var(--ink);font:600 10px var(--mono);padding:4px 8px;border-radius:4px;cursor:pointer">▶ Replay MCP Query</button>
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Developer Experience (DevEx)</b>
+  Engineers love Datadog because it meets them in their existing workflow. The MCP server turns observability into an active coding collaborator rather than an emergency alarm bell.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnRunMcp');
+  const stat = document.getElementById('mcpStatus');
+  const termVis = document.querySelector('.term-vis');
+
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    stat.textContent = 'Agent querying Datadog MCP server...';
+    stat.style.color = 'var(--amber)';
+    termVis.style.opacity = '0.6';
+
+    setTimeout(() => {
+      stat.textContent = 'Calling datadog:query_metrics and incident APIs...';
+      setTimeout(() => {
+        termVis.style.opacity = '1';
+        stat.textContent = '✔ Telemetry analyzed & Git diff applied in 1.2s!';
+        stat.style.color = 'var(--teal)';
+        btn.disabled = false;
+      }, 500);
+    }, 400);
+  });
+})();
+</script>
+</body>
+</html>

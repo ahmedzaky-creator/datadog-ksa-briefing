@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Observability Pipelines (Vector Edge)</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1.05fr 1fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .vec-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .vrl-snippet{background:#0D051A;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:12px;font:500 11px/1.5 var(--mono);color:#E2DCEC;margin-top:10px}
+  .kw{color:#F2668B}
+  .str{color:#2FD3B5}
+  .cm{color:#6E6784;font-style:italic}
+</style>
+</head>
+<body class="soft" data-foot="Domain 3 · Observability Pipelines (Vector) In-Kingdom Edge Gateway" data-who="ciso,sre,cio">
+<div class="z">
+  <div class="eyebrow in1">Domain 3 · High-Performance Edge Stream Processing</div>
+  <h1 class="in2">Observability Pipelines: <span class="b">The in-Kingdom sovereign filter.</span></h1>
+  <p class="sub in3">Plain Language: Think of Observability Pipelines as a high-speed customs inspection checkpoint inside your own private network. Written in Rust (Vector), it scrubs personal data at memory speed before any telemetry ever leaves your servers.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">In-VPC Rust Stream Processor</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Zero-Egress Data Scrubbing</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Deployed as a stateless cluster directly in your AWS Riyadh VPC or on-prem datacenters. Processes over 250 MB/s per CPU core, routing data simultaneously to local S3 buckets, SIEMs, and Datadog SaaS.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
+        <b>Billed Meter:</b> <b>$0.10</b> / GB processed at the edge<br>
+        • Replaces heavy Logstash &amp; Fluentd clusters<br>
+        • Redacts PII, credit card PANs, and national identifiers
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--char)">
+      <b>SDAIA PDPL Enforcement:</b> Guarantees that citizen personal data is sanitized before telemetry touches any cloud service.
+    </div>
+  </div>
+
+  <div class="vec-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--teal)">VECTOR DUAL-FORK PIPELINE · IN-VPC EDGE</span>
+        <span class="chip on" style="font-size:9px">>250 MB/s/Core</span>
+      </div>
+
+      <svg id="vec-flow-svg" viewBox="0 0 520 120" style="width:100%;height:120px;margin-top:6px"></svg>
+
+      <div class="vrl-snippet" style="margin-top:6px;padding:8px 12px;font-size:10px;line-height:1.4">
+        <span class="cm"># In-Memory Rust Scrubbing Engine</span><br>
+        .national_id = <span class="kw">replace</span>(.national_id, <span class="str">r'^[1][0-9]{9}$'</span>, <span class="str">"[REDACTED_SA_NID]"</span>)<br>
+        .iqama = <span class="kw">replace</span>(.iqama, <span class="str">r'^[2][0-9]{9}$'</span>, <span class="str">"[REDACTED_IQAMA]"</span>)<br>
+        <span class="kw">emit_local_s3_riyadh</span>(.) <span class="cm"># 100% Raw Archive</span> &nbsp;|&nbsp; <span class="kw">emit_datadog_saas</span>(.) <span class="cm"># Clean Alerts</span>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:8px;font-size:11px;color:rgba(255,255,255,.8)">
+      <b style="color:var(--teal)">Zero-Egress Security:</b> Citizen IDs are permanently scrubbed inside the VPC before TLS egress.
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>CISO Defensibility</b>
+  During a compliance audit, the CISO can show that sensitive citizen identifiers are stripped in-memory inside the VPC boundary, rendering telemetry 100% compliant with Saudi PDPL transfer restrictions.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const svg = document.getElementById('vec-flow-svg');
+
+  // Intake Node
+  DD.el('rect', {x: 10, y: 35, width: 100, height: 50, rx: 6, fill: '#632CA6'}, svg);
+  DD.el('text', {x: 60, y: 58, fill: '#fff', 'text-anchor': 'middle', style: 'font:600 10.5px Inter,sans-serif'}, svg).textContent = 'VPC Intake';
+  DD.el('text', {x: 60, y: 72, fill: 'rgba(255,255,255,.7)', 'text-anchor': 'middle', style: 'font:400 8.5px JetBrains Mono,monospace'}, svg).textContent = 'Raw Telemetry';
+
+  // Vector Engine Hub
+  DD.el('rect', {x: 160, y: 30, width: 130, height: 60, rx: 6, fill: '#2A1250', stroke: '#2FD3B5', 'stroke-width': 1.5}, svg);
+  DD.el('text', {x: 225, y: 55, fill: '#2FD3B5', 'text-anchor': 'middle', style: 'font:650 11px Inter,sans-serif'}, svg).textContent = 'Vector Edge Hub';
+  DD.el('text', {x: 225, y: 72, fill: '#fff', 'text-anchor': 'middle', style: 'font:500 8.5px JetBrains Mono,monospace'}, svg).textContent = 'VRL In-Memory Scrub';
+
+  // Fork 1: S3 Local Bucket
+  DD.el('rect', {x: 350, y: 10, width: 160, height: 42, rx: 6, fill: '#1F1533', stroke: '#FFB52E'}, svg);
+  DD.el('text', {x: 430, y: 28, fill: '#FFB52E', 'text-anchor': 'middle', style: 'font:600 10px Inter,sans-serif'}, svg).textContent = 'AWS Riyadh S3 (Raw)';
+  DD.el('text', {x: 430, y: 42, fill: 'rgba(255,255,255,.6)', 'text-anchor': 'middle', style: 'font:400 8px JetBrains Mono,monospace'}, svg).textContent = 'SAMA 18-Mo Retention';
+
+  // Fork 2: Datadog SaaS
+  DD.el('rect', {x: 350, y: 68, width: 160, height: 42, rx: 6, fill: '#1F1533', stroke: '#2FD3B5'}, svg);
+  DD.el('text', {x: 430, y: 86, fill: '#2FD3B5', 'text-anchor': 'middle', style: 'font:600 10px Inter,sans-serif'}, svg).textContent = 'Datadog SaaS (Scrubbed)';
+  DD.el('text', {x: 430, y: 100, fill: 'rgba(255,255,255,.6)', 'text-anchor': 'middle', style: 'font:400 8px JetBrains Mono,monospace'}, svg).textContent = 'Zero PII Egress';
+
+  const p1 = DD.el('path', {d: 'M110,60 L160,60', class: 'flowpath'}, svg);
+  const p2 = DD.el('path', {d: 'M290,50 C320,50 320,31 350,31', class: 'flowpath'}, svg);
+  const p3 = DD.el('path', {d: 'M290,70 C320,70 320,89 350,89', class: 'flowpath'}, svg);
+
+  DD.flow(svg, [p1], {n: 3, r: 3, color: '#A47CE8', speed: .5, delay: .3});
+  DD.flow(svg, [p2], {n: 3, r: 2.8, color: '#FFB52E', speed: .4, delay: .6});
+  DD.flow(svg, [p3], {n: 3, r: 2.8, color: '#2FD3B5', speed: .4, delay: .6});
+})();
+</script>
+</body>
+</html>

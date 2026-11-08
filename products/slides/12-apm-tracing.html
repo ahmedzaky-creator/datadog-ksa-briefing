@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Domain 2: APM & Distributed Tracing</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .trace-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .span-bar{display:flex;align-items:center;margin-bottom:8px}
+  .span-lbl{width:140px;font:500 11px var(--mono);color:rgba(255,255,255,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .span-track{flex:1;height:22px;background:rgba(255,255,255,.05);border-radius:4px;position:relative;overflow:hidden}
+  .span-fill{position:absolute;top:0;bottom:0;border-radius:4px;display:flex;align-items:center;padding-left:8px;font:600 10px var(--mono);color:#fff;cursor:pointer;transition:transform .2s}
+  .span-fill:hover{transform:scaleY(1.15);box-shadow:0 0 10px rgba(255,255,255,.3)}
+  .span-fill.bottleneck{animation:pulse 1.4s infinite;border:1px solid #FF8CA8}
+  .pool-box{background:var(--purple-ll);border:1px solid var(--purple-l);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--char);margin-top:10px}
+</style>
+</head>
+<body class="soft" data-foot="Domain 2 · APM & Distributed Tracing (6 Offerings)" data-who="dev,sre,cio">
+<div class="z">
+  <div class="eyebrow in1">Domain 2 · Application Performance &amp; Tracing</div>
+  <h1 class="in2">APM &amp; Distributed Tracing: <span class="b">GPS tracking for every transaction.</span></h1>
+  <p class="sub in3">Plain Language: When a Saudi banking customer taps "Transfer" on their mobile app, that single request passes through 10 microservices. APM places a GPS tracker on that transaction, revealing the exact millisecond where it slowed down.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">Zero-Code Instrumentation</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Single-Step APM (SSI)</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Developers do not need to rewrite Dockerfiles or import SDKs. Single-Step APM injects bytecode into running Java, .NET, Python, and Node.js containers automatically at the Kubernetes admission level.
+      </p>
+      <div class="pool-box">
+        <b>Billed Meter &amp; Generous Pooled Allotment:</b><br>
+        • <b>$31.00</b> / APM host / month (annual commit)<br>
+        • <b>150 GB</b> trace ingestion included per host pooled<br>
+        • <b>1,000,000</b> indexed spans included per host pooled<br>
+        • <b>Continuous Profiler included free ($0 add-on)</b>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--char)">
+      <b>Pooled Protection:</b> 100 APM hosts generate 15,000 GB and 100M indexed spans pooled across the entire organization—virtually eliminating overages.
+    </div>
+  </div>
+
+  <div class="trace-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <span style="font:600 11px var(--mono);color:var(--lav)">DISTRIBUTED TRACE · trace_id: 8b7f21a</span>
+        <span class="chip on" style="font-size:9px">Total Duration: 412ms</span>
+      </div>
+
+      <div class="span-bar">
+        <span class="span-lbl">mada-api-gateway</span>
+        <div class="span-track"><div class="span-fill" style="left:0%;width:100%;background:#632CA6" title="Click to inspect">412ms (GET /v1/transfer)</div></div>
+      </div>
+      <div class="span-bar">
+        <span class="span-lbl">auth-service-jwt</span>
+        <div class="span-track"><div class="span-fill" style="left:5%;width:15%;background:#5AB8F2" title="Click to inspect">18ms (verify)</div></div>
+      </div>
+      <div class="span-bar">
+        <span class="span-lbl">ledger-balance-svc</span>
+        <div class="span-track"><div class="span-fill" style="left:22%;width:28%;background:#2FD3B5" title="Click to inspect">45ms (check_funds)</div></div>
+      </div>
+      <div class="span-bar">
+        <span class="span-lbl">sarie-payment-hub</span>
+        <div class="span-track"><div class="span-fill bottleneck" style="left:52%;width:44%;background:#F2668B" title="Bottleneck isolated!">310ms (SAMA IPN Hop) ⚠️</div></div>
+      </div>
+      <div class="span-bar">
+        <span class="span-lbl">postgres-rds-db</span>
+        <div class="span-track"><div class="span-fill" style="left:58%;width:12%;background:#FFB52E" title="Click to inspect">22ms (commit_tx)</div></div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8)" id="spanDetail">
+      <b style="color:var(--pink)">Immediate Root Cause Isolation:</b> 75% of the total request time was spent in the external central payment hub (310ms), not inside the bank's AWS Riyadh cluster.
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Why not AWS X-Ray?</b>
+  X-Ray is functional for simple Lambda calls, but lacks automatic bytecode flame graphs for legacy enterprise workloads, cannot map message queues, and doesn't baseline on-prem transactions.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const detail = document.getElementById('spanDetail');
+  document.querySelectorAll('.span-fill').forEach(el => {
+    el.addEventListener('click', () => {
+      const txt = el.textContent;
+      detail.innerHTML = `<b style="color:var(--teal)">Inspecting Span:</b> <code>${txt}</code> — env:prod-riyadh, service:${el.parentElement.parentElement.querySelector('.span-lbl').textContent}. Execution verified.`;
+    });
+  });
+})();
+</script>
+</body>
+</html>

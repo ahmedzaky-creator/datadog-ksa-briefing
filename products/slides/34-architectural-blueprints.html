@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>The 4 Saudi Architectural Blueprints</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+  .bp-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;height:380px;border-top:4px solid var(--c,var(--purple))}
+  .bp-card .rec{font:600 9.5px var(--mono);text-transform:uppercase;color:var(--teal-d);background:#E6FBF6;padding:3px 6px;border-radius:4px;align-self:flex-start}
+  .bp-card h3{font-size:16.5px;font-weight:700;color:var(--ink);margin:8px 0 4px;line-height:1.25}
+  .bp-card .tier{font:600 11px var(--mono);color:var(--c,var(--purple));margin-bottom:8px}
+  .bp-card p{font-size:12px;color:var(--grey);line-height:1.45}
+  .bp-card .mech{background:var(--bg);padding:8px 10px;border-radius:6px;font:500 10.5px var(--mono);color:var(--char);margin-top:10px}
+</style>
+</head>
+<body class="soft" data-foot="Architecture Selection Guide · 4 Saudi Blueprints" data-who="cio,ciso,sre,exec">
+<div class="z">
+  <div class="eyebrow in1">Enterprise Architecture Selection Guide</div>
+  <h1 class="in2">The four KSA blueprints: <span class="b">Matching architecture to regulatory tier.</span></h1>
+  <p class="sub in3">Plain Language: Different organizations in the Kingdom have different regulatory classifications. Datadog provides 4 distinct deployment blueprints so you can match the architecture to your exact compliance mandate.</p>
+</div>
+
+<div class="grid">
+  <div class="bp-card in2" style="--c:var(--teal)">
+    <div>
+      <div class="rec">Recommended Enterprise</div>
+      <h3>Blueprint 1: Sovereign Hybrid Edge</h3>
+      <div class="tier">NDMO Level 3 · SAMA CSF · NCA ECC</div>
+      <p>Vector worker deployed in customer VPC. 100% raw logs stored on local AWS S3 in Riyadh for 18-month retention. VRL scrubs citizen PII before egressing sanitized metrics/traces to SaaS.</p>
+    </div>
+    <div class="mech">
+      • Local S3 18-mo retention<br>
+      • In-memory VRL PII scrub<br>
+      • Full APM &amp; Bits AI active
+    </div>
+  </div>
+
+  <div class="bp-card in3" style="--c:var(--purple)">
+    <div>
+      <div class="rec" style="background:var(--purple-ll);color:var(--purple)">Zero Log Egress</div>
+      <h3>Blueprint 2: BYOC Logs / CloudPrem</h3>
+      <div class="tier">Tier-1 Banking &amp; Government</div>
+      <p>All log indexing and storage remain 100% inside customer AWS Riyadh VPC powered by Quickwit. Federated query queries local S3 from SaaS UI without moving data.</p>
+    </div>
+    <div class="mech">
+      • Zero raw logs leave KSA<br>
+      • Customer KMS encryption<br>
+      • Federated TLS search UI
+    </div>
+  </div>
+
+  <div class="bp-card in4" style="--c:#A47CE8">
+    <div>
+      <div class="rec" style="background:#ECE8F3;color:#4B1F82">Future State</div>
+      <h3>Blueprint 3: Dedicated KSA Site</h3>
+      <div class="tier">Sovereign Cloud Strategy</div>
+      <p>Dedicated multi-tenant Datadog control plane hosted entirely within AWS Riyadh data centers (me1.datadoghq.com). All telemetry stored and analyzed in-Kingdom.</p>
+    </div>
+    <div class="mech">
+      • 100% in-country hosting<br>
+      • Husky &amp; Monocle in Riyadh<br>
+      • Native CST Category C
+    </div>
+  </div>
+
+  <div class="bp-card in5" style="--c:var(--amber)">
+    <div>
+      <div class="rec" style="background:#FFF7E6;color:#8A5A00">Digital Native</div>
+      <h3>Blueprint 4: Pure SaaS + Scanner</h3>
+      <div class="tier">NDMO Level 1/2 · Startups &amp; Retail</div>
+      <p>Direct agent telemetry egress protected by dual-layer redaction: client-side RUM DOM masking on consumer devices and Sensitive Data Scanner at intake.</p>
+    </div>
+    <div class="mech">
+      • Client-side DOM masking<br>
+      • Zero infrastructure to manage<br>
+      • Fastest time to value
+    </div>
+  </div>
+</div>
+
+<div class="bv in6">
+  <b>Architectural Decision Rule</b>
+  For banks and national platforms launching in AWS Riyadh: <b>Deploy Blueprint 1</b> today. It provides 100% compliance with local S3 retention, instant zero-PII scrubbing, and full access to Bits AI autonomous features.
+</div>
+
+<script src="../js/dd.js"></script>
+</body>
+</html>

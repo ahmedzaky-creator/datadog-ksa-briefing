@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Product Catalog Master Matrix</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .matrix-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:12px;margin-top:18px;height:430px}
+  .dom-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;border-left:4px solid var(--c,var(--purple));transition:transform .2s}
+  .dom-card:hover{transform:translateY(-2px);border-color:var(--c,var(--purple))}
+  .dom-head{display:flex;justify-content:space-between;align-items:center}
+  .dom-head h4{font-size:14px;font-weight:700;color:var(--ink)}
+  .dom-head span{font:600 10px var(--mono);color:var(--grey);background:var(--bg);padding:2px 6px;border-radius:4px}
+  .dom-items{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  .dom-pill{font:500 10px var(--mono);color:var(--char);background:var(--bg);padding:2px 6px;border-radius:3px}
+  .dom-meter{font:500 10px var(--mono);color:var(--c,var(--purple));margin-top:4px}
+  .stat-badge{position:absolute;right:64px;top:40px;display:flex;gap:12px}
+  .stat-pill{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 14px;text-align:center}
+  .stat-pill .num{font:700 20px/1 var(--mono);color:var(--purple)}
+  .stat-pill .lbl{font:500 9.5px var(--mono);color:var(--grey);text-transform:uppercase;margin-top:2px}
+</style>
+</head>
+<body class="soft" data-foot="Platform Catalog · 9 Operational Domains · 30+ Core Offerings" data-who="cio,exec,sre,ciso">
+<div class="z">
+  <div class="eyebrow in1">The Complete 2026 Platform Spectrum</div>
+  <h1 class="in2">Nine operational domains. <span class="b">One single pane of glass.</span></h1>
+  <p class="sub in3">Every product shares the same agent, the same unified tags, and the same UI. Adding a product is a configuration toggle, never a re-instrumentation project.</p>
+</div>
+
+<div class="stat-badge in2">
+  <div class="stat-pill"><div class="num"><span data-count="30" data-post="+"></span></div><div class="lbl">Core Products</div></div>
+  <div class="stat-pill"><div class="num"><span data-count="56"></span></div><div class="lbl">Priced Offerings</div></div>
+  <div class="stat-pill"><div class="num"><span data-count="1000" data-post="+"></span></div><div class="lbl">Integrations</div></div>
+</div>
+
+<div class="matrix-grid">
+  <div class="dom-card in2" style="--c:#632CA6">
+    <div class="dom-head"><h4>1. Infra &amp; Systems</h4><span>13 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">Infra Pro/Ent</span><span class="dom-pill">Containers</span><span class="dom-pill">CNM</span><span class="dom-pill">NDM</span><span class="dom-pill">NetFlow</span><span class="dom-pill">GPU Mon.</span>
+    </div>
+    <div class="dom-meter">Billed per Host / Container / GPU / Flow</div>
+  </div>
+
+  <div class="dom-card in3" style="--c:#5AB8F2">
+    <div class="dom-head"><h4>2. APM &amp; Code</h4><span>6 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">APM Tracing</span><span class="dom-pill">Single-Step</span><span class="dom-pill">Continuous Profiler</span><span class="dom-pill">USM</span><span class="dom-pill">DBM (RDS)</span><span class="dom-pill">Data Streams</span>
+    </div>
+    <div class="dom-meter">Billed per APM Host (Pooled Spans &amp; Ingest)</div>
+  </div>
+
+  <div class="dom-card in4" style="--c:#2FD3B5">
+    <div class="dom-head"><h4>3. Logs &amp; Pipelines</h4><span>8 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">Log Ingest</span><span class="dom-pill">15D/30D Index</span><span class="dom-pill">Flex Logs (S3)</span><span class="dom-pill">Vector Pipelines</span><span class="dom-pill">BYOC</span><span class="dom-pill">Scanner</span>
+    </div>
+    <div class="dom-meter">Billed per GB Ingested / Indexed / Retained</div>
+  </div>
+
+  <div class="dom-card in3" style="--c:#FFB52E">
+    <div class="dom-head"><h4>4. Digital Experience</h4><span>7 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">RUM Measure</span><span class="dom-pill">RUM Investigate</span><span class="dom-pill">Session Replay</span><span class="dom-pill">Synthetics API</span><span class="dom-pill">Synthetics Browser</span>
+    </div>
+    <div class="dom-meter">Billed per 1k Sessions / Tests / Replays</div>
+  </div>
+
+  <div class="dom-card in4" style="--c:#F2668B">
+    <div class="dom-head"><h4>5. Cloud Security</h4><span>10 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">Cloud SIEM</span><span class="dom-pill">CSPM Posture</span><span class="dom-pill">CWPP Threats</span><span class="dom-pill">AAP / RASP</span><span class="dom-pill">Code Security</span><span class="dom-pill">CIEM</span>
+    </div>
+    <div class="dom-meter">Billed per Host / Resource / GB Analyzed</div>
+  </div>
+
+  <div class="dom-card in5" style="--c:#A47CE8">
+    <div class="dom-head"><h4>6. Autonomous AI (Bits)</h4><span>4 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">Bits AI SRE</span><span class="dom-pill">Bits Code</span><span class="dom-pill">Bits Remediation</span><span class="dom-pill">Bits Security</span><span class="dom-pill">MCP Server</span>
+    </div>
+    <div class="dom-meter">Billed per AI Credits Pack ($500/500 units)</div>
+  </div>
+
+  <div class="dom-card in4" style="--c:#4B1F82">
+    <div class="dom-head"><h4>7. Sovereign AI &amp; LLM</h4><span>3 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">LLM Observability</span><span class="dom-pill">AI Guard (Arabic)</span><span class="dom-pill">Agent Chains</span><span class="dom-pill">Bedrock / ALLaM</span>
+    </div>
+    <div class="dom-meter">Billed per Scanned Requests / Spans</div>
+  </div>
+
+  <div class="dom-card in5" style="--c:#1F6FA8">
+    <div class="dom-head"><h4>8. Software Delivery</h4><span>4 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">CI Visibility</span><span class="dom-pill">Test Optimization</span><span class="dom-pill">Quality Gates</span><span class="dom-pill">Developer Portal</span>
+    </div>
+    <div class="dom-meter">Billed per Active Committer / Month</div>
+  </div>
+
+  <div class="dom-card in6" style="--c:#007A3D">
+    <div class="dom-head"><h4>9. Service Mgmt &amp; Cost</h4><span>5 offerings</span></div>
+    <div class="dom-items">
+      <span class="dom-pill">Datadog On-Call</span><span class="dom-pill">Incident Mgmt</span><span class="dom-pill">Workflow Auto</span><span class="dom-pill">CCM FinOps</span><span class="dom-pill">EDP Drawdown</span>
+    </div>
+    <div class="dom-meter">Billed per Seat / Execution / $1k Cloud Spend</div>
+  </div>
+</div>
+<script src="../js/dd.js"></script>
+</body>
+</html>

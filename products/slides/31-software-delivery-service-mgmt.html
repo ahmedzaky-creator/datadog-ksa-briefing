@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Domains 8 & 9: Software Delivery & Incident Management</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px}
+  .svc-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;height:380px;border-top:4px solid var(--c,var(--purple))}
+  .svc-card h3{font-size:17px;font-weight:700;color:var(--ink);margin:4px 0}
+  .svc-card .price{font:700 19px/1 var(--mono);color:var(--c,var(--purple));margin:8px 0}
+  .svc-card .price span{font-size:11px;color:var(--grey);font-weight:400}
+  .svc-card p{font-size:12px;color:var(--grey);line-height:1.45}
+  .pill-box{background:var(--bg);padding:8px 10px;border-radius:6px;font:500 10.5px var(--mono);color:var(--char);margin-top:10px}
+</style>
+</head>
+<body class="soft" data-foot="Domains 8 & 9 · CI/CD Visibility & Modern Incident Management" data-who="dev,sre,cio">
+<div class="z">
+  <div class="eyebrow in1">Domains 8 &amp; 9 · Build, Deploy &amp; Incident Automation</div>
+  <h1 class="in2">CI/CD &amp; incident management: <span class="b">From commit to resolution.</span></h1>
+  <p class="sub in3">Plain Language: Observability isn't just watching production—it's preventing bad code from being deployed in CI/CD, and waking up the exact right engineer when an alert fires without paying for separate tools like PagerDuty.</p>
+</div>
+
+<div class="grid">
+  <div class="svc-card in2" style="--c:#1F6FA8">
+    <div>
+      <div class="tag">CI/CD Visibility</div>
+      <h3>CI Pipeline Visibility</h3>
+      <div class="price">$8.00 <span>/ committer / month</span></div>
+      <p>Monitors GitHub Actions, GitLab, and Jenkins pipelines. Pinpoints build bottlenecks, detects flaky tests, and tracks DORA metrics.</p>
+      <div class="pill-box">
+        • Quality Gates block bad deploys<br>
+        • Flaky test quarantine<br>
+        • Correlates builds with releases
+      </div>
+    </div>
+  </div>
+
+  <div class="svc-card in3" style="--c:#632CA6">
+    <div>
+      <div class="tag">PagerDuty Alternative</div>
+      <h3>Datadog On-Call</h3>
+      <div class="price">$20.00 <span>/ active seat / month</span></div>
+      <p>Modern paging and on-call schedule management. Directly triggers SMS, automated phone calls, and Slack/Teams alerts inside Saudi Arabia.</p>
+      <div class="pill-box">
+        • Multi-tier escalation policies<br>
+        • Live on-call shift overrides<br>
+        • Fully integrated alert routing
+      </div>
+    </div>
+  </div>
+
+  <div class="svc-card in4" style="--c:#B0284F">
+    <div>
+      <div class="tag">Automated War Rooms</div>
+      <h3>Incident Management</h3>
+      <div class="price">$30.00 <span>/ active seat / month</span></div>
+      <p>Spin up dedicated Slack/Teams war rooms, maintain unified real-time event timelines, and generate post-mortems with one click.</p>
+      <div class="pill-box">
+        • $40 bundle with On-Call<br>
+        • Automated incident timeline<br>
+        • SAMA audit reporting output
+      </div>
+    </div>
+  </div>
+
+  <div class="svc-card in5" style="--c:#007A3D">
+    <div>
+      <div class="tag">Auto-Remediation</div>
+      <h3>Workflow Automation</h3>
+      <div class="price">$10.00 <span>/ 100 runs / month</span></div>
+      <p>Low-code orchestration engine with 1,000+ connectors. Automatically restart failed Kubernetes pods, expand volumes, or isolate nodes.</p>
+      <div class="pill-box">
+        • Closed-loop auto-remediation<br>
+        • AWS Riyadh API integration<br>
+        • Human-in-the-loop approvals
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <button id="btnTestEsc" style="width:100%;background:var(--purple);border:none;color:#fff;font:600 10px var(--mono);padding:6px;border-radius:4px;cursor:pointer">⚡ Test P1 Alert Escalation</button>
+    </div>
+  </div>
+</div>
+
+<div class="bv in6" id="bvOnCall">
+  <b>Tool Consolidation Advantage</b>
+  By adopting Datadog On-Call and Incident Management, enterprises eliminate separate PagerDuty and Opsgenie contracts—saving $40 to $70 per user every month.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('btnTestEsc');
+  const bv = document.getElementById('bvOnCall');
+  let active = false;
+
+  btn.addEventListener('click', () => {
+    active = !active;
+    if(active){
+      bv.innerHTML = '<b style="color:var(--teal)">✓ Escalation Succeeded:</b> P1 alert dispatched via SMS to On-Call engineer (+966-50-xxx). Acknowledged in 14s. War room created in MS Teams. Auto-remediation restarted pod <code>checkout-worker</code>.';
+      bv.style.borderColor = 'var(--teal)';
+      bv.style.background = 'rgba(47,211,181,.1)';
+      btn.textContent = '↺ Reset Escalation';
+      btn.style.background = 'rgba(0,0,0,.3)';
+    } else {
+      bv.innerHTML = '<b>Tool Consolidation Advantage</b> By adopting Datadog On-Call and Incident Management, enterprises eliminate separate PagerDuty and Opsgenie contracts—saving $40 to $70 per user every month.';
+      bv.style.borderColor = '';
+      bv.style.background = '';
+      btn.textContent = '⚡ Test P1 Alert Escalation';
+      btn.style.background = 'var(--purple)';
+    }
+  });
+})();
+</script>
+</body>
+</html>

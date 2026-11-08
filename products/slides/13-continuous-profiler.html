@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Continuous Profiler</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:20px}
+  .card-l{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .flame-vis{background:#120725;border-radius:12px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;height:380px}
+  .flame-stack{display:flex;flex-direction:column;gap:5px;margin-top:14px}
+  .flame-row{display:flex;gap:4px;height:24px}
+  .flame-box{border-radius:3px;display:flex;align-items:center;justify-content:center;font:600 10px var(--mono);color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px;transition:all .4s}
+  .flame-box.hot{animation:pulse 1.2s infinite;box-shadow:0 0 12px rgba(224,36,36,.8)}
+  .fix-btn{background:var(--teal);color:#120725;border:none;border-radius:4px;padding:4px 8px;font:700 10px var(--mono);cursor:pointer}
+  .fix-btn:hover{background:#7BEBD6}
+</style>
+</head>
+<body class="soft" data-foot="Domain 2 · Code-Level Continuous Profiler (<1% Overhead)" data-who="dev,sre">
+<div class="z">
+  <div class="eyebrow in1">Domain 2 · Line-of-Code Production Optimization</div>
+  <h1 class="in2">Continuous Profiler: <span class="b">Flight data recorder for your CPU.</span></h1>
+  <p class="sub in3">Plain Language: Traditional APM tells you that a service took 800ms. Continuous Profiler acts like a flight data recorder, pinpointing the exact line of Java or Python code that consumed 70% of the CPU.</p>
+</div>
+
+<div class="cols">
+  <div class="card-l in3">
+    <div>
+      <div class="tag">Always-On in Production</div>
+      <h3 style="font-size:20px;font-weight:700;margin-top:4px">Low-Overhead Flame Graphs</h3>
+      <p style="font-size:13px;color:var(--grey);line-height:1.45;margin-top:6px">
+        Runs continuously in production environments with strictly less than 1% CPU overhead. Samples stack traces, memory allocations, thread locks, and garbage collection pauses across Java, Go, Python, Node, and .NET.
+      </p>
+      <div style="background:var(--purple-ll);padding:10px 14px;border-radius:8px;font:500 11.5px var(--mono);color:var(--purple);margin-top:12px">
+        <b>Commercial Advantage:</b> Bundled at <b>$0 additional cost</b> within the $31/mo APM package.
+      </div>
+      <ul style="list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:12.5px;color:var(--char);display:flex;align-items:center;gap:6px">✓ Catches regex backtracking before CPU locks up</li>
+        <li style="font-size:12.5px;color:var(--char);display:flex;align-items:center;gap:6px">✓ Surfaces Java JVM Garbage Collection stalls</li>
+        <li style="font-size:12.5px;color:var(--char);display:flex;align-items:center;gap:6px">✓ Directly reduces required AWS EC2 instance sizing</li>
+      </ul>
+    </div>
+    <div style="font-size:11.5px;color:var(--grey)">
+      <b>FinOps Impact:</b> Fix code bottlenecks before scaling out your AWS Riyadh compute footprint.
+    </div>
+  </div>
+
+  <div class="flame-vis in4">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:600 11px var(--mono);color:var(--lav)">CPU PROFILER FLAME GRAPH · orders-service</span>
+        <button class="fix-btn" id="profFixBtn">Apply Static Regex Fix</button>
+      </div>
+
+      <div class="flame-stack">
+        <div class="flame-row">
+          <div class="flame-box" style="width:100%;background:#4A1F82">main() [100% CPU]</div>
+        </div>
+        <div class="flame-row">
+          <div class="flame-box" id="bInit" style="width:30%;background:#632CA6">init_env()</div>
+          <div class="flame-box" id="bProc" style="width:70%;background:#A47CE8">process_orders_batch() [70%]</div>
+        </div>
+        <div class="flame-row">
+          <div class="flame-box" id="bSpace1" style="width:30%;opacity:0"></div>
+          <div class="flame-box" style="width:20%;background:#2FD3B5">validate_json()</div>
+          <div class="flame-box" id="bRegex" style="width:50%;background:#F2668B">regex.match(SA_ID) [50% HOT]</div>
+        </div>
+        <div class="flame-row" id="hotRow">
+          <div class="flame-box" style="width:50%;opacity:0"></div>
+          <div class="flame-box hot" id="bHot" style="width:50%;background:#E02424">Pattern.compile() : L142 (Hot Loop!)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:10px;font-size:11.5px;color:rgba(255,255,255,.8)" id="profDesc">
+      <b style="color:var(--pink)">Developer Finding:</b> <code>Pattern.compile()</code> was called inside a <code>for</code> loop instead of being statically compiled once. One-line code fix reduced service CPU load by 48%.
+    </div>
+  </div>
+</div>
+
+<div class="bv in5">
+  <b>Business Value</b>
+  Cloud costs jump when teams respond to high CPU by spinning up more AWS EC2 instances. Continuous Profiler lets you fix the offending line of code instead—saving tens of thousands in compute bills.
+</div>
+
+<script src="../js/dd.js"></script>
+<script>
+(function(){
+  const btn = document.getElementById('profFixBtn');
+  const bProc = document.getElementById('bProc');
+  const bRegex = document.getElementById('bRegex');
+  const bHot = document.getElementById('bHot');
+  const desc = document.getElementById('profDesc');
+  let fixed = false;
+
+  btn.addEventListener('click', () => {
+    fixed = !fixed;
+    btn.textContent = fixed ? 'Revert to Hot Bug' : 'Apply Static Regex Fix';
+    if (fixed) {
+      bProc.style.width = '35%';
+      bProc.textContent = 'process_orders_batch() [22%]';
+      bRegex.style.width = '15%';
+      bRegex.textContent = 'regex.match() [2%]';
+      bRegex.style.background = '#2FD3B5';
+      bHot.style.width = '4%';
+      bHot.style.background = '#28A745';
+      bHot.classList.remove('hot');
+      bHot.textContent = 'Pattern [0.1%]';
+      desc.innerHTML = `<b style="color:var(--teal)">Optimization Applied:</b> Regex pattern cached statically! CPU consumption collapsed from <b>70% to 22%</b>, eliminating the need to autoscale 4 additional EC2 nodes.`;
+    } else {
+      bProc.style.width = '70%';
+      bProc.textContent = 'process_orders_batch() [70%]';
+      bRegex.style.width = '50%';
+      bRegex.textContent = 'regex.match(SA_ID) [50% HOT]';
+      bRegex.style.background = '#F2668B';
+      bHot.style.width = '50%';
+      bHot.style.background = '#E02424';
+      bHot.classList.add('hot');
+      bHot.textContent = 'Pattern.compile() : L142 (Hot Loop!)';
+      desc.innerHTML = `<b style="color:var(--pink)">Developer Finding:</b> <code>Pattern.compile()</code> was called inside a <code>for</code> loop instead of being statically compiled once. One-line code fix reduced service CPU load by 48%.`;
+    }
+  });
+})();
+</script>
+</body>
+</html>

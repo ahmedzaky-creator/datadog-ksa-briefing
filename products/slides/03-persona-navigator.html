@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Persona Navigator</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:14px;margin-top:20px;height:420px}
+  .p-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .2s,border-color .2s;cursor:pointer}
+  .p-card:hover{transform:translateY(-2px);border-color:var(--c,var(--purple))}
+  .p-top{display:flex;justify-content:space-between;align-items:center}
+  .p-badge{font:600 10px var(--mono);text-transform:uppercase;padding:3px 7px;border-radius:12px;background:var(--bg);color:var(--c,var(--purple))}
+  .p-title{font-size:16px;font-weight:700;color:var(--ink);margin:8px 0 4px}
+  .p-pain{font-size:12px;color:var(--grey);line-height:1.45}
+  .p-sol{font:500 11.5px var(--mono);color:var(--c,var(--purple));margin-top:8px;background:var(--bg);padding:6px 8px;border-radius:6px}
+  .p-prods{font:400 10.5px var(--mono);color:var(--grey-l);margin-top:6px}
+</style>
+</head>
+<body class="soft" data-foot="Stakeholder Value Map · 7 Enterprise Personas" data-who="exec,cio,ciso,sre,dev,digital,finops">
+<div class="z">
+  <div class="eyebrow in1">Tailored for Every Stakeholder</div>
+  <h1 class="in2">One platform. <span class="b">Seven enterprise personas.</span></h1>
+  <p class="sub in3">Observability in Saudi Arabia is not just an IT tooling project—it is how the C-suite safeguards revenue, how security proves compliance, and how developers ship at cloud speed.</p>
+</div>
+
+<div class="grid">
+  <div class="p-card in2" style="--c:#8A5A00">
+    <div>
+      <div class="p-top"><span class="p-badge">Executive / CFO</span><span class="mono" style="font-size:11px">ROI &amp; Trust</span></div>
+      <div class="p-title">Revenue &amp; Cost Control</div>
+      <div class="p-pain">"How do I prevent downtime during peak national events and retire 8 overlapping tools?"</div>
+    </div>
+    <div>
+      <div class="p-sol">100% AWS EDP Drawdown + 51% TCO reduction</div>
+      <div class="p-prods">Infra · APM · Bits AI · FinOps</div>
+    </div>
+  </div>
+
+  <div class="p-card in3" style="--c:var(--purple)">
+    <div>
+      <div class="p-top"><span class="p-badge">CIO / CTO</span><span class="mono" style="font-size:11px">Velocity</span></div>
+      <div class="p-title">Hybrid Migration Speed</div>
+      <div class="p-pain">"How do we migrate to AWS Riyadh on time without blind spots across on-prem and cloud?"</div>
+    </div>
+    <div>
+      <div class="p-sol">Single pane of glass across on-prem &amp; AWS</div>
+      <div class="p-prods">1,000+ Integrations · USM · Service Map</div>
+    </div>
+  </div>
+
+  <div class="p-card in4" style="--c:#B0284F">
+    <div>
+      <div class="p-top"><span class="p-badge">CISO / Compliance</span><span class="mono" style="font-size:11px">Audit Proof</span></div>
+      <div class="p-title">Saudi Sovereignty &amp; SOC</div>
+      <div class="p-pain">"How do we satisfy SAMA CSF 3.3.14 and NCA ECC 18-month retention without PII leaks?"</div>
+    </div>
+    <div>
+      <div class="p-sol">In-Kingdom Vector Edge + Cloud SIEM ($0.20/GB)</div>
+      <div class="p-prods">CSPM · CWPP · Cloud SIEM · Pipelines</div>
+    </div>
+  </div>
+
+  <div class="p-card in5" style="--c:#0E8C76">
+    <div>
+      <div class="p-top"><span class="p-badge">SRE &amp; Platform</span><span class="mono" style="font-size:11px">Reliability</span></div>
+      <div class="p-title">Zero War Rooms</div>
+      <div class="p-pain">"How do we run ephemeral EKS clusters in Riyadh without alert fatigue at 3 AM?"</div>
+    </div>
+    <div>
+      <div class="p-sol">Bits AI SRE autonomous root cause in 3 mins</div>
+      <div class="p-prods">Live Containers · On-Call · Cluster Agent</div>
+    </div>
+  </div>
+
+  <div class="p-card in3" style="--c:#1F6FA8">
+    <div>
+      <div class="p-top"><span class="p-badge">App Developers</span><span class="mono" style="font-size:11px">Productivity</span></div>
+      <div class="p-title">Instant Flame Graphs</div>
+      <div class="p-pain">"Why rewrite Dockerfiles for tracing, and how do we debug latency inside our IDE?"</div>
+    </div>
+    <div>
+      <div class="p-sol">Single-Step APM (zero code) + MCP Server</div>
+      <div class="p-prods">APM · Continuous Profiler · MCP IDE</div>
+    </div>
+  </div>
+
+  <div class="p-card in4" style="--c:#5B4A00">
+    <div>
+      <div class="p-top"><span class="p-badge">Digital &amp; Product</span><span class="mono" style="font-size:11px">Customer CX</span></div>
+      <div class="p-title">Mobile Journey Friction</div>
+      <div class="p-pain">"Where are users dropping out in checkout across stc, Mobily, and Zain mobile networks?"</div>
+    </div>
+    <div>
+      <div class="p-sol">Session Replay with DOM masking + Core Web Vitals</div>
+      <div class="p-prods">RUM · Session Replay · Product Analytics</div>
+    </div>
+  </div>
+
+  <div class="p-card in5" style="--c:#007A3D">
+    <div>
+      <div class="p-top"><span class="p-badge">FinOps &amp; Cloud</span><span class="mono" style="font-size:11px">Optimization</span></div>
+      <div class="p-title">Container Spend Allocation</div>
+      <div class="p-pain">"Which engineering team owns the spike in the AWS Riyadh EKS monthly bill?"</div>
+    </div>
+    <div>
+      <div class="p-sol">Cost joined to tags + container pod attribution</div>
+      <div class="p-prods">Cloud Cost Management · Flex Logs</div>
+    </div>
+  </div>
+
+  <div class="p-card in6" style="--c:#4B1F82;background:linear-gradient(135deg,var(--purple-ll),#fff)">
+    <div>
+      <div class="p-top"><span class="p-badge" style="background:var(--purple);color:#fff">The Moat</span><span class="mono" style="font-size:11px">Synthesis</span></div>
+      <div class="p-title">Unified Service Tagging</div>
+      <div class="p-pain">Every persona views the exact same facts through their own specialized lens, united by <code>env</code>, <code>service</code>, and <code>version</code>.</div>
+    </div>
+    <div>
+      <div class="p-sol" style="background:#fff;border:1px solid var(--purple-l)">Zero context-switching tax</div>
+    </div>
+  </div>
+</div>
+<script src="../js/dd.js"></script>
+</body>
+</html>

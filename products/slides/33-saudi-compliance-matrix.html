@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>Saudi Compliance Master Matrix</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .matrix-table{width:100%;border-collapse:collapse;margin-top:18px;font-size:12px;background:#fff;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .matrix-table th{background:var(--bg);padding:10px 12px;text-align:left;font:600 11px var(--mono);color:var(--char);border-bottom:1px solid var(--line);text-transform:uppercase}
+  .matrix-table td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
+  .matrix-table tr:last-child td{border-bottom:none}
+  .reg-name{font:650 12px Inter,sans-serif;color:var(--ink)}
+  .reg-cite{font:400 10px var(--mono);color:var(--grey)}
+  .sol-tag{font:600 10.5px var(--mono);color:var(--teal-d);background:#E6FBF6;padding:3px 6px;border-radius:4px;display:inline-block}
+</style>
+</head>
+<body class="soft" data-foot="Compliance Deep Dive · Saudi Sovereign Regulatory Matrix" data-who="ciso,cio,exec">
+<div class="z">
+  <div class="eyebrow in1">Sovereign Compliance Assurance</div>
+  <h1 class="in2">Saudi regulatory matrix: <span class="b">Engineered for local compliance.</span></h1>
+  <p class="sub in3">Plain Language: Moving to AWS Riyadh requires strict adherence to local banking and data protection laws. Datadog's architecture maps directly to every mandated control from SAMA, SDAIA, NDMO, and NCA.</p>
+</div>
+
+<table class="matrix-table in3">
+  <thead>
+    <tr>
+      <th style="width:22%">Regulator &amp; Framework</th>
+      <th style="width:28%">Regulatory Mandate</th>
+      <th style="width:25%">Technical Implication</th>
+      <th style="width:25%">Datadog Solution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <div class="reg-name">NDMO Classification</div>
+        <div class="reg-cite">Royal Decree No. 59888</div>
+      </td>
+      <td>Establishes 4 data tiers. PII or financial data inherits <b>Level 3 (Confidential)</b>, restricting unencrypted transfer.</td>
+      <td>Raw logs with citizen data cannot egress cross-border without minimization.</td>
+      <td><span class="sol-tag">In-Kingdom Vector VRL</span> strips PII, reducing telemetry to Level 1/2.</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="reg-name">SDAIA PDPL</div>
+        <div class="reg-cite">Royal Decree M/19 (Art. 19/29)</div>
+      </td>
+      <td>Strictly governs cross-border transfer of Saudi citizen personal data; mandates data minimization.</td>
+      <td>National IDs, Iqamas, mobile numbers, and IBANs must be eliminated prior to egress.</td>
+      <td><span class="sol-tag">Sensitive Data Scanner</span> + client-side RUM DOM masking at the device.</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="reg-name">SAMA CSF 3.3.14 &amp; 3.4.3</div>
+        <div class="reg-cite">Event Logging &amp; Outsourcing</div>
+      </td>
+      <td>Mandates 24x7 centralized event logging, automated correlation, and non-objection for cloud services.</td>
+      <td>Banks must retain auditable transaction trails within Kingdom boundaries.</td>
+      <td><span class="sol-tag">Local AWS S3 In-Kingdom</span> + Datadog Cloud SIEM for real-time alerting.</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="reg-name">NCA ECC-2:2024 &amp; CCC</div>
+        <div class="reg-cite">Subdomain 2-12 (Logs)</div>
+      </td>
+      <td>Mandates minimum <b>12-month log retention</b> (18 months for Critical National Infrastructure).</td>
+      <td>High storage volume requires low-cost compliance archiving without indexer sprawl.</td>
+      <td><span class="sol-tag">Flex Logs ($0.05/GB)</span> on local S3 in Riyadh for 18-month retention.</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="reg-name">CST Cloud Framework</div>
+        <div class="reg-cite">CCRF Category C License</div>
+      </td>
+      <td>Regulates cloud hosting facilities and government cloud workloads in Saudi Arabia.</td>
+      <td>Enterprise cloud services must align with sovereign hosting standards.</td>
+      <td><span class="sol-tag">AWS Riyadh (me-central-2)</span> local data centers with Zero&amp;One delivery.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="bv in5">
+  <b>Audit-Ready Defensibility</b>
+  This matrix equips CISOs and compliance officers with verified citation-by-citation defensibility when presenting the observability architecture to SAMA and NCA auditors.
+</div>
+
+<script src="../js/dd.js"></script>
+</body>
+</html>

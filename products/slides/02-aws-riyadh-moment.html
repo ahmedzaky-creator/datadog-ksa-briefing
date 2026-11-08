@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-density="3">
+<head>
+<meta charset="UTF-8">
+<title>The AWS Riyadh Moment</title>
+<link rel="stylesheet" href="../css/dd.css">
+<style>
+  .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}
+  .s-box{background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:8px;border-left:3px solid var(--purple)}
+  .s-box .v{font:700 24px/1 var(--mono);color:var(--purple)}
+  .s-box .l{font:500 10px var(--mono);text-transform:uppercase;color:var(--char);margin-top:4px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
+  .card{padding:14px 16px;border-radius:10px;background:#fff;border:1px solid var(--line);position:relative;display:flex;flex-direction:column;justify-content:space-between;height:260px}
+  .card .num{font:700 20px var(--mono);color:var(--c,var(--purple));margin-bottom:4px}
+  .card h3{font-size:16px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:6px}
+  .card p{font-size:11.5px;line-height:1.45;color:var(--grey)}
+  .card .pill{font:600 9.5px var(--mono);text-transform:uppercase;padding:3px 7px;border-radius:4px;background:var(--bg);color:var(--c,var(--purple));align-self:flex-start;margin-top:8px}
+  html[data-density="1"] .stats-strip{display:none}
+</style>
+</head>
+<body class="soft" data-foot="Strategic Context · AWS Riyadh (me-central-2) Launch Edition" data-who="cio,exec,ciso">
+<div class="z">
+  <div class="eyebrow in1">The Decisive Shift · December 2026</div>
+  <h1 class="in2">AWS lands in Riyadh next month.<br><span class="b">Here are the 4 migration realities.</span></h1>
+  <p class="sub in3">AWS is activating its $5.3B Cloud Region in Riyadh with 3 Availability Zones. Every bank, government agency, and enterprise is preparing migration cutovers. Here is why observability makes or breaks go-live.</p>
+</div>
+
+<div class="stats-strip in3">
+  <div class="s-box"><div class="v"><span data-count="5.3" data-dec="1" data-pre="$" data-post="B"></span></div><div class="l">AWS Riyadh Commitment</div></div>
+  <div class="s-box"><div class="v"><span data-count="3" data-post=" AZs"></span></div><div class="l">Availability Zones</div></div>
+  <div class="s-box"><div class="v"><span data-count="0" data-post=" PII"></span></div><div class="l">Zero Citizen Egress</div></div>
+  <div class="s-box"><div class="v"><span data-count="100" data-post="%"></span></div><div class="l">AWS EDP Drawdown</div></div>
+</div>
+
+<div class="grid">
+  <div class="card in4" style="--c:var(--purple)">
+    <div>
+      <div class="num">01</div>
+      <h3>The Dual-Run Risk</h3>
+      <p>You cannot cut over overnight. For 6 to 18 months, your mission-critical estate runs in a hybrid state—partly in Riyadh datacenters, partly in AWS me-central-2. When transactions stall, you cannot have teams guessing across disjointed consoles.</p>
+    </div>
+    <div class="pill">Side-by-side baselines</div>
+  </div>
+  <div class="card in4" style="--c:var(--pink)">
+    <div>
+      <div class="num">02</div>
+      <h3>The "War Room Tax"</h3>
+      <p>Today, a high-severity outage pulls 15 senior engineers onto a 2-hour bridge call. The DB team blames the network; network blames the app. Datadog eliminates that tax by uniting all signals under one unified data model.</p>
+    </div>
+    <div class="pill">MTTR from hours to mins</div>
+  </div>
+  <div class="card in5" style="--c:var(--teal)">
+    <div>
+      <div class="num">03</div>
+      <h3>Saudi Data Sovereignty</h3>
+      <p>NDMO Level 3, SDAIA PDPL, and SAMA CSF 3.3.14 require rigorous data classification. Our Sovereign Hybrid Edge keeps 100% of raw compliance logs on local AWS S3 in Riyadh, redacting citizen PII before telemetry egress.</p>
+    </div>
+    <div class="pill">Zero-PII egress guarantee</div>
+  </div>
+  <div class="card in6" style="--c:var(--amber)">
+    <div>
+      <div class="num">04</div>
+      <h3>100% AWS EDP Drawdown</h3>
+      <p>Procurement is seamless. Because Datadog is an Elite AWS Marketplace Partner, every single dollar invested draws down 1:1 against your enterprise AWS committed cloud spend (EDP), speeding approval from months to days.</p>
+    </div>
+    <div class="pill">1:1 Cloud spend credit</div>
+  </div>
+</div>
+
+<div class="bv in6">
+  <b>Strategic takeaway</b>
+  AWS Riyadh launch is an architectural migration, not just an infrastructure move. Datadog provides the bridge, the sovereign security envelope, and the financial drawdown to guarantee Day-1 success.
+</div>
+<script src="../js/dd.js"></script>
+</body>
+</html>
